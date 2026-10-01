@@ -7,7 +7,9 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
+// BASE_PATH is only set by the GitHub Pages workflow (see .github/workflows/pages.yml).
 export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   plugins: [
     tanstackRouter({ target: "react", autoCodeSplitting: false }),
     react(),

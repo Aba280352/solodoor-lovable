@@ -1,8 +1,9 @@
 import type { IconName } from "./icon-data";
 
-const img = (name: string) => `/images/${name}.webp`;
+/** BASE_URL is "/" everywhere except the GitHub Pages preview, which lives under /solodoor-lovable/. */
+const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
 
-export const LOGO_SRC = "/images/logo.svg";
+export const LOGO_SRC = `${import.meta.env.BASE_URL}images/logo.svg`;
 
 export const promoItems: { icon: IconName; label: string }[] = [
   { icon: "Truck", label: "שירות מצפון ועד דרום" },
