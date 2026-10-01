@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -50,19 +50,24 @@ function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
   );
 }
 
+/** Jumps to the DIY section of the homepage. */
+const DIY_HREF = "#diy";
+
 /** Mobile menu order, by importance: home, the two catalogue groups, the shop, then the rest. */
 const mobileNavBefore = ["בית"];
-const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים", "תהליך"];
+const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים"];
 
-function MobileNavLink({ label, active }: { label: string; active?: boolean }) {
-  return (
+function MobileNavLink({ label, href = "#", active, closes }: { label: string; href?: string; active?: boolean; closes?: boolean }) {
+  const link = (
     <a
-      href="#"
+      href={href}
       className={cn("border-b border-border py-3.5 fs-18 font-medium text-foreground", active && "text-clay")}
     >
       {label}
     </a>
   );
+  // In-page links close the menu so the section is visible straight away.
+  return closes ? <DialogClose asChild>{link}</DialogClose> : link;
 }
 
 /** Collapsed by default; opens only when its row is tapped. */
@@ -131,6 +136,7 @@ function MobileMenu() {
           <MobileMenuGroup title="טפט לפי שימוש" items={useMenu} />
           <MobileMenuGroup title="טפט לפי סגנון" items={styleMenu} />
           <MobileNavLink label="צפייה בכל החנות" />
+          <MobileNavLink label="עשה זאת בעצמך" href={DIY_HREF} closes />
           {mobileNavAfter.map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
@@ -154,7 +160,7 @@ export function SiteHeader() {
       onMouseLeave={() => setMenu(null)}
       className="sticky top-0 z-40 border-b border-border bg-background"
     >
-      <div className="mx-auto grid h-16 max-w-330 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 px-5 lg:h-19 lg:px-12">
+      <div className="mx-auto grid h-16 max-w-330 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 px-5 lg:gap-4 lg:h-19 lg:px-12">
         <a href="#" className="flex items-center">
           <img
             src={LOGO_SRC}
@@ -163,11 +169,18 @@ export function SiteHeader() {
           />
         </a>
 
-        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-3.5 lg:flex">
+        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-2 lg:flex">
           {navLinks.map((label, i) => (
-            <a key={label} href="#" className={cn(navLinkClass, i === 0 && "border-b-2 border-primary")}>
-              {label}
-            </a>
+            <Fragment key={label}>
+              <a href="#" className={cn(navLinkClass, i === 0 && "border-b-2 border-primary")}>
+                {label}
+              </a>
+              {i === 0 && (
+                <a href={DIY_HREF} className={cn(navLinkClass, "font-bold text-clay")}>
+                  עשה זאת בעצמך
+                </a>
+              )}
+            </Fragment>
           ))}
           <MenuButton label="טפט לפי סגנון" onOpen={() => setMenu("style")} />
           <MenuButton label="טפט לפי שימוש" onOpen={() => setMenu("use")} />

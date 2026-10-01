@@ -68,7 +68,7 @@ export function Hero() {
             </Button>
             <Button asChild variant="secondary" className="flex-none px-7 py-3 lg:py-[0.9375rem]">
               <a href="#">
-                <span>לצפייה בקטגוריה</span>
+                <span>{current.cta}</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
             </Button>

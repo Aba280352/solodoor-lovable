@@ -11,7 +11,8 @@ const ds = path.join(src, "_ds", "solodoor-design-system-69e1c42b-639f-4338-9b7d
 const outImg = path.join(root, "public", "images");
 const outFonts = path.join(root, "public", "fonts");
 
-const SKIP = new Set(["bg-source", "texture-plaster", "hero-counter", "logo"]);
+// diy-tool-silicone is replaced by diy-tool-blades, which was added by hand (not part of the design export).
+const SKIP = new Set(["bg-source", "texture-plaster", "hero-counter", "logo", "diy-tool-silicone"]);
 const MAX_WIDTH = { hero: 1920, footer: 1920, diy: 1920, texture: 1600, payments: 1200, google: 600 };
 
 await mkdir(outImg, { recursive: true });

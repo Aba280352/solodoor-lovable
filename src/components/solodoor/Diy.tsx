@@ -9,8 +9,9 @@ import { DIY_BG, DIY_VIDEO, diySteps, diyTools } from "./data";
 export function Diy() {
   return (
     <section
+      id="diy"
       data-reveal
-      className="bg-secondary bg-cover bg-center bg-no-repeat pt-14 pb-16 lg:pt-24 lg:pb-26"
+      className="scroll-mt-16 bg-secondary bg-cover bg-center bg-no-repeat pt-14 pb-16 lg:pt-24 lg:scroll-mt-20 lg:pb-26"
       style={{ backgroundImage: `url(${DIY_BG})` }}
     >
       <div className="mx-auto flex max-w-330 flex-col gap-6 px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-stretch lg:gap-14 lg:px-12">
@@ -85,7 +86,7 @@ export function Diy() {
                     i < diyTools.length - 1 && "border-e border-border",
                   )}
                 >
-                  <img src={tool.img} alt={tool.name} className="block size-20 rounded-lg object-contain lg:size-30" />
+                  <img src={tool.img} alt={tool.name} className="block size-20 rounded-lg object-contain mix-blend-multiply lg:size-30" />
                   <span className="text-center fs-14 font-medium text-foreground lg:fs-18">{tool.name}</span>
                 </div>
               ))}

@@ -20,7 +20,6 @@ export const navLinks = [
   "אודות",
   "שאלות נפוצות",
   "יצירת קשר",
-  "תהליך",
 ];
 
 export interface MenuItem {
@@ -46,13 +45,13 @@ export const useMenu: MenuItem[] = [
 ];
 
 export const heroSlides = [
-  { tag: "ציפוי דלתות", l1: "מחדשים את הדלת,", l2: "משדרגים את כל הכניסה", img: img("hero-door") },
-  { tag: "ציפוי מטבחים", l1: "אותו מטבח.", l2: "יום עבודה אחד.", img: img("hero-kitchen") },
-  { tag: "ציפוי שיש", l1: "משטח חדש.", l2: "בלי לפרק כלום.", img: img("hero-counter-2") },
-  { tag: "ציפוי מקררים", l1: "המקרר נשאר.", l2: "המראה מתחדש.", img: img("hero-fridge") },
-  { tag: "ציפוי ארונות חשמל", l1: "ארון החשמל", l2: "נעלם בתוך העיצוב.", img: img("hero-electric") },
-  { tag: "ציפוי קירות", l1: "קיר אחד משנה", l2: "את כל החדר.", img: img("hero-wall") },
-  { tag: "שטיחי PVC", l1: "שטיח שמחזיק", l2: "את קצב המטבח.", img: img("hero-rug") },
+  { tag: "ציפוי דלתות", cta: "לקולקציית ציפוי דלתות", l1: "מחדשים את הדלת,", l2: "משדרגים את כל הכניסה", img: img("hero-door") },
+  { tag: "ציפוי מטבחים", cta: "לקולקציית ציפוי מטבחים", l1: "אותו מטבח.", l2: "יום עבודה אחד.", img: img("hero-kitchen") },
+  { tag: "ציפוי שיש", cta: "לקולקציית טפט לשיש", l1: "משטח חדש.", l2: "בלי לפרק כלום.", img: img("hero-counter-2") },
+  { tag: "ציפוי מקררים", cta: "לקולקציית ציפוי מקררים", l1: "המקרר נשאר.", l2: "המראה מתחדש.", img: img("hero-fridge") },
+  { tag: "ציפוי ארונות חשמל", cta: "לקולקציית ציפוי ארונות חשמל", l1: "ארון החשמל", l2: "נעלם בתוך העיצוב.", img: img("hero-electric") },
+  { tag: "ציפוי קירות", cta: "לקולקציית ציפוי קירות", l1: "קיר אחד משנה", l2: "את כל החדר.", img: img("hero-wall") },
+  { tag: "שטיחי PVC", cta: "לקולקציית שטיחי PVC", l1: "שטיח שמחזיק", l2: "את קצב המטבח.", img: img("hero-rug") },
 ];
 
 export const heroTrust: { icon: IconName; label: string }[] = [
@@ -106,7 +105,7 @@ export const diySteps: { num: string; icon: IconName; label: string }[] = [
 export const diyTools = [
   { name: "קלף הדבקה", img: img("diy-tool-squeegee") },
   { name: "סכין חיתוך", img: img("diy-tool-knife") },
-  { name: "סיליקון לשיש", img: img("diy-tool-silicone") },
+  { name: "להבים להחלפה", img: img("diy-tool-blades") },
 ];
 
 export const DIY_BG = img("diy-bg");
