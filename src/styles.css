@@ -1,0 +1,227 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * SOLODOOR design system.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ * The :root block defines the actual color values. All colors use oklch.
+ *
+ * Brand mapping:
+ *   primary    = clay  #D7978B  (the single accent, every main CTA)
+ *   secondary  = sage  #7D958B  (secondary CTA, hover grounds)
+ *   foreground = ink   #131313  (all type, icons, rules)
+ *   background = paper #FAFAFA  (page), card = #FFFFFF (raised surface)
+ *   border     = hairline #E3E3E3
+ *   muted      = sand  #F4F2EF  (image placeholders, warm grounds)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-clay: var(--clay);
+  --color-sage: var(--sage);
+  --color-sand: var(--sand);
+  --color-sand-deep: var(--sand-deep);
+  --color-canvas: var(--canvas);
+  --color-track: var(--track);
+  --color-star: var(--star);
+  --color-whatsapp: var(--whatsapp);
+
+  --font-sans: "Discovery Fs", system-ui, sans-serif;
+  --font-display: "Discovery Fs", system-ui, sans-serif;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-grow: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --shadow-menu: 0 1.125rem 2.5rem oklch(0.1867 0 0 / 8%);
+  --shadow-review: 0 0.625rem 1.875rem oklch(0.1867 0 0 / 6%);
+  --shadow-handle: 0 0.125rem 0.625rem oklch(0.1867 0 0 / 18%);
+  --shadow-swatch: 0 0 0 2px var(--card), 0 0 0 3px var(--foreground);
+
+  --animate-promo-marquee: promo-marquee 90s linear infinite;
+  --animate-ba-scroll: ba-scroll 38s linear infinite;
+  --animate-reviews-left: reviews-left 90s linear infinite;
+  --animate-reviews-right: reviews-right 100s linear infinite;
+  --animate-stat-cycle: stat-cycle 12s cubic-bezier(0.2, 0, 0, 1) infinite;
+
+  @keyframes promo-marquee {
+    from { transform: translateX(calc(-50% - 3.75rem)); }
+    to { transform: translateX(0); }
+  }
+  @keyframes ba-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(50%); }
+  }
+  @keyframes reviews-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes reviews-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes stat-cycle {
+    0% { opacity: 0; transform: translateY(0.625rem); }
+    4% { opacity: 1; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(0); }
+    34% { opacity: 0; transform: translateY(-0.625rem); }
+    100% { opacity: 0; transform: translateY(-0.625rem); }
+  }
+}
+
+/*
+ * fs-<n>: font size in design pixels (fs-62 = 62px on the 1440 artboard).
+ * Line height is left alone on purpose, so text keeps the body's 1.6 unless a
+ * leading-* class says otherwise — exactly like the source design.
+ */
+@utility fs-* {
+  font-size: calc(--value(integer) * 0.0625rem);
+}
+
+/* Page ground: the seamless plaster texture, darkened 6%, tiled down the page. */
+@utility bg-page-texture {
+  background:
+    linear-gradient(--alpha(var(--color-foreground) / 6%), --alpha(var(--color-foreground) / 6%)),
+    url("/images/texture-seamless.webp") top center / 100% auto repeat-y,
+    var(--color-canvas);
+}
+
+/* Ink protection gradient under the footer banner headline (reads right to left). */
+@utility bg-footer-scrim {
+  background-image: linear-gradient(
+    to left,
+    --alpha(var(--color-foreground) / 88%),
+    --alpha(var(--color-foreground) / 72%) 22%,
+    --alpha(var(--color-foreground) / 32%) 48%,
+    --alpha(var(--color-foreground) / 0%) 72%
+  );
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+:root {
+  --radius: 0.375rem;
+  --background: oklch(0.9851 0 0);
+  --foreground: oklch(0.1867 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.1867 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1867 0 0);
+  --primary: oklch(0.7357 0.0797 30.9);
+  --primary-foreground: oklch(0.1867 0 0);
+  --secondary: oklch(0.6481 0.031 168.24);
+  --secondary-foreground: oklch(0.9851 0 0);
+  --muted: oklch(0.9619 0.0045 78.3);
+  --muted-foreground: oklch(0.5278 0 0);
+  --accent: oklch(0.9619 0.0045 78.3);
+  --accent-foreground: oklch(0.1867 0 0);
+  --destructive: oklch(0.4956 0.1414 29.51);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9158 0 0);
+  --input: oklch(0.1867 0 0 / 30%);
+  --ring: oklch(0.6342 0.0848 31.88);
+
+  --clay: oklch(0.7357 0.0797 30.9);
+  --sage: oklch(0.6481 0.031 168.24);
+  --sand: oklch(0.9619 0.0045 78.3);
+  --sand-deep: oklch(0.8666 0.0116 71.88);
+  --canvas: oklch(0.9558 0.0045 78.3);
+  --track: oklch(0.9468 0.0046 78.3);
+  --star: oklch(0.8304 0.1699 84.01);
+  --whatsapp: oklch(0.761 0.2015 149.74);
+}
+
+@font-face {
+  font-family: "Discovery Fs";
+  src: url("/fonts/DiscoveryFs-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Discovery Fs";
+  src: url("/fonts/DiscoveryFs-Medium.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Discovery Fs";
+  src: url("/fonts/DiscoveryFs-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  /*
+   * Fluid scale. The design is drawn on a 1440px artboard and scales with the
+   * viewport, so from the lg breakpoint up 1rem = 16 design pixels at any width
+   * (width / 90 = 16px at 1440). The width comes from useViewportScale(), which
+   * excludes the scrollbar; 100vw is the fallback before it runs. Below lg the root stays 16px and the mobile
+   * layout takes over. Every size in the components is therefore in rem.
+   */
+  @media (min-width: 64rem) {
+    html {
+      font-size: calc(var(--viewport-width, 100vw) / 90);
+    }
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Native controls keep their own line height in the source design. */
+  button,
+  input,
+  textarea {
+    line-height: normal;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
