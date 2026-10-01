@@ -176,7 +176,7 @@ export function SiteHeader() {
                 {label}
               </a>
               {i === 0 && (
-                <a href={DIY_HREF} className={cn(navLinkClass, "font-bold text-clay")}>
+                <a href={DIY_HREF} className={navLinkClass}>
                   עשה זאת בעצמך
                 </a>
               )}
