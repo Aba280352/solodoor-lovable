@@ -12,7 +12,7 @@
  * The :root block defines the actual color values. All colors use oklch.
  *
  * Brand mapping:
- *   primary    = clay  #D7978B  (the single accent, every main CTA)
+ *   primary    = clay  #C96F61  (the single accent, every main CTA)
  *   secondary  = sage  #7D958B  (secondary CTA, hover grounds)
  *   foreground = ink   #131313  (all type, icons, rules)
  *   background = paper #FAFAFA  (page), card = #FFFFFF (raised surface)
@@ -139,7 +139,7 @@
   --card-foreground: oklch(0.1867 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.1867 0 0);
-  --primary: oklch(0.7357 0.0797 30.9);
+  --primary: oklch(0.6400 0.1166 29.93);
   --primary-foreground: oklch(0.1867 0 0);
   --secondary: oklch(0.6481 0.031 168.24);
   --secondary-foreground: oklch(0.9851 0 0);
@@ -151,9 +151,9 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9158 0 0);
   --input: oklch(0.1867 0 0 / 30%);
-  --ring: oklch(0.6342 0.0848 31.88);
+  --ring: oklch(0.6400 0.1166 29.93);
 
-  --clay: oklch(0.7357 0.0797 30.9);
+  --clay: oklch(0.6400 0.1166 29.93);
   --sage: oklch(0.6481 0.031 168.24);
   --sand: oklch(0.9619 0.0045 78.3);
   --sand-deep: oklch(0.8666 0.0116 71.88);
