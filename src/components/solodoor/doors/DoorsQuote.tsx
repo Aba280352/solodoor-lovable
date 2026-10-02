@@ -75,7 +75,7 @@ export function DoorsQuote() {
                     <label
                       key={type}
                       className={cn(
-                        "cursor-pointer rounded-full border px-4 py-2.5 text-center fs-15 font-medium transition-colors duration-160 ease-standard lg:fs-16",
+                        "cursor-pointer rounded-[5px] border px-4 py-2.5 lg:rounded-full text-center fs-15 font-medium transition-colors duration-160 ease-standard lg:fs-16",
                         doorType === type
                           ? "border-secondary bg-secondary text-secondary-foreground"
                           : "border-input bg-background text-foreground hover:border-foreground",
