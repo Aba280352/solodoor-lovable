@@ -48,7 +48,7 @@ export function DoorsHero() {
 
           <div className="mt-6 grid w-full grid-cols-2 gap-2.5 lg:mt-8 lg:flex lg:w-auto lg:gap-3">
             <Button asChild className="px-3 py-3.5 fs-15 lg:px-9 lg:py-[1.0625rem] lg:fs-18">
-              <a href="#">
+              <a href="#quote">
                 <span>קבלו הצעת מחיר</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
 import { DoorsHero } from "@/components/solodoor/doors/DoorsHero";
+import { DoorsQuote } from "@/components/solodoor/doors/DoorsQuote";
 import { doorsSeo } from "@/components/solodoor/doors/data";
 
 // Landing page for paid search traffic on "ציפוי דלתות".
@@ -22,6 +23,7 @@ function DoorsPage() {
   return (
     <PageShell>
       <DoorsHero />
+      <DoorsQuote />
     </PageShell>
   );
 }
