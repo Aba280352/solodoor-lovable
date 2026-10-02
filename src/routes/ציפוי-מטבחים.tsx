@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
+import { KitchenCatalog } from "@/components/solodoor/kitchen/KitchenCatalog";
 import { KitchenHero } from "@/components/solodoor/kitchen/KitchenHero";
 import { KitchenIntro } from "@/components/solodoor/kitchen/KitchenIntro";
 import { KitchenValues } from "@/components/solodoor/kitchen/KitchenValues";
@@ -45,6 +46,7 @@ function KitchenPage() {
       <KitchenHero />
       <KitchenIntro />
       <KitchenValues />
+      <KitchenCatalog />
     </PageShell>
   );
 }

@@ -4,17 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 import { Icon } from "./Icon";
-import { Container, CoverImage, MediaPlaceholder, Pill } from "./primitives";
+import { ProductCard, ProductMedia } from "./ProductCard";
+import { Container, Pill } from "./primitives";
 import { bestSellers, type Product } from "./data";
 import { useQuiz } from "./quiz-context";
-
-function ProductMedia({ product }: { product: Product }) {
-  return product.img ? (
-    <CoverImage src={product.img} alt={product.name} />
-  ) : (
-    <MediaPlaceholder label={product.name} />
-  );
-}
 
 export function BestSellers() {
   const [tab, setTab] = useState(bestSellers[0].tab);
@@ -51,34 +44,7 @@ export function BestSellers() {
 
         <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-6">
           {active.items.map((product) => (
-            <div
-              key={product.name}
-              className="overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground"
-            >
-              <div className="relative h-44 overflow-hidden bg-muted lg:h-75">
-                <ProductMedia product={product} />
-                <span className="absolute top-3.5 right-3.5 flex size-9 items-center justify-center rounded-full bg-background text-foreground">
-                  <Icon name="Heart" size={16} />
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setZoomed(product)}
-                  aria-label="הגדלה"
-                  className="absolute top-3.5 left-3.5 flex size-9 cursor-pointer items-center justify-center rounded-full bg-background p-0 text-foreground [transition:background-color_240ms_var(--ease-standard),transform_420ms_var(--ease-standard)] hover:scale-110 hover:bg-primary"
-                >
-                  <Icon name="Expand" size={16} />
-                </button>
-              </div>
-              <div className="flex flex-col items-center gap-2.5 px-3 pt-5 pb-6 text-center lg:px-5.5">
-                <span className="fs-16 font-semibold text-foreground lg:fs-18">{product.name}</span>
-                <span className="fs-22 font-bold text-foreground">{product.price}</span>
-                <div className="mt-1.5 w-full">
-                  <Button type="button" size="card" className="w-full border border-primary leading-[normal]">
-                    לפרטים נוספים
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.name} product={product} onZoom={setZoomed} />
           ))}
         </div>
 
