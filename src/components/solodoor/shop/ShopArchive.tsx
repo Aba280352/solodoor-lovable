@@ -1,109 +1,26 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { ShopCard } from "./ShopCard";
-import { STYLE_FAMILIES, type ProductType, type ShopData } from "./catalog";
+import { ShopFilters } from "./ShopFilters";
+import { type ShopData } from "./catalog";
+import { activeFilters, filterItems, shopHeading, type ShopSearch } from "./filters";
 
-export interface ShopSearch {
-  type?: ProductType;
-  use?: string;
-  style?: string;
-}
-
-const TYPES: { key: ProductType; label: string }[] = [
-  { key: "wallpaper", label: "טפטים" },
-  { key: "designed_door", label: "טפטים מעוצבים לדלת" },
-  { key: "pvc_rug", label: "שטיחי PVC" },
-];
-
-/** Heading and intro for the current filter. Also used for the page title and description. */
-export function shopHeading(search: ShopSearch, data: ShopData) {
-  const application = data.applications.find((a) => a.slug === search.use);
-  const style = STYLE_FAMILIES.find((s) => s.key === search.style);
-  if (application) {
-    return {
-      title: `טפטים ל${application.label}` + (style ? `, ${style.label}` : ""),
-      intro: application.short_description ?? "",
-    };
-  }
-  if (style) {
-    return {
-      title: `טפטים, ${style.label}`,
-      intro: "טפטים בהדבקה עצמית לדלתות, למטבחים, למקררים, לשיש, לקירות ולארונות חשמל.",
-    };
-  }
-  if (search.type === "designed_door") {
-    return {
-      title: "טפטים מעוצבים לדלת",
-      intro: "טפטים מודפסים לדלת עם דוגמאות, מסגרות ופסים ואפקט עומק תלת ממדי. המחיר לצד אחד של דלת.",
-    };
-  }
-  if (search.type === "pvc_rug") {
-    return {
-      title: "שטיחי PVC מעוצבים",
-      intro: "שטיחים דקים ועמידים שאינם סופגים נוזלים וקלים לניקוי, למטבח, לכניסה ולחדרי ילדים.",
-    };
-  }
-  if (search.type === "wallpaper") {
-    return {
-      title: "טפטים בהדבקה עצמית",
-      intro: "טפטים עבים ועמידים לדלתות, למטבחים, למקררים, לשיש, לקירות ולארונות חשמל, להתקנה עצמית או עם מתקין.",
-    };
-  }
-  return {
-    title: "החנות של סולודור",
-    intro: "טפטים בהדבקה עצמית, טפטים מעוצבים לדלת ושטיחי PVC. בוחרים עיצוב, מזמינים באתר ומקבלים עד הבית.",
-  };
-}
-
-function FilterLink({ search, active, children }: { search: ShopSearch; active: boolean; children: React.ReactNode }) {
-  return (
-    <Link
-      to="/חנות"
-      search={search}
-      resetScroll={false}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "rounded-full border px-4 py-2 fs-15 font-medium whitespace-nowrap transition-colors duration-160 ease-standard lg:px-5 lg:fs-16",
-        active
-          ? "border-secondary bg-secondary text-secondary-foreground"
-          : "border-input bg-card text-foreground hover:border-foreground",
-      )}
-    >
-      {children}
-    </Link>
-  );
-}
-
-function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:gap-5">
-      <span className="flex-none fs-15 font-semibold text-foreground lg:w-24 lg:fs-16">{label}</span>
-      <div className="-mx-5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/** The shop archive: heading, filters and the product grid. */
+/** The shop archive: heading, the filters beside the grid (in a sheet on mobile), and the products. */
 export function ShopArchive({ data, search }: { data: ShopData; search: ShopSearch }) {
-  const application = data.applications.find((a) => a.slug === search.use);
-  const style = STYLE_FAMILIES.find((s) => s.key === search.style);
-  // Surface and style only exist for wallpapers, so choosing one narrows the grid to them.
-  const type: ProductType | undefined = application || style ? "wallpaper" : search.type;
-
-  const items = data.items.filter(
-    (item) =>
-      (!type || item.product_type === type) &&
-      (!style || item.style_family === style.label) &&
-      (!application || Boolean(item.images[application.slug])),
-  );
-  const { title, intro } = shopHeading(search, data);
-  const showWallpaperFilters = !type || type === "wallpaper";
+  const filters = activeFilters(search, data);
+  const items = filterItems(data, filters);
+  const { title, intro } = shopHeading(filters, data);
+  // The surface whose photo and price the cards show.
+  const application = data.applications.find((a) => a.slug === filters.uses[0]);
+  const activeCount = filters.cats.length + filters.styles.length + (filters.min !== undefined || filters.max !== undefined ? 1 : 0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const isRoot = title === "החנות של סולודור";
 
   return (
     <>
@@ -114,7 +31,7 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
               בית
             </Link>
             <Icon name="AngleLeft" size={11} />
-            {title === "החנות של סולודור" ? (
+            {isRoot ? (
               <span aria-current="page" className="font-medium">
                 חנות
               </span>
@@ -137,55 +54,54 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
         </Container>
       </section>
 
-      <section className="pt-7 pb-16 lg:pt-10 lg:pb-26">
-        <Container>
-          <div className="flex flex-col gap-4 lg:gap-5">
-            <FilterRow label="סוג מוצר">
-              <FilterLink search={{}} active={!type}>
-                הכל
-              </FilterLink>
-              {TYPES.map((t) => (
-                <FilterLink key={t.key} search={{ type: t.key }} active={type === t.key}>
-                  {t.label}
-                </FilterLink>
-              ))}
-            </FilterRow>
+      <section className="pt-6 pb-16 lg:pt-10 lg:pb-26">
+        <Container className="lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+          {/* Desktop: the filters stay beside the grid while it scrolls. */}
+          <aside aria-label="סינון" className="hidden lg:sticky lg:top-24 lg:block lg:rounded-lg lg:border lg:border-border lg:bg-card lg:p-6">
+            <ShopFilters data={data} filters={filters} />
+          </aside>
 
-            {showWallpaperFilters && (
-              <>
-                <FilterRow label="לפי שימוש">
-                  {data.applications.map((a) => (
-                    <FilterLink
-                      key={a.slug}
-                      search={{ use: a.slug, style: search.style }}
-                      active={application?.slug === a.slug}
-                    >
-                      {a.label}
-                    </FilterLink>
-                  ))}
-                </FilterRow>
-                <FilterRow label="לפי סגנון">
-                  {STYLE_FAMILIES.map((s) => (
-                    <FilterLink key={s.key} search={{ use: search.use, style: s.key }} active={style?.key === s.key}>
-                      {s.label}
-                    </FilterLink>
-                  ))}
-                </FilterRow>
-              </>
+          <div>
+            <div className="flex items-center justify-between gap-4">
+              <p className="fs-16 font-medium text-foreground">{items.length} מוצרים</p>
+
+              {/* Mobile: the same filters in a sheet. */}
+              <Dialog open={sheetOpen} onOpenChange={setSheetOpen}>
+                <DialogTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="gap-2 lg:hidden">
+                    <Icon name="Filter" size={15} />
+                    <span>סינון{activeCount ? ` (${activeCount})` : ""}</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent aria-describedby={undefined} className="m-0 me-auto flex min-h-dvh w-full max-w-90 flex-col px-6 pt-5 pb-6">
+                  <div className="flex items-center justify-between border-b border-border pb-4">
+                    <DialogTitle className="fs-22 font-bold text-foreground">סינון</DialogTitle>
+                    <DialogClose aria-label="סגירה" className="inline-flex cursor-pointer items-center text-foreground">
+                      <Icon name="Times" size={24} />
+                    </DialogClose>
+                  </div>
+                  <div className="flex-auto overflow-y-auto py-5">
+                    <ShopFilters data={data} filters={filters} />
+                  </div>
+                  <DialogClose asChild>
+                    <Button type="button" className="w-full py-4">
+                      הצגת {items.length} מוצרים
+                    </Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {items.length ? (
+              <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-6">
+                {items.map((item) => (
+                  <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} />
+                ))}
+              </div>
+            ) : (
+              <p className="mt-8 fs-18 text-foreground">לא נמצאו מוצרים בסינון הזה. נסו להסיר חלק מהסינונים.</p>
             )}
           </div>
-
-          <p className="mt-7 fs-16 font-medium text-foreground lg:mt-9">{items.length} מוצרים</p>
-
-          {items.length ? (
-            <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-4 lg:gap-6">
-              {items.map((item) => (
-                <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-8 fs-18 text-foreground">לא נמצאו מוצרים בסינון הזה. נסו לבחור שימוש או סגנון אחר.</p>
-          )}
         </Container>
       </section>
     </>

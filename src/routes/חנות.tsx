@@ -1,28 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
-import { ShopArchive, shopHeading, type ShopSearch } from "@/components/solodoor/shop/ShopArchive";
-import { fetchShop, type ProductType } from "@/components/solodoor/shop/catalog";
+import { ShopArchive } from "@/components/solodoor/shop/ShopArchive";
+import { fetchShop } from "@/components/solodoor/shop/catalog";
+import { activeFilters, joinList, shopHeading, type ShopSearch } from "@/components/solodoor/shop/filters";
 
 const SITE = "https://solodoor.co.il";
-const TYPES: ProductType[] = ["wallpaper", "designed_door", "pvc_rug"];
 
 const text = (value: unknown) => (typeof value === "string" && value ? value : undefined);
+const number = (value: unknown) => {
+  const n = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
+};
 
-// The shop archive. Filters live in the URL (?type, ?use, ?style), so every view can be linked to.
+// The shop archive. Filters live in the URL (?cat=door,kitchen&style=wood&min=100&max=400),
+// so every view can be linked to. Older links with ?use= or ?type= still work.
 export const Route = createFileRoute("/חנות")({
   validateSearch: (search: Record<string, unknown>): ShopSearch => ({
-    type: TYPES.find((t) => t === search.type),
-    use: text(search.use),
+    cat: text(search.cat) ?? joinList([text(search.type), text(search.use)].filter((v): v is string => Boolean(v))),
     style: text(search.style),
+    min: number(search.min),
+    max: number(search.max),
   }),
   loader: () => fetchShop(),
   head: ({ loaderData, match }) => {
     if (!loaderData) return {};
     const search = match.search as ShopSearch;
-    const { title, intro } = shopHeading(search, loaderData);
+    const { title, intro } = shopHeading(activeFilters(search, loaderData), loaderData);
     const params = new URLSearchParams(
-      Object.entries(search).filter((entry): entry is [string, string] => Boolean(entry[1])),
+      Object.entries(search)
+        .filter((entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== "")
+        .map(([k, v]) => [k, String(v)]),
     ).toString();
     return {
       meta: [

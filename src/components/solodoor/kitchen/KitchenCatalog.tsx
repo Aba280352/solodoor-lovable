@@ -62,7 +62,7 @@ export function KitchenCatalog() {
 
       <div className="mt-10 flex justify-center px-5 lg:mt-14">
         <Button asChild variant="secondary" className="w-full px-12 lg:w-auto">
-          <Link to="/חנות" search={{ use: "kitchen" }}>
+          <Link to="/חנות" search={{ cat: "kitchen" }}>
             <span>לכל ציפויי המטבח</span>
             <Icon name="ArrowLeft" size={16} />
           </Link>

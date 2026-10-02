@@ -39,7 +39,7 @@ export function DoorsShop() {
 
       <div className="mt-10 flex flex-col items-stretch justify-center gap-3.5 px-5 lg:mt-14 lg:flex-row lg:items-center">
         <Button asChild variant="secondary" className="px-12">
-          <Link to="/חנות" search={{ use: "door" }}>
+          <Link to="/חנות" search={{ cat: "door" }}>
             <span>לכל ציפויי הדלתות</span>
             <Icon name="ArrowLeft" size={16} />
           </Link>

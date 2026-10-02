@@ -154,7 +154,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
 
         <DialogClose asChild>
           <Button asChild className="mt-5 w-full py-4">
-            <Link to="/חנות" search={{ type: "wallpaper" }}>
+            <Link to="/חנות" search={{ cat: "door" }}>
               <span>לכל סוגי הטפטים שלנו</span>
               <Icon name="ArrowLeft" size={16} />
             </Link>

@@ -300,7 +300,7 @@ export function ProductPage({ data, tab }: { data: ProductData; tab: string | un
   const images = galleryImages(data, application, variant);
   const heading = productHeading(data, application);
   const tabs = product.product_type === "wallpaper" ? data.applications.filter((a) => data.productApplications.some((pa) => pa.application_slug === a.slug)) : [];
-  const shopSearch = application ? { use: application.slug } : { type: product.product_type };
+  const shopSearch = { cat: application ? application.slug : product.product_type };
 
   return (
     <>
