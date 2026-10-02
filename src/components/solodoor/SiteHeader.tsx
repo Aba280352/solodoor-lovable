@@ -52,9 +52,10 @@ function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
 }
 
 /** Pages that exist so far. Every other nav label is still a placeholder link. */
-const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים"> = {
+const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי-דלתות"> = {
   בית: "/",
   "ציפוי מטבחים": "/ציפוי-מטבחים",
+  "ציפוי דלתות": "/ציפוי-דלתות",
 };
 
 /** Mobile menu order, by importance: home, the two catalogue groups, the shop, then the rest. */

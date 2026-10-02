@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport } from './routes/ציפוי-מטבחים'
 
 const IndexRoute = IndexRouteImport.update({
@@ -17,6 +18,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route =
+  Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport.update(
+    {
+      id: '/ציפוי-דלתות',
+      path: '/ציפוי-דלתות',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 const Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route =
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport.update(
     {
@@ -28,27 +37,31 @@ const Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Ch
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ציפוי-מטבחים'
+  fullPaths: '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ציפוי-מטבחים'
-  id: '__root__' | '/' | '/ציפוי-מטבחים'
+  to: '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
+  id: '__root__' | '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
 }
 
@@ -59,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ציפוי-דלתות': {
+      id: '/ציפוי-דלתות'
+      path: '/ציפוי-דלתות'
+      fullPath: '/ציפוי-דלתות'
+      preLoaderRoute: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ציפוי-מטבחים': {
@@ -73,6 +93,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route:
+    Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route,
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route:
     Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route,
 }
