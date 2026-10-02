@@ -66,3 +66,20 @@ export const quoteSteps = [
 ];
 
 export const doorTypes = ["דלת כניסה", "דלת פנים", "כמה דלתות"];
+
+/* ───────────── About ───────────── */
+
+export const aboutImages = {
+  main: img("ba-door2-after"),
+  detail: img("ba-door1-after"),
+};
+
+/** Figures quoted on the current site (years as written there; review count from Google). */
+export const aboutFigures = [
+  { value: "6", label: "שנים של סולודור" },
+  { value: "10", label: "שנות ניסיון בתחום" },
+  { value: "200+", label: "עיצובים ייחודיים" },
+  { value: "52", label: "ביקורות בגוגל" },
+];
+
+export const aboutServices = "ציפוי מטבחים, מקררים, ארונות חשמל, ארונות בגדים, שיש, קירות ומעליות";

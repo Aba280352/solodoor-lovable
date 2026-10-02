@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
+import { DoorsAbout } from "@/components/solodoor/doors/DoorsAbout";
 import { DoorsHero } from "@/components/solodoor/doors/DoorsHero";
 import { DoorsQuote } from "@/components/solodoor/doors/DoorsQuote";
 import { doorsSeo } from "@/components/solodoor/doors/data";
@@ -24,6 +25,7 @@ function DoorsPage() {
     <PageShell>
       <DoorsHero />
       <DoorsQuote />
+      <DoorsAbout />
     </PageShell>
   );
 }
