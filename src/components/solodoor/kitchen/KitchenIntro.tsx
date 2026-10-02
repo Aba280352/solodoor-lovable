@@ -54,12 +54,18 @@ export function KitchenIntro() {
                 ₪120,000
                 <span className="absolute -inset-x-2 top-1/2 block h-[0.1875rem] -rotate-6 rounded-full bg-primary" />
               </span>
-              <div className="mt-5 flex flex-wrap gap-2 border-t border-border pt-4">
-                {["חופשה משפחתית", "עזרה לילדים", "הכסף נשאר בצד"].map((label) => (
-                  <span key={label} className="rounded-full bg-muted px-3.5 py-1.5 fs-14 font-medium text-foreground">
-                    {label}
-                  </span>
-                ))}
+              <div className="mt-5 border-t border-border pt-4">
+                <span className="block fs-16 font-semibold text-foreground">ומה אפשר לעשות עם הכסף במקום?</span>
+                <ul className="mt-3 flex flex-col gap-2.5">
+                  {["חופשה משפחתית", "עזרה לילדים", "להשאיר את הכסף בצד"].map((label) => (
+                    <li key={label} className="flex items-center gap-3 fs-16 font-medium text-foreground">
+                      <span className="inline-flex size-6 flex-none items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        <Icon name="Check" size={13} />
+                      </span>
+                      {label}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
