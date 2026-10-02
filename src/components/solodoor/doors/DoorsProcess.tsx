@@ -121,41 +121,14 @@ export function DoorsProcess() {
   return (
     <section ref={sectionRef} className="relative h-[340svh] bg-muted lg:h-[420svh]">
       <div className="sticky top-16 flex h-[calc(100svh-4rem)] flex-col overflow-hidden lg:top-20 lg:block lg:h-[calc(100svh-5rem)]">
-        <div className="relative z-10 px-5 pt-7 text-right lg:absolute lg:start-12 lg:top-14 lg:max-w-108 lg:p-0">
+        <div className="relative z-10 px-5 pt-7 text-right lg:absolute lg:inset-y-0 lg:start-12 lg:flex lg:w-120 lg:flex-col lg:items-start lg:justify-center lg:p-0">
           <Pill className="px-5 py-2 fs-16">איך זה עובד</Pill>
-          <h2 className="mt-4 fs-30 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-52">
+          <h2 className="mt-4 fs-30 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-46">
             מדלת ישנה לדלת חדשה, בארבעה צעדים
           </h2>
-        </div>
-
-        <div className="relative min-h-0 flex-1 lg:absolute lg:inset-0">
-          <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 size-full" />
-        </div>
-
-        {/* Mobile: only the current step, under the door. */}
-        <div className="relative z-10 h-44 px-5 pb-6 text-right lg:hidden">
-          {processSteps.map((step, i) => (
-            <div
-              key={step.title}
-              aria-hidden={active !== i}
-              className={cn(
-                "absolute inset-x-5 top-5 flex gap-4 transition-opacity duration-300 ease-standard",
-                active === i ? "opacity-100" : "opacity-0",
-              )}
-            >
-              <span dir="ltr" className="w-9 flex-none fs-28 leading-none font-light text-clay">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="flex flex-col gap-1.5">
-                <span className="fs-20 leading-[1.25] font-bold text-foreground">{step.title}</span>
-                <span className="fs-16 leading-[1.6] text-foreground">{step.text}</span>
-              </span>
-            </div>
-          ))}
-        </div>
 
         {/* Desktop: all four steps beside the door, the current one lit. */}
-        <ol className="absolute start-12 bottom-14 z-10 hidden w-104 flex-col ps-7 text-right lg:flex">
+        <ol className="relative mt-10 hidden w-104 flex-col ps-7 lg:flex">
           <span aria-hidden="true" className="absolute inset-y-0 start-0 w-0.5 bg-foreground/14">
             <span ref={barRef} className="block size-full origin-top scale-y-0 bg-primary" />
           </span>
@@ -184,6 +157,33 @@ export function DoorsProcess() {
             </li>
           ))}
         </ol>
+        </div>
+
+        <div className="relative min-h-0 flex-1 lg:absolute lg:inset-0">
+          <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 size-full" />
+        </div>
+
+        {/* Mobile: only the current step, under the door. */}
+        <div className="relative z-10 h-44 px-5 pb-6 text-right lg:hidden">
+          {processSteps.map((step, i) => (
+            <div
+              key={step.title}
+              aria-hidden={active !== i}
+              className={cn(
+                "absolute inset-x-5 top-5 flex gap-4 transition-opacity duration-300 ease-standard",
+                active === i ? "opacity-100" : "opacity-0",
+              )}
+            >
+              <span dir="ltr" className="w-9 flex-none fs-28 leading-none font-light text-clay">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="flex flex-col gap-1.5">
+                <span className="fs-20 leading-[1.25] font-bold text-foreground">{step.title}</span>
+                <span className="fs-16 leading-[1.6] text-foreground">{step.text}</span>
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
