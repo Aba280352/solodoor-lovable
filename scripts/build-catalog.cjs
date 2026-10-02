@@ -248,6 +248,12 @@ const WALLPAPERS = {
   "תכלת מעושן": ["smoky-light-blue", "stone", "טקסטורת טיח", "תכלת מעושן עם תנועה עדינה בטקסטורה"],
 };
 
+/**
+ * Models whose folder has no flat colour photo. Their swatch was made separately
+ * and sits in data/catalog-images already (see README), so it has no source file.
+ */
+const MADE_SWATCHES = new Set(["charcoal-plaster", "veined-marble"]);
+
 const MATERIAL = "ציפוי פולימרי בהדבקה עצמית";
 const DURABILITY = "ציפוי פולימרי עבה ועמיד בהדבקה עצמית, עם שכבת הגנה מפני שריטות ודהיית צבע";
 
@@ -315,7 +321,19 @@ for (const folder of dirs(MAIN)) {
       alt: `${title}, החומר מקרוב`,
     }),
   );
-  if (!swatches.length) notes.push(`${title}: אין תמונת גוון שטוחה, נדרשת לדוגמית`);
+  if (!swatches.length) {
+    if (MADE_SWATCHES.has(handle)) {
+      productImages.push({
+        product_handle: handle,
+        kind: "swatch",
+        sort_order: 1,
+        image_path: `products/${handle}/swatch-1.webp`,
+        alt: `${title}, דוגמת הגוון`,
+      });
+    } else {
+      notes.push(`${title}: אין תמונת גוון שטוחה, נדרשת לדוגמית`);
+    }
+  }
 
   const fam = FAMILY[family];
   products.push({
