@@ -66,11 +66,11 @@ function CompareCard({ pair }: { pair: (typeof beforeAfterPairs)[number] }) {
       <div
         className="relative h-72 overflow-hidden bg-muted select-none lg:h-105"
       >
-        <CoverImage src={pair.after} alt={`${pair.name} — אחרי`} />
+        <CoverImage src={pair.after} alt={`${pair.name}, אחרי`} />
         <span className="absolute inset-y-0 right-0 overflow-hidden" style={{ width: `${pct}%` }}>
           <img
             src={pair.before}
-            alt={`${pair.name} — לפני`}
+            alt={`${pair.name}, לפני`}
             draggable={false}
             className="pointer-events-none absolute top-0 right-0 block h-full w-72 max-w-none object-cover select-none lg:w-105"
           />
@@ -236,7 +236,7 @@ export function BeforeAfter() {
             עבודות סולודור לפני ואחרי
           </h2>
           <p className="mt-4 max-w-[66ch] fs-18 leading-[1.7] font-medium text-foreground">
-            פרויקטים אמיתיים של חידוש דלתות, מטבחים ומשטחים — לפני ואחרי תהליך הציפוי וההתקנה.
+            פרויקטים אמיתיים של חידוש דלתות, מטבחים ומשטחים, לפני ואחרי תהליך הציפוי וההתקנה.
           </p>
         </div>
       </Container>

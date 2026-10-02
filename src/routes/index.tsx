@@ -16,7 +16,7 @@ import { StyleFamilies } from "@/components/solodoor/StyleFamilies";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SOLODOOR — ציפוי דלתות, מטבחים ומשטחים" },
+      { title: "SOLODOOR | ציפוי דלתות, מטבחים ומשטחים" },
       {
         name: "description",
         content:

@@ -44,7 +44,7 @@ export function KitchenShowcase() {
           >
             <img
               src={current.img}
-              alt={i === 0 ? `ציפוי מטבחים – ${current.name}` : ""}
+              alt={i === 0 ? `ציפוי מטבחים, ${current.name}` : ""}
               className="absolute inset-y-0 block h-full max-w-none object-cover"
               style={{ width: "100cqw", left: `${(-i * 100) / PANELS}cqw` }}
             />
