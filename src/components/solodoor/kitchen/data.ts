@@ -7,10 +7,14 @@ const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
 /** Route path. Must stay identical to the old site's URL — the page ranks #1 on it. */
 export const KITCHEN_PATH = "/ציפוי-מטבחים";
 
-export const KITCHEN_HERO_IMG = img("hero-kitchen");
-
-/** Silent 10s loop (5s push-in played forwards then backwards), generated from the photo above. */
-export const KITCHEN_HERO_VIDEO = `${import.meta.env.BASE_URL}videos/kitchen-hero.mp4`;
+/** The same kitchen in each coating, in slideshow order. */
+export const kitchenModels = [
+  { name: "אבן בהירה", img: img("use-kitchen") },
+  { name: "טיח אפור פחם", img: img("var-kitchen-charcoal") },
+  { name: "ירוק פיסטוק", img: img("var-kitchen-green") },
+  { name: "כחול מעושן", img: img("var-kitchen-blue") },
+  { name: "דמוי נירוסטה", img: img("var-kitchen-steel") },
+];
 
 export const kitchenSeo = {
   title: "ציפוי מטבחים",

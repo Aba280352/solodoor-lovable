@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import type { IconName } from "../icon-data";
 import { Pill } from "../primitives";
-import { KITCHEN_HERO_IMG, KITCHEN_HERO_VIDEO } from "./data";
+import { KitchenShowcase } from "./KitchenShowcase";
 
 /** The three promises the old page made, kept word for word. */
 const trust: { icon: IconName; label: string }[] = [
@@ -17,7 +17,8 @@ const trust: { icon: IconName; label: string }[] = [
 
 /**
  * Opening screen of the kitchen-coating page: the copy centred on the page ground,
- * then a framed 16:9 silent loop with the three promises docked onto its lower edge.
+ * then a framed 16:9 slideshow of the kitchen models with the three promises docked
+ * onto its lower edge.
  * Holds the page's single H1 — the phrase the page ranks for.
  */
 export function KitchenHero() {
@@ -61,20 +62,7 @@ export function KitchenHero() {
       </div>
 
       <div className="mx-auto mt-7 w-full max-w-275 px-5 lg:mt-10 lg:px-12">
-        <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            poster={KITCHEN_HERO_IMG}
-            aria-label="ציפוי מטבחים – מטבח מחודש בהדבקת טפט של סולודור"
-            className="absolute inset-0 block size-full object-cover"
-          >
-            <source src={KITCHEN_HERO_VIDEO} type="video/mp4" />
-          </video>
-        </div>
+        <KitchenShowcase />
 
         <ul className="relative mx-3 -mt-5 grid grid-cols-3 rounded-lg border border-border bg-card shadow-menu lg:mx-auto lg:-mt-12 lg:max-w-200">
           {trust.map((item, i) => (
