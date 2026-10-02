@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "../Icon";
 import { ProductCard, ProductZoomDialog } from "../ProductCard";
 import type { Product } from "../data";
-import { Container } from "../primitives";
+import { Container, Pill } from "../primitives";
 import { KITCHEN_CATALOG_PDF, kitchenProducts } from "./data";
 
 /**
@@ -19,12 +19,9 @@ export function KitchenCatalog() {
   return (
     <section id="catalog" data-reveal className="scroll-mt-16 pt-14 pb-16 lg:scroll-mt-20 lg:pt-24 lg:pb-26">
       <Container>
-        <div className="grid grid-cols-1 gap-8 border-t border-foreground/14 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20 lg:pt-16">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20">
           <div className="text-right">
-            <span className="inline-flex items-center gap-3 fs-16 font-medium text-clay lg:fs-18">
-              <span className="block h-px w-10 bg-primary" />
-              מכניסים אתכם בדרך חדשה.
-            </span>
+            <Pill className="px-5 py-2 fs-16">מכניסים אתכם בדרך חדשה.</Pill>
             <h2 className="mt-4 fs-34 leading-[1.08] font-bold tracking-[-0.02em] text-balance text-foreground lg:mt-5 lg:fs-62">
               קטלוג הציפויים של סולודור למטבח
             </h2>

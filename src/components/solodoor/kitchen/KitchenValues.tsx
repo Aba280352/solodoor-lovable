@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import { Container } from "../primitives";
+import { Container, Pill } from "../primitives";
 import { kitchenValues } from "./data";
 
 /**
@@ -12,11 +12,7 @@ export function KitchenValues() {
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-30">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-3 fs-16 font-medium text-clay lg:fs-18">
-            <span className="block h-px w-10 bg-primary" />
-            סולודור מגשימים חלומות…
-            <span className="block h-px w-10 bg-primary" />
-          </span>
+          <Pill className="bg-secondary text-secondary-foreground px-5 py-2 fs-16">סולודור מגשימים חלומות…</Pill>
           <h2 className="mt-4 fs-34 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-62">
             מה תקבלו מאיתנו?
           </h2>

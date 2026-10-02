@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { Icon } from "../Icon";
-import { Container, CoverImage } from "../primitives";
+import { Container, CoverImage, Pill } from "../primitives";
 import { kitchenAudiences, kitchenBenefits, kitchenQuality, KITCHEN_INTRO_IMG } from "./data";
 
 /**
@@ -16,10 +16,7 @@ export function KitchenIntro() {
         {/* The pitch, next to the price it saves. */}
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-18">
           <div className="text-right">
-            <span className="inline-flex items-center gap-3 fs-16 font-medium text-clay lg:fs-18">
-              <span className="block h-px w-10 bg-primary" />
-              סולודור מגשימים חלומות…
-            </span>
+            <Pill className="px-5 py-2 fs-16">סולודור מגשימים חלומות…</Pill>
             <h2 className="mt-4 fs-34 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-62">
               רוצים טפט חדש למטבח?
             </h2>

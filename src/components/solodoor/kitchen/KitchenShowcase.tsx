@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,18 @@ export function KitchenShowcase() {
   const current = kitchenModels[index];
   const previous = kitchenModels[(index + count - 1) % count];
 
+  // A horizontal flick of 40px or more changes the model; vertical drags still scroll the page.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchEnd = (x: number, y: number) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const dx = x - start.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(y - start.y)) return;
+    // Right-to-left page: swiping right brings the next model, like turning a page.
+    setIndex((i) => (i + (dx > 0 ? 1 : count - 1)) % count);
+  };
+
   // Restarts whenever the model changes, so picking one by hand gives it a full turn.
   useEffect(() => {
     const timer = window.setTimeout(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
@@ -26,7 +38,11 @@ export function KitchenShowcase() {
   }, [index, count]);
 
   return (
-    <div className="relative aspect-video overflow-hidden rounded-xl bg-muted [container-type:inline-size]">
+    <div
+      onTouchStart={(e) => (touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY })}
+      onTouchEnd={(e) => onTouchEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY)}
+      className="relative aspect-video touch-pan-y overflow-hidden rounded-xl bg-muted [container-type:inline-size]"
+    >
       <img src={previous.img} alt="" className="absolute inset-0 block size-full object-cover" />
 
       {/* Keyed by model so the curtain animation replays on every change. */}
