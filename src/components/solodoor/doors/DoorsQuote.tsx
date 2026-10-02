@@ -70,12 +70,12 @@ export function DoorsQuote() {
 
               <fieldset className="mt-5">
                 <legend className="fs-16 font-medium">איזו דלת מחדשים?</legend>
-                <div className="mt-2.5 flex flex-wrap gap-2">
+                <div className="mt-2.5 flex flex-col gap-2 lg:flex-row lg:flex-wrap">
                   {doorTypes.map((type) => (
                     <label
                       key={type}
                       className={cn(
-                        "cursor-pointer rounded-full border px-4 py-2 fs-15 font-medium transition-colors duration-160 ease-standard lg:fs-16",
+                        "cursor-pointer rounded-full border px-4 py-2.5 text-center fs-15 font-medium transition-colors duration-160 ease-standard lg:fs-16",
                         doorType === type
                           ? "border-secondary bg-secondary text-secondary-foreground"
                           : "border-input bg-background text-foreground hover:border-foreground",
