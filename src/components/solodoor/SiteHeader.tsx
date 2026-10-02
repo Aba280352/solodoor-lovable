@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -50,24 +51,66 @@ function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
   );
 }
 
-/** Jumps to the DIY section of the homepage. */
-const DIY_HREF = "#diy";
+/** Pages that exist so far. Every other nav label is still a placeholder link. */
+const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים"> = {
+  בית: "/",
+  "ציפוי מטבחים": "/ציפוי-מטבחים",
+};
 
 /** Mobile menu order, by importance: home, the two catalogue groups, the shop, then the rest. */
 const mobileNavBefore = ["בית"];
 const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים"];
 
-function MobileNavLink({ label, href = "#", active, closes }: { label: string; href?: string; active?: boolean; closes?: boolean }) {
-  const link = (
-    <a
-      href={href}
-      className={cn("border-b border-border py-3.5 fs-18 font-medium text-foreground", active && "text-clay")}
-    >
+const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-foreground";
+
+/** Real pages and in-page jumps close the menu; placeholders do nothing yet. */
+function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
+  const to = PAGE_PATHS[label];
+  if (diy) {
+    return (
+      <DialogClose asChild>
+        <Link to="/" hash="diy" className={mobileLinkClass}>
+          {label}
+        </Link>
+      </DialogClose>
+    );
+  }
+  if (to) {
+    return (
+      <DialogClose asChild>
+        <Link to={to} className={mobileLinkClass} activeProps={{ className: "text-clay" }} activeOptions={{ exact: true }}>
+          {label}
+        </Link>
+      </DialogClose>
+    );
+  }
+  return (
+    <a href="#" className={mobileLinkClass}>
       {label}
     </a>
   );
-  // In-page links close the menu so the section is visible straight away.
-  return closes ? <DialogClose asChild>{link}</DialogClose> : link;
+}
+
+/** Desktop nav item; the current page gets the clay underline. */
+function NavItem({ label }: { label: string }) {
+  const to = PAGE_PATHS[label];
+  if (!to) {
+    return (
+      <a href="#" className={navLinkClass}>
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link
+      to={to}
+      className={navLinkClass}
+      activeProps={{ className: "border-b-2 border-primary" }}
+      activeOptions={{ exact: true }}
+    >
+      {label}
+    </Link>
+  );
 }
 
 /** Collapsed by default; opens only when its row is tapped. */
@@ -130,13 +173,13 @@ function MobileMenu() {
           </DialogClose>
         </div>
         <nav className="mt-4 flex flex-col">
-          {mobileNavBefore.map((label, i) => (
-            <MobileNavLink key={label} label={label} active={i === 0} />
+          {mobileNavBefore.map((label) => (
+            <MobileNavLink key={label} label={label} />
           ))}
           <MobileMenuGroup title="טפט לפי שימוש" items={useMenu} />
           <MobileMenuGroup title="טפט לפי סגנון" items={styleMenu} />
           <MobileNavLink label="צפייה בכל החנות" />
-          <MobileNavLink label="עשה זאת בעצמך" href={DIY_HREF} closes />
+          <MobileNavLink label="עשה זאת בעצמך" diy />
           {mobileNavAfter.map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
@@ -161,24 +204,22 @@ export function SiteHeader() {
       className="sticky top-0 z-40 border-b border-border bg-background"
     >
       <div className="mx-auto grid h-16 max-w-330 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 px-5 lg:gap-4 lg:h-19 lg:px-12">
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img
             src={LOGO_SRC}
             alt="SOLODOOR"
             className="block h-10 w-auto lg:h-[3.6875rem] lg:w-[11.6875rem]"
           />
-        </a>
+        </Link>
 
         <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-2 lg:flex">
           {navLinks.map((label, i) => (
             <Fragment key={label}>
-              <a href="#" className={cn(navLinkClass, i === 0 && "border-b-2 border-primary")}>
-                {label}
-              </a>
+              <NavItem label={label} />
               {i === 0 && (
-                <a href={DIY_HREF} className={navLinkClass}>
+                <Link to="/" hash="diy" className={navLinkClass}>
                   עשה זאת בעצמך
-                </a>
+                </Link>
               )}
             </Fragment>
           ))}
