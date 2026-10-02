@@ -82,6 +82,11 @@ const PRICE_SAMPLE = 0; // the competitor sends samples free of charge
 const ROLL_WIDTH_CM = 122;
 const DOOR_UNIT_LENGTH_CM = 200;
 const MIN_METERS = 2;
+// ASSUMPTION: typical thickness of self-adhesive interior film; to be confirmed with the supplier.
+const THICKNESS_MM = 0.2;
+// Same as the main competitor, as the client asked.
+const SHIPPING_PRICE = 55;
+const SHIPPING_DAYS = 7;
 
 const VIDEO_POSTER = "placeholders/video-poster.webp";
 
@@ -331,7 +336,7 @@ for (const folder of dirs(MAIN)) {
       "המוצר מתאים להתקנה עצמית: מודדים, מזמינים ומדביקים בבית עם קלף וסכין יפנית. מעדיפים שנעשה את זה בשבילכם? אפשר להוסיף התקנה מקצועית בהזמנה.",
     ].join("\n\n"),
     roll_width_cm: ROLL_WIDTH_CM,
-    thickness_mm: "",
+    thickness_mm: THICKNESS_MM,
     sample_available: true,
     installation_available: true,
     is_active: true,
@@ -508,10 +513,10 @@ writeCsv(
 /* ───────────── 06 add-ons ───────────── */
 
 const addons = [
-  { slug: "squeegee", title: "קלף", addon_type: "diy_tool", price: PRICE_SQUEEGEE, applies_to: ["all"], description: "קלף להחלקת הטפט ולהוצאת בועות אוויר בזמן ההדבקה." },
-  { slug: "knife", title: "סכין יפנית", addon_type: "diy_tool", price: PRICE_KNIFE, applies_to: ["all"], description: "סכין יפנית לחיתוך מדויק של הטפט בקצוות, בפינות וסביב ידיות." },
-  { slug: "blades", title: "סכינים להחלפה", addon_type: "diy_tool", price: PRICE_BLADES, applies_to: ["all"], description: "להבים להחלפה לסכין היפנית. להב חד נותן חיתוך נקי בלי לקרוע את הטפט." },
-  { slug: "silicone", title: "סיליקון לחיפוי שיש", addon_type: "diy_tool", price: PRICE_SILICONE, applies_to: ["countertop"], description: "סיליקון לסגירת החיבור בין הטפט לקיר ולכיור, כדי שמים לא ייכנסו מתחת לציפוי." },
+  { slug: "squeegee", image_path: "addons/squeegee.webp", title: "קלף", addon_type: "diy_tool", price: PRICE_SQUEEGEE, applies_to: ["all"], description: "קלף להחלקת הטפט ולהוצאת בועות אוויר בזמן ההדבקה." },
+  { slug: "knife", image_path: "addons/knife.webp", title: "סכין יפנית", addon_type: "diy_tool", price: PRICE_KNIFE, applies_to: ["all"], description: "סכין יפנית לחיתוך מדויק של הטפט בקצוות, בפינות וסביב ידיות." },
+  { slug: "blades", image_path: "addons/blades.webp", title: "סכינים להחלפה", addon_type: "diy_tool", price: PRICE_BLADES, applies_to: ["all"], description: "להבים להחלפה לסכין היפנית. להב חד נותן חיתוך נקי בלי לקרוע את הטפט." },
+  { slug: "silicone", image_path: "addons/silicone.webp", title: "סיליקון לחיפוי שיש", addon_type: "diy_tool", price: PRICE_SILICONE, applies_to: ["countertop"], description: "סיליקון לסגירת החיבור בין הטפט לקיר ולכיור, כדי שמים לא ייכנסו מתחת לציפוי." },
   ...files(path.join(MAIN, STRIPS_DIR))
     .filter(isImage)
     .map((f, i) => {
@@ -565,7 +570,7 @@ const benefits = [
   { icon: "ShieldCheck", title: "מוגן משריטות ומדהייה", text: "שכבת הגנה ששומרת על הצבע", product_types: COATINGS },
   { icon: "LayerGroup", title: "ציפוי עבה ועמיד", text: "חומר פולימרי לשימוש יומיומי", product_types: COATINGS },
   { icon: "Home", title: "בלי לפרק ובלי להחליף", text: "נדבק על המשטח הקיים", product_types: COATINGS },
-  { icon: "Truck", title: "משלוח עד הבית", text: "לכל הארץ", product_types: ["wallpaper", "designed_door", "pvc_rug"] },
+  { icon: "Truck", title: "משלוח עד הבית", text: `לכל הארץ, תוך ${SHIPPING_DAYS} ימי עסקים`, product_types: ["wallpaper", "designed_door", "pvc_rug"] },
   { icon: "ChatDots", title: "ליווי בווצאפ", text: "שאלה על מדידה או הדבקה? אנחנו זמינים", product_types: COATINGS },
   { icon: "ShieldCheck", title: "אינו סופג נוזלים", text: "משטח PVC אטום", product_types: ["pvc_rug"] },
   { icon: "Brush", title: "קל ומהיר לניקוי", text: "מטלית לחה ומים", product_types: ["pvc_rug"] },
@@ -581,7 +586,7 @@ const infoTabs = [
     slug: "shipping",
     title: "משלוחים",
     body: [
-      "משלוח עד הבית לכל הארץ. עלות המשלוח וזמן האספקה מוצגים בקופה, לפני התשלום.",
+      `משלוח עד הבית לכל הארץ בעלות של ${SHIPPING_PRICE} ש"ח. ההזמנה מגיעה תוך ${SHIPPING_DAYS} ימי עסקים.`,
       "הטפט נשלח מגולגל באריזה קשיחה, כדי שיגיע בלי קפלים.",
       "הזמנתם גם התקנה? נתאם איתכם מועד בטלפון או בווצאפ אחרי ההזמנה.",
     ].join("\n\n"),

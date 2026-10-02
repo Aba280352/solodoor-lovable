@@ -1,8 +1,8 @@
 ﻿slug,title,addon_type,price,applies_to,description,image_path,is_active,sort_order,shopify_variant_id
-squeegee,קלף,diy_tool,25,{all},קלף להחלקת הטפט ולהוצאת בועות אוויר בזמן ההדבקה.,,true,1,
-knife,סכין יפנית,diy_tool,20,{all},"סכין יפנית לחיתוך מדויק של הטפט בקצוות, בפינות וסביב ידיות.",,true,2,
-blades,סכינים להחלפה,diy_tool,15,{all},להבים להחלפה לסכין היפנית. להב חד נותן חיתוך נקי בלי לקרוע את הטפט.,,true,3,
-silicone,סיליקון לחיפוי שיש,diy_tool,35,{countertop},"סיליקון לסגירת החיבור בין הטפט לקיר ולכיור, כדי שמים לא ייכנסו מתחת לציפוי.",,true,4,
+squeegee,קלף,diy_tool,25,{all},קלף להחלקת הטפט ולהוצאת בועות אוויר בזמן ההדבקה.,addons/squeegee.webp,true,1,
+knife,סכין יפנית,diy_tool,20,{all},"סכין יפנית לחיתוך מדויק של הטפט בקצוות, בפינות וסביב ידיות.",addons/knife.webp,true,2,
+blades,סכינים להחלפה,diy_tool,15,{all},להבים להחלפה לסכין היפנית. להב חד נותן חיתוך נקי בלי לקרוע את הטפט.,addons/blades.webp,true,3,
+silicone,סיליקון לחיפוי שיש,diy_tool,35,{countertop},"סיליקון לסגירת החיבור בין הטפט לקיר ולכיור, כדי שמים לא ייכנסו מתחת לציפוי.",addons/silicone.webp,true,4,
 strips-01,2 פסי ניקל לרוחב,door_strips,55,{door},תוספת לדלת: 2 פסי ניקל לרוחב. המחיר לצד אחד של דלת.,addons/strips-01.webp,true,5,
 strips-02,2 פסים לאורך,door_strips,55,{door},תוספת לדלת: 2 פסים לאורך. המחיר לצד אחד של דלת.,addons/strips-02.webp,true,6,
 strips-03,2 פסים מדורגים,door_strips,55,{door},תוספת לדלת: 2 פסים מדורגים. המחיר לצד אחד של דלת.,addons/strips-03.webp,true,7,
