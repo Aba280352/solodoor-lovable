@@ -195,6 +195,20 @@
     border-color: var(--color-border);
   }
 
+  /* No word is left alone on a line: headings split evenly, body text avoids orphans. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  blockquote {
+    text-wrap: pretty;
+  }
+
   /*
    * Fluid scale. The design is drawn on a 1440px artboard and scales with the
    * viewport, so from the lg breakpoint up 1rem = 16 design pixels at any width
