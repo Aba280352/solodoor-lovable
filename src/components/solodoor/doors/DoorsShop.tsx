@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
@@ -38,10 +39,10 @@ export function DoorsShop() {
 
       <div className="mt-10 flex flex-col items-stretch justify-center gap-3.5 px-5 lg:mt-14 lg:flex-row lg:items-center">
         <Button asChild variant="secondary" className="px-12">
-          <a href="#">
+          <Link to="/חנות" search={{ use: "door" }}>
             <span>לכל ציפויי הדלתות</span>
             <Icon name="ArrowLeft" size={16} />
-          </a>
+          </Link>
         </Button>
         <Button asChild className="px-12">
           <a href="#quote">

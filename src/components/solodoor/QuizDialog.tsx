@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -279,10 +280,10 @@ export function QuizDialog() {
               </p>
               <div className="mt-11 flex flex-col items-center gap-3 lg:flex-row">
                 <Button asChild className="px-11 py-4.5">
-                  <a href="#">
+                  <Link to="/חנות">
                     <span>לצפייה בכל החנות</span>
                     <Icon name="ArrowLeft" size={16} />
-                  </a>
+                  </Link>
                 </Button>
                 <button type="button" onClick={restart} className="cursor-pointer px-5 py-4.5 fs-16 text-foreground">
                   סגירה

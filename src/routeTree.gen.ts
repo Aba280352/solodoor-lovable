@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/חנות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport } from './routes/ציפוי-מטבחים'
+import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char1495Char1504Char1493Char1514Route =
+  Char1495Char1504Char1493Char1514RouteImport.update({
+    id: '/חנות',
+    path: '/חנות',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route =
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport.update(
     {
@@ -34,35 +42,54 @@ const Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Ch
       getParentRoute: () => rootRouteImport,
     } as any,
   )
+const ProductSlugRoute = ProductSlugRouteImport.update({
+  id: '/product/$slug',
+  path: '/product/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/product/$slug': typeof ProductSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
+  fullPaths: '/' | '/חנות' | '/ציפוי-דלתות' | '/ציפוי-מטבחים' | '/product/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
-  id: '__root__' | '/' | '/ציפוי-דלתות' | '/ציפוי-מטבחים'
+  to: '/' | '/חנות' | '/ציפוי-דלתות' | '/ציפוי-מטבחים' | '/product/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/חנות'
+    | '/ציפוי-דלתות'
+    | '/ציפוי-מטבחים'
+    | '/product/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  Char1495Char1504Char1493Char1514Route: typeof Char1495Char1504Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  ProductSlugRoute: typeof ProductSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -72,6 +99,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/חנות': {
+      id: '/חנות'
+      path: '/חנות'
+      fullPath: '/חנות'
+      preLoaderRoute: typeof Char1495Char1504Char1493Char1514RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ציפוי-דלתות': {
@@ -88,15 +122,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/product/$slug': {
+      id: '/product/$slug'
+      path: '/product/$slug'
+      fullPath: '/product/$slug'
+      preLoaderRoute: typeof ProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  Char1495Char1504Char1493Char1514Route: Char1495Char1504Char1493Char1514Route,
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route:
     Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route,
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route:
     Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route,
+  ProductSlugRoute: ProductSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

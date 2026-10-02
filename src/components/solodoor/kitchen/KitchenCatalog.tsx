@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
@@ -61,10 +62,10 @@ export function KitchenCatalog() {
 
       <div className="mt-10 flex justify-center px-5 lg:mt-14">
         <Button asChild variant="secondary" className="w-full px-12 lg:w-auto">
-          <a href="#">
+          <Link to="/חנות" search={{ use: "kitchen" }}>
             <span>לכל ציפויי המטבח</span>
             <Icon name="ArrowLeft" size={16} />
-          </a>
+          </Link>
         </Button>
       </div>
 

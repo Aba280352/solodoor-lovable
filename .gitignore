@@ -5,3 +5,4 @@ dist
 # Original file names carry supplier model numbers
 data/private/
 data/catalog-images/
+public/catalog-images

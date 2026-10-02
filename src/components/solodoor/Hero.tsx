@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
+import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
 import { heroSlides, heroTrust } from "./data";
 import { useQuiz } from "./quiz-context";
@@ -67,10 +69,10 @@ export function Hero() {
               </a>
             </Button>
             <Button asChild variant="secondary" className="flex-none px-7 py-3 lg:py-[0.9375rem]">
-              <a href="#">
+              <Link to="/חנות" search={shopSearchFor(current.tag)}>
                 <span>{current.cta}</span>
                 <Icon name="ArrowLeft" size={16} />
-              </a>
+              </Link>
             </Button>
           </div>
 

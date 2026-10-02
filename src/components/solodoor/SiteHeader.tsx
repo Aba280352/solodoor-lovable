@@ -9,6 +9,7 @@ import { CartButton, SearchButton } from "./HeaderActions";
 import { Icon } from "./Icon";
 import { LOGO_SRC, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
 import { useQuiz } from "./quiz-context";
+import { shopSearchFor } from "./shop/links";
 
 type MenuKey = "style" | "use" | null;
 
@@ -22,12 +23,12 @@ function MegaMenu({ title, items }: { title: string; items: MenuItem[] }) {
         <div className="mb-4.5 fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{title}</div>
         <div className="grid grid-cols-7 gap-4">
           {items.map((item) => (
-            <a key={item.name} href="#" className="group block">
+            <Link key={item.name} to="/חנות" search={shopSearchFor(item.name)} className="group block">
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-muted transition-colors duration-240 ease-standard group-hover:border-foreground">
                 <img src={item.img} alt={item.name} className="block size-full object-cover" />
               </div>
               <div className="mt-2.5 fs-16 font-medium text-foreground">{item.name}</div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -52,8 +53,9 @@ function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
 }
 
 /** Pages that exist so far. Every other nav label is still a placeholder link. */
-const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי-דלתות"> = {
+const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי-דלתות" | "/חנות"> = {
   בית: "/",
+  "צפייה בכל החנות": "/חנות",
   "ציפוי מטבחים": "/ציפוי-מטבחים",
   "ציפוי דלתות": "/ציפוי-דלתות",
 };
@@ -133,12 +135,14 @@ function MobileMenuGroup({ title, items }: { title: string; items: MenuItem[] })
       {open && (
         <div className="flex flex-col gap-3 pb-4">
           {items.map((item) => (
-            <a key={item.name} href="#" className="flex items-center gap-4">
+            <DialogClose key={item.name} asChild>
+              <Link to="/חנות" search={shopSearchFor(item.name)} className="flex items-center gap-4">
               <div className="size-20 flex-none overflow-hidden rounded-md border border-border bg-muted">
                 <img src={item.img} alt={item.name} className="block size-full object-cover" />
               </div>
               <div className="fs-16 font-medium text-foreground">{item.name}</div>
-            </a>
+              </Link>
+            </DialogClose>
           ))}
         </div>
       )}
@@ -233,7 +237,7 @@ export function SiteHeader() {
           <span className="block h-5 w-px bg-border" />
           <SearchButton />
           <Button asChild size="sm" className="hidden border border-primary lg:inline-flex">
-            <a href="#">צפייה בכל החנות</a>
+            <Link to="/חנות">צפייה בכל החנות</Link>
           </Button>
           <MobileMenu />
         </div>

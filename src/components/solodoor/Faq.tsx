@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -80,10 +81,10 @@ export function Faq() {
               </a>
             </Button>
             <Button asChild variant="secondary" className="py-4.5">
-              <a href="#">
+              <Link to="/חנות">
                 <span>לצפייה בכל החנות</span>
                 <Icon name="ArrowLeft" size={16} />
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

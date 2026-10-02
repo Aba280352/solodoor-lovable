@@ -1,4 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { Icon } from "./Icon";
+import { shopSearchFor } from "./shop/links";
 import { Container, CoverImage } from "./primitives";
 import { categories } from "./data";
 
@@ -21,9 +23,10 @@ export function Categories() {
             <div key={r} className="grid grid-cols-2 gap-3 lg:flex lg:items-stretch lg:gap-6">
               {row.map((cat) => (
                 // On desktop the hovered card widens (flex-grow 1 -> 1.4) and shows its alternate look.
-                <a
+                <Link
                   key={cat.name}
-                  href="#"
+                  to="/חנות"
+                  search={shopSearchFor(cat.name)}
                   className="group block min-w-0 overflow-hidden rounded-lg border border-border bg-card [transition:border-color_240ms_var(--ease-standard),flex-grow_1500ms_var(--ease-grow)] hover:border-secondary lg:flex-[1_1_0] lg:hover:grow-[1.4]"
                 >
                   <div className="relative h-36 overflow-hidden bg-muted lg:h-58">
@@ -38,7 +41,7 @@ export function Categories() {
                       <Icon name="ArrowLeft" size={12} />
                     </span>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           ))}

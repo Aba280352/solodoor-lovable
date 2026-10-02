@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -153,10 +154,10 @@ export function QuantityCalculator({ className }: { className?: string }) {
 
         <DialogClose asChild>
           <Button asChild className="mt-5 w-full py-4">
-            <a href="#">
+            <Link to="/חנות" search={{ type: "wallpaper" }}>
               <span>לכל סוגי הטפטים שלנו</span>
               <Icon name="ArrowLeft" size={16} />
-            </a>
+            </Link>
           </Button>
         </DialogClose>
         <Button asChild variant="secondary" className="mt-3 w-full py-4">
