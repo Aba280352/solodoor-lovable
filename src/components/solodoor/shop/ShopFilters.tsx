@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { STYLE_FAMILIES, formatPrice, type ShopData } from "./catalog";
-import { PRICE_STEP, categoriesFor, filterItems, joinList, priceBounds, type ActiveFilters, type ShopSearch } from "./filters";
+import { STYLE_FAMILIES, type ShopData } from "./catalog";
+import { categoriesFor, filterItems, joinList, type ActiveFilters, type ShopSearch } from "./filters";
 
 interface ShopFiltersProps {
   data: ShopData;
@@ -48,65 +47,15 @@ function Checkbox({ checked, onChange, label, count }: { checked: boolean; onCha
   );
 }
 
-/** Two native range inputs on one track: no library, works on every browser. */
-function PriceRange({ bounds, value, onCommit }: { bounds: { min: number; max: number }; value: [number, number]; onCommit: (v: [number, number]) => void }) {
-  const [local, setLocal] = useState(value);
-  useEffect(() => setLocal(value), [value]);
-  const [lo, hi] = local;
-  const pct = (n: number) => ((n - bounds.min) / (bounds.max - bounds.min || 1)) * 100;
-  const thumb =
-    "pointer-events-none absolute inset-x-0 top-1/2 h-0 w-full -translate-y-1/2 appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-secondary [&::-webkit-slider-thumb]:bg-card [&::-webkit-slider-thumb]:shadow-handle [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-5 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-secondary [&::-moz-range-thumb]:bg-card";
-
-  return (
-    <div dir="ltr" className="px-1 pt-1">
-      <div className="relative h-5">
-        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-border" />
-        <div className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-secondary" style={{ left: `${pct(lo)}%`, right: `${100 - pct(hi)}%` }} />
-        <input
-          type="range"
-          aria-label="מחיר מינימלי"
-          min={bounds.min}
-          max={bounds.max}
-          step={PRICE_STEP}
-          value={lo}
-          onChange={(e) => setLocal([Math.min(+e.target.value, hi - PRICE_STEP), hi])}
-          onPointerUp={() => onCommit(local)}
-          onKeyUp={() => onCommit(local)}
-          className={thumb}
-        />
-        <input
-          type="range"
-          aria-label="מחיר מקסימלי"
-          min={bounds.min}
-          max={bounds.max}
-          step={PRICE_STEP}
-          value={hi}
-          onChange={(e) => setLocal([lo, Math.max(+e.target.value, lo + PRICE_STEP)])}
-          onPointerUp={() => onCommit(local)}
-          onKeyUp={() => onCommit(local)}
-          className={thumb}
-        />
-      </div>
-      <div dir="rtl" className="mt-2.5 flex items-center justify-between fs-15 font-medium text-foreground">
-        <span>{formatPrice(lo)}</span>
-        <span>{formatPrice(hi)}</span>
-      </div>
-    </div>
-  );
-}
-
-/** The filter groups: categories as tick-boxes, a price range, and style families as swatches. */
+/** The filter groups: categories as tick-boxes, and style families as swatches. */
 export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
   const navigate = useNavigate();
-  const bounds = priceBounds(data);
   const categories = categoriesFor(data.applications).filter((c) => c.kind === "type" || filters.wallpapersInScope || c.key === "door");
 
   const go = (next: Partial<ShopSearch>) => {
     const search: ShopSearch = {
       cat: joinList(filters.cats),
       style: joinList(filters.styles),
-      min: filters.min,
-      max: filters.max,
       ...next,
     };
     const clean = Object.fromEntries(Object.entries(search).filter(([, v]) => v !== undefined && v !== "")) as ShopSearch;
@@ -117,7 +66,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
 
   // How many products each choice would show if it were the only change.
   const countFor = (change: Partial<ActiveFilters>) => filterItems(data, { ...filters, ...change }).length;
-  const hasFilters = filters.cats.length > 0 || filters.styles.length > 0 || filters.min !== undefined || filters.max !== undefined;
+  const hasFilters = filters.cats.length > 0 || filters.styles.length > 0;
 
   return (
     <div className="flex flex-col gap-5 text-right">
@@ -139,14 +88,6 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
             );
           })}
         </div>
-      </Group>
-
-      <Group title="מחיר">
-        <PriceRange
-          bounds={bounds}
-          value={[filters.min ?? bounds.min, filters.max ?? bounds.max]}
-          onCommit={([lo, hi]) => go({ min: lo > bounds.min ? lo : undefined, max: hi < bounds.max ? hi : undefined })}
-        />
       </Group>
 
       {filters.wallpapersInScope && (
@@ -182,7 +123,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
       {hasFilters && (
         <button
           type="button"
-          onClick={() => go({ cat: undefined, style: undefined, min: undefined, max: undefined })}
+          onClick={() => go({ cat: undefined, style: undefined })}
           className="inline-flex cursor-pointer items-center gap-2 self-start fs-15 font-medium text-foreground"
         >
           <Icon name="Times" size={14} />

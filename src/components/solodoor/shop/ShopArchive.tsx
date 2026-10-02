@@ -18,7 +18,7 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
   const { title, intro } = shopHeading(filters, data);
   // The surface whose photo and price the cards show.
   const application = data.applications.find((a) => a.slug === filters.uses[0]);
-  const activeCount = filters.cats.length + filters.styles.length + (filters.min !== undefined || filters.max !== undefined ? 1 : 0);
+  const activeCount = filters.cats.length + filters.styles.length;
   const [sheetOpen, setSheetOpen] = useState(false);
   const isRoot = title === "החנות של סולודור";
 

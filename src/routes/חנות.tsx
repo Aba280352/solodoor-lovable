@@ -8,19 +8,12 @@ import { activeFilters, joinList, shopHeading, type ShopSearch } from "@/compone
 const SITE = "https://solodoor.co.il";
 
 const text = (value: unknown) => (typeof value === "string" && value ? value : undefined);
-const number = (value: unknown) => {
-  const n = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
-  return Number.isFinite(n) && n >= 0 ? n : undefined;
-};
-
-// The shop archive. Filters live in the URL (?cat=door,kitchen&style=wood&min=100&max=400),
+// The shop archive. Filters live in the URL (?cat=door,kitchen&style=wood),
 // so every view can be linked to. Older links with ?use= or ?type= still work.
 export const Route = createFileRoute("/חנות")({
   validateSearch: (search: Record<string, unknown>): ShopSearch => ({
     cat: text(search.cat) ?? joinList([text(search.type), text(search.use)].filter((v): v is string => Boolean(v))),
     style: text(search.style),
-    min: number(search.min),
-    max: number(search.max),
   }),
   loader: () => fetchShop(),
   head: ({ loaderData, match }) => {
@@ -29,8 +22,7 @@ export const Route = createFileRoute("/חנות")({
     const { title, intro } = shopHeading(activeFilters(search, loaderData), loaderData);
     const params = new URLSearchParams(
       Object.entries(search)
-        .filter((entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== "")
-        .map(([k, v]) => [k, String(v)]),
+        .filter((entry): entry is [string, string] => Boolean(entry[1])),
     ).toString();
     return {
       meta: [

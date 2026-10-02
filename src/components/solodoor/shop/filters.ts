@@ -5,8 +5,6 @@ import { STYLE_FAMILIES, type Application, type ShopData, type ShopItem } from "
 export interface ShopSearch {
   cat?: string;
   style?: string;
-  min?: number;
-  max?: number;
 }
 
 /** A category tick-box: either a product type, or a surface a wallpaper is used on. */
@@ -20,8 +18,6 @@ export const FIXED_CATEGORIES: Category[] = [
   { key: "designed_door", label: "טפטים מעוצבים לדלת", kind: "type" },
   { key: "pvc_rug", label: "שטיחי PVC", kind: "type" },
 ];
-
-export const PRICE_STEP = 10;
 
 export const splitList = (value: string | undefined) => (value ? value.split(",").filter(Boolean) : []);
 export const joinList = (values: string[]) => (values.length ? values.join(",") : undefined);
@@ -38,29 +34,11 @@ export function categoriesFor(applications: Application[]): Category[] {
   ];
 }
 
-/** The price a card shows, used for the price filter. */
-export function itemPrice(item: ShopItem, data: ShopData, uses: string[]): number {
-  if (item.product_type === "pvc_rug") return data.rugFromPrice ?? item.base_price;
-  if (item.product_type === "designed_door") return item.base_price;
-  // With no surface chosen the card shows the per-metre price.
-  const use = uses.find((u) => item.images[u]);
-  return use ? (data.applications.find((a) => a.slug === use)?.unit_price ?? item.base_price) : item.base_price;
-}
-
-export function priceBounds(data: ShopData) {
-  const prices = data.items.map((item) => itemPrice(item, data, []));
-  const floor = (n: number) => Math.floor(n / PRICE_STEP) * PRICE_STEP;
-  const ceil = (n: number) => Math.ceil(n / PRICE_STEP) * PRICE_STEP;
-  return { min: floor(Math.min(...prices)), max: ceil(Math.max(...prices)) };
-}
-
 export interface ActiveFilters {
   cats: string[];
   types: string[];
   uses: string[];
   styles: string[];
-  min: number | undefined;
-  max: number | undefined;
   /** False when only designed doors or rugs are selected: surfaces and styles then do not apply. */
   wallpapersInScope: boolean;
 }
@@ -76,14 +54,12 @@ export function activeFilters(search: ShopSearch, data: ShopData): ActiveFilters
     types,
     uses,
     styles,
-    min: search.min,
-    max: search.max,
     wallpapersInScope: cats.length === 0 || uses.length > 0,
   };
 }
 
 export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] {
-  const { cats, types, uses, styles, min, max } = filters;
+  const { cats, types, uses, styles } = filters;
   const styleLabels: (string | undefined)[] = styles.map((s) => STYLE_FAMILIES.find((f) => f.key === s)?.label);
   return data.items.filter((item) => {
     if (cats.length) {
@@ -92,9 +68,6 @@ export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] 
       if (!inType && !inUse) return false;
     }
     if (styles.length && (item.product_type !== "wallpaper" || !styleLabels.includes(item.style_family ?? undefined))) return false;
-    const price = itemPrice(item, data, uses);
-    if (min !== undefined && price < min) return false;
-    if (max !== undefined && price > max) return false;
     return true;
   });
 }
