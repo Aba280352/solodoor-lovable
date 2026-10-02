@@ -1,0 +1,11 @@
+﻿icon,title,text,product_types,sort_order
+Scissors,התקנה עצמית פשוטה,מדביקים לבד עם קלף וסכין יפנית,"{wallpaper,designed_door}",1
+ShieldCheck,מוגן משריטות ומדהייה,שכבת הגנה ששומרת על הצבע,"{wallpaper,designed_door}",2
+LayerGroup,ציפוי עבה ועמיד,חומר פולימרי לשימוש יומיומי,"{wallpaper,designed_door}",3
+Home,בלי לפרק ובלי להחליף,נדבק על המשטח הקיים,"{wallpaper,designed_door}",4
+Truck,משלוח עד הבית,לכל הארץ,"{wallpaper,designed_door,pvc_rug}",5
+ChatDots,ליווי בווצאפ,שאלה על מדידה או הדבקה? אנחנו זמינים,"{wallpaper,designed_door}",6
+ShieldCheck,אינו סופג נוזלים,משטח PVC אטום,{pvc_rug},7
+Brush,קל ומהיר לניקוי,מטלית לחה ומים,{pvc_rug},8
+LayerGroup,"עובי 2.5 מ""מ",דק ונשאר שטוח על הרצפה,{pvc_rug},9
+Heart,לילדים ולחיות מחמד,נוח לשימוש יומיומי,{pvc_rug},10

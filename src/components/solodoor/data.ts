@@ -77,17 +77,17 @@ export const styleFamilies = [
   {
     name: "חלקים",
     desc: "מראה נקי ומודרני לכל חלל",
-    swatches: [img("style-plain"), img("plain-sd943"), img("plain-sd873"), img("style-black")],
+    swatches: [img("style-plain"), img("plain-white-stripes"), img("plain-powder-white"), img("style-black")],
   },
   {
     name: "עצים",
     desc: "חום טבעי שמכניס אופי לבית",
-    swatches: [img("style-wood"), img("wood-it127"), img("wood-it248"), img("wood-it616")],
+    swatches: [img("style-wood"), img("wood-antique"), img("wood-cherry"), img("wood-mahogany")],
   },
   {
     name: "דמויי אבן ובטון",
     desc: "טקסטורות טבעיות ועכשוויות",
-    swatches: [img("style-stone"), img("stone-ipw557"), img("stone-501"), img("stone-cr200")],
+    swatches: [img("style-stone"), img("stone-light-concrete"), img("stone-cloudy-grey"), img("stone-light-plaster")],
   },
   {
     name: "מומלצים",
@@ -160,7 +160,7 @@ export const bestSellers: { tab: string; items: Product[] }[] = [
     items: [
       { name: "שחור מט אלגנטי", price: "₪249", img: img("style-black") },
       { name: "אלון טבעי", price: "₪269", img: img("style-wood") },
-      { name: "בטון בהיר", price: "₪249", img: img("stone-ipw557") },
+      { name: "בטון בהיר", price: "₪249", img: img("stone-light-concrete") },
       { name: "אבן בהירה חמה", price: "₪259", img: img("style-stone") },
     ],
   },
@@ -168,8 +168,8 @@ export const bestSellers: { tab: string; items: Product[] }[] = [
     tab: "טפטים מעוצבים לדלת",
     items: [
       { name: "מונקו שמנת", price: "₪289", img: img("use-door-designed") },
-      { name: "אבן דקורטיבית 501", price: "₪279", img: img("stone-501") },
-      { name: "לבן פסים SD943", price: "₪259", img: img("plain-sd943") },
+      { name: "אבן דקורטיבית", price: "₪279", img: img("stone-cloudy-grey") },
+      { name: "לבן פסים", price: "₪259", img: img("plain-white-stripes") },
       { name: "דגם מעוצב חדש", price: "₪299", img: null },
     ],
   },
@@ -177,7 +177,7 @@ export const bestSellers: { tab: string; items: Product[] }[] = [
     tab: "טפט לקיר",
     items: [
       { name: "קיר אבן בהירה", price: "₪199", img: img("use-wall") },
-      { name: "טיח מעונן CR200", price: "₪189", img: img("stone-cr200") },
+      { name: "טיח מעונן", price: "₪189", img: img("stone-light-plaster") },
       { name: "קיר בטון אפור", price: "₪199", img: null },
       { name: "קיר עץ אנכי", price: "₪219", img: null },
     ],
@@ -204,7 +204,7 @@ export const bestSellers: { tab: string; items: Product[] }[] = [
     tab: "טפט למטבח",
     items: [
       { name: "מטבח אבן בהירה", price: "₪319", img: img("use-kitchen") },
-      { name: "מטבח אלון IT127", price: "₪329", img: img("wood-it127") },
+      { name: "מטבח אלון", price: "₪329", img: img("wood-antique") },
       { name: "מטבח לבן פודרה", price: "₪299", img: null },
       { name: "מטבח שחור מט", price: "₪329", img: null },
     ],
@@ -213,7 +213,7 @@ export const bestSellers: { tab: string; items: Product[] }[] = [
     tab: "טפט לשיש",
     items: [
       { name: "שיש אבן בהירה", price: "₪269", img: img("use-counter") },
-      { name: "שיש לבן עדין", price: "₪279", img: img("stone-501") },
+      { name: "שיש לבן עדין", price: "₪279", img: img("stone-cloudy-grey") },
       { name: "שיש שחור עם גידים", price: "₪289", img: null },
       { name: "שיש בז׳ טבעי", price: "₪269", img: null },
     ],
@@ -330,24 +330,24 @@ export function pickQuizModels(areaLabel: QuizArea | undefined, style: QuizStyle
   const variant = (color: string) => img(`var-${area.key}-${color}`);
   const byStyle: Record<QuizStyle, [string, string | null][]> = {
     "חלק ונקי": [
-      ["לבן חם SD872", area.img],
+      ["לבן חם", area.img],
       ["דמוי נירוסטה", variant("steel")],
-      ["לבן פודרה SD873", null],
+      ["לבן פודרה", null],
     ],
     "מראה עץ": [
-      ["אלון טבעי IT232", null],
-      ["אגוז כהה IT127", null],
-      ["עץ מעושן IT616", null],
+      ["אלון טבעי", null],
+      ["אגוז כהה", null],
+      ["עץ מעושן", null],
     ],
     "אבן / שיש / בטון": [
       ["טיח אפור פחם", variant("charcoal")],
-      ["אבן בהירה IPW557", area.img],
-      ["בטון אפור IPW558", null],
+      ["אבן בהירה", area.img],
+      ["בטון אפור", null],
     ],
     "מעוצב ודקורטיבי": [
       ["ירוק פיסטוק", variant("green")],
       ["כחול מעושן", variant("blue")],
-      ["דגם דקורטיבי 501", null],
+      ["דגם דקורטיבי", null],
     ],
   };
   return byStyle[style ?? "חלק ונקי"].map(([name, src]) => ({
