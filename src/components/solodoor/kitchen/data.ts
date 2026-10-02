@@ -87,6 +87,9 @@ export const kitchenValues = [
 
 /* ───────────── Catalogue ───────────── */
 
+/** The kitchen catalogue PDF, carried over from the old site. */
+export const KITCHEN_CATALOG_PDF = `${import.meta.env.BASE_URL}catalog/kitchen-catalog.pdf`;
+
 /**
  * PLACEHOLDERS. Names, prices and the missing photos are stand-ins until the
  * products come from the shop database.

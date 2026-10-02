@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "../Icon";
 import { ProductCard } from "../ProductCard";
 import { Container } from "../primitives";
-import { kitchenProducts } from "./data";
+import { KITCHEN_CATALOG_PDF, kitchenProducts } from "./data";
 
 /**
  * "קטלוג הציפויים של סולודור למטבח": the catalogue pitch, then sample kitchen
@@ -41,7 +41,7 @@ export function KitchenCatalog() {
               שלכם מתחיל כאן.
             </p>
             <Button asChild className="mt-7 w-full px-12 lg:w-auto">
-              <a href="#">
+              <a href={KITCHEN_CATALOG_PDF} target="_blank" rel="noopener">
                 <span>צפייה בקטלוג</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
