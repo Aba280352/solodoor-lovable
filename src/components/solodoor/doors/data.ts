@@ -1,3 +1,5 @@
+import type { Product } from "../data";
+
 /** Content for the "ציפוי דלתות" landing page (built for paid search traffic). */
 
 const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
@@ -114,3 +116,35 @@ export const aboutFigures = [
 ];
 
 export const aboutServices = "ציפוי מטבחים, מקררים, ארונות חשמל, ארונות בגדים, שיש, קירות ומעליות";
+
+/* ───────────── Before / after ───────────── */
+
+/**
+ * Real SOLODOOR door jobs, cut from the before/after photos on the current site.
+ * The two photos of each door were taken separately, so they line up only roughly.
+ */
+export const doorsBeforeAfter = [
+  { name: "דלת במראה אלון טבעי", desc: "מחום כהה לאלון בהיר עם פסי אלומיניום" },
+  { name: "דלת אפורה עם פסים", desc: "מעץ שרוט לאפור מט עם פסים אלכסוניים" },
+  { name: "דלת שחור מט", desc: "מחום ישן לשחור מט עם ידית מוט ארוכה" },
+  { name: "דלת לבנה קלאסית", desc: "מחום דהוי ללבן נקי עם מסגרות" },
+  { name: "דלת כחול לילה", desc: "מבז' ישן לכחול כהה ועמוק" },
+].map((pair, i) => ({
+  ...pair,
+  before: img(`door-ba-${i + 1}-before`),
+  after: img(`door-ba-${i + 1}-after`),
+}));
+
+/* ───────────── Shop ───────────── */
+
+/** Placeholder products and prices until the shop database exists. */
+export const doorProducts: Product[] = [
+  { name: "דלת אבן בהירה", price: "₪319", img: img("use-door-durable") },
+  { name: "דלת טיח אפור פחם", price: "₪329", img: img("var-door-charcoal") },
+  { name: "דלת ירוק פיסטוק", price: "₪319", img: img("var-door-green") },
+  { name: "דלת כחול מעושן", price: "₪319", img: img("var-door-blue") },
+  { name: "דלת דמוי נירוסטה", price: "₪339", img: img("var-door-steel") },
+  { name: "דלת פרחונית", price: "₪329", img: img("var-door-floral") },
+  { name: "דלת אלון טבעי", price: "₪329", img: null },
+  { name: "דלת שחור מט", price: "₪329", img: null },
+];

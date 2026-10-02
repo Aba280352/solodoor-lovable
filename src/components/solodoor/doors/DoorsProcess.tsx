@@ -15,7 +15,6 @@ const clamp = (n: number) => Math.min(1, Math.max(0, n));
 export function DoorsProcess() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const barRef = useRef<HTMLSpanElement>(null);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -76,7 +75,7 @@ export function DoorsProcess() {
         draw(index);
         drawn = index;
       }
-      if (barRef.current) barRef.current.style.transform = `scaleY(${current})`;
+      section.style.setProperty("--progress", current.toFixed(4));
 
       let step = 0;
       processSteps.forEach((s, i) => {
@@ -129,8 +128,8 @@ export function DoorsProcess() {
 
         {/* Desktop: all four steps beside the door, the current one lit. */}
         <ol className="relative mt-10 hidden w-104 flex-col ps-7 lg:flex">
-          <span aria-hidden="true" className="absolute inset-y-0 start-0 w-0.5 bg-foreground/14">
-            <span ref={barRef} className="block size-full origin-top scale-y-0 bg-primary" />
+          <span aria-hidden="true" className="absolute inset-y-0 start-0 w-1 overflow-hidden rounded-full bg-foreground/14">
+            <span className="block size-full origin-top rounded-full bg-primary" style={{ scale: "1 var(--progress, 0)" }} />
           </span>
           {processSteps.map((step, i) => (
             <li
@@ -164,13 +163,16 @@ export function DoorsProcess() {
         </div>
 
         {/* Mobile: only the current step, under the door. */}
-        <div className="relative z-10 h-44 px-5 pb-6 text-right lg:hidden">
+        <div className="relative z-10 h-48 px-5 pb-6 text-right lg:hidden">
+          <span aria-hidden="true" className="absolute inset-x-5 top-0 h-1 overflow-hidden rounded-full bg-foreground/14">
+            <span className="block size-full origin-right rounded-full bg-primary" style={{ scale: "var(--progress, 0) 1" }} />
+          </span>
           {processSteps.map((step, i) => (
             <div
               key={step.title}
               aria-hidden={active !== i}
               className={cn(
-                "absolute inset-x-5 top-5 flex gap-4 transition-opacity duration-300 ease-standard",
+                "absolute inset-x-5 top-7 flex gap-4 transition-opacity duration-300 ease-standard",
                 active === i ? "opacity-100" : "opacity-0",
               )}
             >
