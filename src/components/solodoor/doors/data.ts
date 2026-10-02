@@ -67,6 +67,37 @@ export const quoteSteps = [
 
 export const doorTypes = ["דלת כניסה", "דלת פנים", "כמה דלתות"];
 
+/* ───────────── Process (scroll sequence) ───────────── */
+
+/** Frames of the coating animation, in public/images/door-process/. */
+export const PROCESS_FRAME_COUNT = 96;
+export const processFrame = (i: number) =>
+  `${import.meta.env.BASE_URL}images/door-process/${String(i + 1).padStart(3, "0")}.webp`;
+
+/** `from` is the scroll progress (0 to 1) at which the step takes over. */
+export const processSteps = [
+  {
+    from: 0,
+    title: "שולחים תמונה ובוחרים עיצוב",
+    text: "שולחים לנו תמונה של הדלת, מקבלים הצעת מחיר ובוחרים גוון מתוך מעל 200 עיצובים.",
+  },
+  {
+    from: 0.15,
+    title: "מפרקים ידית ועינית",
+    text: "מגיעים אליכם הביתה, מפרקים את הידית והעינית ומנקים את הדלת לקראת ההדבקה.",
+  },
+  {
+    from: 0.4,
+    title: "מדביקים את הציפוי",
+    text: "ציפוי פולימרי עבה ועמיד נמתח על הדלת מלמעלה עד למטה, בלי בועות ובלי חיבורים.",
+  },
+  {
+    from: 0.82,
+    title: "גימור והרכבה מחדש",
+    text: "חיתוך מדויק בפינות ובקצוות, הידית והעינית חוזרות למקום, ויש לכם דלת חדשה.",
+  },
+];
+
 /* ───────────── About ───────────── */
 
 export const aboutImages = {
