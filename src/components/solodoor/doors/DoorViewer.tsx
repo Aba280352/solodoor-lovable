@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -7,37 +7,17 @@ import { doorFinishes, doorHotspots } from "./data";
 
 /**
  * Interactive door: pick a coating and the door changes, tap a hotspot to read
- * what happens at that spot. With a mouse the whole frame tilts in 3D towards
- * the cursor and the hotspots float above the photo.
+ * what happens at that spot. Capped in width on desktop so the hero fits one screen.
  */
 export function DoorViewer() {
   const [finish, setFinish] = useState(0);
   const [spot, setSpot] = useState<number | null>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
   const active = spot === null ? null : doorHotspots[spot];
 
-  const tilt = (e: PointerEvent<HTMLDivElement>) => {
-    const frame = frameRef.current;
-    if (!frame || e.pointerType !== "mouse") return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    frame.style.setProperty("--tilt-x", `${(-y * 7).toFixed(2)}deg`);
-    frame.style.setProperty("--tilt-y", `${(x * 9).toFixed(2)}deg`);
-  };
-
-  const settle = () => {
-    frameRef.current?.style.setProperty("--tilt-x", "0deg");
-    frameRef.current?.style.setProperty("--tilt-y", "0deg");
-  };
-
   return (
-    <div className="w-full">
-      <div onPointerMove={tilt} onPointerLeave={settle} className="[perspective:75rem]">
-        <div
-          ref={frameRef}
-          className="relative aspect-square [transform:rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] transition-transform duration-240 ease-out [transform-style:preserve-3d] motion-reduce:[transform:none]"
-        >
+    <div className="mx-auto w-full lg:max-w-120">
+      <div>
+        <div className="relative aspect-square">
           <div className="absolute inset-0 overflow-hidden rounded-xl bg-muted shadow-menu">
             {doorFinishes.map((item, i) => (
               <img
@@ -67,7 +47,7 @@ export function DoorViewer() {
               style={{
                 left: `${hotspot.x}%`,
                 top: `${hotspot.y}%`,
-                transform: "translate(-50%, -50%) translateZ(2.5rem)",
+                transform: "translate(-50%, -50%)",
               }}
             >
               {spot !== i && (
