@@ -10,9 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/חנות'
+import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } from './routes/מאמרים'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport } from './routes/ציפוי-מטבחים'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -20,10 +25,26 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char1495Char1504Char1493Char1514Route =
   Char1495Char1504Char1493Char1514RouteImport.update({
     id: '/חנות',
     path: '/חנות',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char1502Char1488Char1502Char1512Char1497Char1501Route =
+  Char1502Char1488Char1502Char1512Char1497Char1501RouteImport.update({
+    id: '/מאמרים',
+    path: '/מאמרים',
     getParentRoute: () => rootRouteImport,
   } as any)
 const Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route =
@@ -42,6 +63,16 @@ const Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Ch
       getParentRoute: () => rootRouteImport,
     } as any,
   )
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIdRoute = AdminIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
@@ -50,43 +81,84 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
+  '/admin': typeof AdminRouteWithChildren
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
+  '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
+  '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
+  '/admin': typeof AdminRouteWithChildren
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
+  '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/חנות' | '/ציפוי-דלתות' | '/ציפוי-מטבחים' | '/product/$slug'
+  fullPaths:
+    | '/'
+    | '/$slug'
+    | '/admin'
+    | '/חנות'
+    | '/מאמרים'
+    | '/ציפוי-דלתות'
+    | '/ציפוי-מטבחים'
+    | '/admin/$id'
+    | '/product/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/חנות' | '/ציפוי-דלתות' | '/ציפוי-מטבחים' | '/product/$slug'
+  to:
+    | '/'
+    | '/$slug'
+    | '/חנות'
+    | '/מאמרים'
+    | '/ציפוי-דלתות'
+    | '/ציפוי-מטבחים'
+    | '/admin/$id'
+    | '/product/$slug'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/$slug'
+    | '/admin'
     | '/חנות'
+    | '/מאמרים'
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
+    | '/admin/$id'
     | '/product/$slug'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SlugRoute: typeof SlugRoute
+  AdminRoute: typeof AdminRouteWithChildren
   Char1495Char1504Char1493Char1514Route: typeof Char1495Char1504Char1493Char1514Route
+  Char1502Char1488Char1502Char1512Char1497Char1501Route: typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   ProductSlugRoute: typeof ProductSlugRoute
@@ -101,11 +173,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/חנות': {
       id: '/חנות'
       path: '/חנות'
       fullPath: '/חנות'
       preLoaderRoute: typeof Char1495Char1504Char1493Char1514RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/מאמרים': {
+      id: '/מאמרים'
+      path: '/מאמרים'
+      fullPath: '/מאמרים'
+      preLoaderRoute: typeof Char1502Char1488Char1502Char1512Char1497Char1501RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ציפוי-דלתות': {
@@ -122,6 +215,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/$id': {
+      id: '/admin/$id'
+      path: '/$id'
+      fullPath: '/admin/$id'
+      preLoaderRoute: typeof AdminIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -132,9 +239,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIdRoute: typeof AdminIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIdRoute: AdminIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SlugRoute: SlugRoute,
+  AdminRoute: AdminRouteWithChildren,
   Char1495Char1504Char1493Char1514Route: Char1495Char1504Char1493Char1514Route,
+  Char1502Char1488Char1502Char1512Char1497Char1501Route:
+    Char1502Char1488Char1502Char1512Char1497Char1501Route,
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route:
     Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route,
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route:

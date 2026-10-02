@@ -1,10 +1,12 @@
 import { Fragment } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
 import { Container } from "./primitives";
+import { shopSearchFor } from "./shop/links";
 import {
   FOOTER_BANNER,
   LOGO_SRC,
@@ -14,6 +16,45 @@ import {
   footerLegal,
   footerSocial,
 } from "./data";
+
+const footerLinkClass =
+  "flex items-center justify-between gap-2.5 fs-16 text-foreground transition-colors duration-160 ease-standard hover:text-clay";
+
+/** Pages that exist get a real link; the rest stay placeholders for now. */
+const FOOTER_PATHS: Record<string, "/" | "/ציפוי-דלתות" | "/ציפוי-מטבחים" | "/מאמרים"> = {
+  "דף הבית": "/",
+  "ציפוי דלתות": "/ציפוי-דלתות",
+  מאמרים: "/מאמרים",
+};
+
+function FooterLink({ label, category }: { label: string; category: boolean }) {
+  const inner = (
+    <>
+      <span>{label}</span>
+      <Icon name="AngleLeft" size={13} />
+    </>
+  );
+  if (category) {
+    return (
+      <Link to="/חנות" search={shopSearchFor(label)} className={footerLinkClass}>
+        {inner}
+      </Link>
+    );
+  }
+  const to = FOOTER_PATHS[label];
+  if (to) {
+    return (
+      <Link to={to} className={footerLinkClass}>
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <a href="#" className={footerLinkClass}>
+      {inner}
+    </a>
+  );
+}
 
 export function SiteFooter() {
   return (
@@ -77,14 +118,7 @@ export function SiteFooter() {
                   <span className="block fs-19 font-semibold text-foreground">{column.title}</span>
                   <div className="mt-4 flex flex-col gap-2.5">
                     {column.links.map((link) => (
-                      <a
-                        key={link}
-                        href="#"
-                        className="flex items-center justify-between gap-2.5 fs-16 text-foreground transition-colors duration-160 ease-standard hover:text-clay"
-                      >
-                        <span>{link}</span>
-                        <Icon name="AngleLeft" size={13} />
-                      </a>
+                      <FooterLink key={link} label={link} category={column.title === "קטגוריות"} />
                     ))}
                   </div>
                 </div>

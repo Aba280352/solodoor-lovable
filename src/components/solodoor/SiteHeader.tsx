@@ -53,9 +53,10 @@ function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
 }
 
 /** Pages that exist so far. Every other nav label is still a placeholder link. */
-const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי-דלתות" | "/חנות"> = {
+const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי-דלתות" | "/חנות" | "/מאמרים"> = {
   בית: "/",
   "צפייה בכל החנות": "/חנות",
+  מאמרים: "/מאמרים",
   "ציפוי מטבחים": "/ציפוי-מטבחים",
   "ציפוי דלתות": "/ציפוי-דלתות",
 };

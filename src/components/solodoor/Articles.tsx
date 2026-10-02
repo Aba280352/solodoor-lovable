@@ -1,10 +1,15 @@
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 
 import { Icon } from "./Icon";
-import { Container, CoverImage } from "./primitives";
-import { articles } from "./data";
+import { ArticleCard } from "./blog/ArticleCard";
+import type { ArticleSummary } from "./blog/articles";
+import { Container } from "./primitives";
 
-export function Articles() {
+/** "מדריכים ומאמרים": the latest articles from the database. */
+export function Articles({ articles }: { articles: ArticleSummary[] }) {
+  if (!articles.length) return null;
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
@@ -14,35 +19,17 @@ export function Articles() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-13 lg:grid-cols-3 lg:gap-6">
-          {articles.map((post) => (
-            <div
-              key={post.title}
-              className="flex flex-col overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground"
-            >
-              <div className="relative h-55 overflow-hidden bg-muted">
-                <CoverImage src={post.img} alt={post.title} />
-              </div>
-              <div className="flex flex-auto flex-col gap-3 px-5 pt-6 pb-6.5 text-right lg:px-6.5">
-                <span className="fs-18 leading-[1.4] font-semibold text-foreground">{post.title}</span>
-                <span className="flex-auto fs-16 leading-[1.75] text-foreground">{post.excerpt}</span>
-                <a
-                  href="#"
-                  className="inline-flex items-center gap-2 fs-16 font-medium text-clay transition-[gap,color] duration-240 ease-standard hover:gap-3.5 hover:text-foreground"
-                >
-                  <span>קרא עוד</span>
-                  <Icon name="AngleLeft" size={13} />
-                </a>
-              </div>
-            </div>
+          {articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
 
         <div className="mt-10 flex justify-center lg:mt-13">
           <Button asChild className="w-full px-17 py-4.5 lg:w-auto">
-            <a href="#">
+            <Link to="/מאמרים">
               <span>לכל המאמרים</span>
               <Icon name="ArrowLeft" size={16} />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>

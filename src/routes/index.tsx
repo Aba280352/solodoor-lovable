@@ -12,8 +12,11 @@ import { PageShell } from "@/components/solodoor/PageShell";
 import { Process } from "@/components/solodoor/Process";
 import { Reviews } from "@/components/solodoor/Reviews";
 import { StyleFamilies } from "@/components/solodoor/StyleFamilies";
+import { fetchLatestArticles } from "@/components/solodoor/blog/articles";
 
 export const Route = createFileRoute("/")({
+  // The articles section shows the three latest posts; the rest of the page is static.
+  loader: () => fetchLatestArticles(3).catch(() => []),
   head: () => ({
     meta: [
       { title: "SOLODOOR | ציפוי דלתות, מטבחים ומשטחים" },
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const articles = Route.useLoaderData();
   return (
     <PageShell>
       <Hero />
@@ -40,7 +44,7 @@ function HomePage() {
       <BestSellers />
       <Reviews />
       <Faq />
-      <Articles />
+      <Articles articles={articles} />
     </PageShell>
   );
 }
