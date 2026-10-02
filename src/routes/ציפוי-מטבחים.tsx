@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/solodoor/PageShell";
 import { KitchenHero } from "@/components/solodoor/kitchen/KitchenHero";
 import { KitchenIntro } from "@/components/solodoor/kitchen/KitchenIntro";
+import { KitchenValues } from "@/components/solodoor/kitchen/KitchenValues";
 import { kitchenSeo } from "@/components/solodoor/kitchen/data";
 
 const CANONICAL = "https://solodoor.co.il/ציפוי-מטבחים/";
@@ -43,6 +44,7 @@ function KitchenPage() {
     <PageShell>
       <KitchenHero />
       <KitchenIntro />
+      <KitchenValues />
     </PageShell>
   );
 }
