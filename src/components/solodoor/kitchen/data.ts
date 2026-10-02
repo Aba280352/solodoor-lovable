@@ -104,3 +104,23 @@ export const kitchenProducts: Product[] = [
   { name: "מטבח לבן פודרה", price: "₪299", img: null },
   { name: "מטבח שחור מט", price: "₪329", img: null },
 ];
+
+/* ───────────── Before / after ───────────── */
+
+/**
+ * Real SOLODOOR kitchen jobs. Each "after" is the customer's photo. Each "before"
+ * is that same photo with the cabinet fronts recoloured to the original finish
+ * (generated, guided by the real before-photo), so the two frames line up
+ * exactly under the slider.
+ */
+export const kitchenBeforeAfter = [1, 2, 3, 4, 5].map((n, i) => ({
+  ...[
+    { name: "מטבח אפור כהה", desc: "מכתום וירוק לאפור כהה במראה מט" },
+    { name: "מטבח כחול כהה", desc: "מגוון שמנת לכחול כהה ועמוק" },
+    { name: "מטבח ירוק מרווה", desc: "מלבן ישן לירוק מרווה רגוע" },
+    { name: "מטבח לבן", desc: "מעץ צהבהב ללבן נקי ובהיר" },
+    { name: "מטבח בגוון אבן", desc: "מחום כהה לגוון אבן בהיר" },
+  ][i],
+  before: img(`kitchen-ba-${n}-before`),
+  after: img(`kitchen-ba-${n}-after`),
+}));

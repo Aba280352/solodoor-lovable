@@ -7,8 +7,12 @@ import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
 import { beforeAfterFigures, beforeAfterPairs } from "./data";
 
-/** Three copies of the pairs, so the track can loop endlessly in both directions. */
-const items = [...beforeAfterPairs, ...beforeAfterPairs, ...beforeAfterPairs];
+export interface BeforeAfterPair {
+  name: string;
+  desc: string;
+  before: string;
+  after: string;
+}
 
 /** Auto-scroll speed in design pixels per second. */
 const SPEED = 35;
@@ -57,7 +61,7 @@ function useCountUp<T extends HTMLElement>(duration = 1600) {
   return { ref, progress };
 }
 
-function CompareCard({ pair }: { pair: (typeof beforeAfterPairs)[number] }) {
+function CompareCard({ pair }: { pair: BeforeAfterPair }) {
   // Share of the frame (measured from the right edge) that shows the "before" photo.
   const [pct, setPct] = useState(50);
 
@@ -95,10 +99,10 @@ function CompareCard({ pair }: { pair: (typeof beforeAfterPairs)[number] }) {
             <Icon name="AngleLeft" size={13} />
           </span>
         </span>
-        <span className="absolute top-4 left-4 rounded-full bg-foreground px-3.5 py-[0.4375rem] fs-15 font-semibold tracking-[0.1em] text-background">
+        <span className="absolute top-4 right-4 rounded-full bg-foreground px-3.5 py-[0.4375rem] fs-15 font-semibold tracking-[0.1em] text-background">
           לפני
         </span>
-        <span className="absolute top-4 right-4 rounded-full bg-primary px-3.5 py-[0.4375rem] fs-15 font-semibold tracking-[0.1em] text-primary-foreground">
+        <span className="absolute top-4 left-4 rounded-full bg-primary px-3.5 py-[0.4375rem] fs-15 font-semibold tracking-[0.1em] text-primary-foreground">
           אחרי
         </span>
       </div>
@@ -111,7 +115,9 @@ function CompareCard({ pair }: { pair: (typeof beforeAfterPairs)[number] }) {
 }
 
 /** Looping carousel: scrolls by itself, and can be swiped (touch) or dragged (mouse) at any time. */
-function CardTrack() {
+export function BeforeAfterCarousel({ pairs }: { pairs: BeforeAfterPair[] }) {
+  // Three copies of the pairs, so the track can loop endlessly in both directions.
+  const items = [...pairs, ...pairs, ...pairs];
   const ref = useRef<HTMLDivElement>(null);
   const hover = useRef(false);
   const resumeAt = useRef(0);
@@ -121,8 +127,8 @@ function CardTrack() {
 
   const measure = () => {
     const cards = ref.current?.querySelectorAll<HTMLElement>("[data-card]");
-    if (!cards || cards.length < beforeAfterPairs.length + 1) return 0;
-    return Math.abs(cards[beforeAfterPairs.length].offsetLeft - cards[0].offsetLeft);
+    if (!cards || cards.length < pairs.length + 1) return 0;
+    return Math.abs(cards[pairs.length].offsetLeft - cards[0].offsetLeft);
   };
 
   // The page is RTL, so scrollLeft runs from 0 down to negative values. Keep it
@@ -241,7 +247,7 @@ export function BeforeAfter() {
         </div>
       </Container>
 
-      <CardTrack />
+      <BeforeAfterCarousel pairs={beforeAfterPairs} />
 
       <Container>
         <div

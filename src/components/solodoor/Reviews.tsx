@@ -64,13 +64,13 @@ function ReviewRow({ items, className }: { items: Review[]; className: string })
   );
 }
 
-export function Reviews() {
+export function Reviews({ pill = "אם עוד לא קניתם, בואו תראו מה רושמים עלינו!" }: { pill?: string }) {
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
           <Pill className="px-5 py-2 fs-14 tracking-[0.04em] lg:fs-16 lg:whitespace-nowrap">
-            אם עוד לא קניתם, בואו תראו מה רושמים עלינו!
+            {pill}
           </Pill>
           <h2 className="mt-5 fs-40 leading-[1.05] font-bold tracking-[-0.03em] text-foreground lg:fs-76">
             מספרים עלינו

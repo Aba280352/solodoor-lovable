@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
+import { Reviews } from "@/components/solodoor/Reviews";
+import { KitchenBeforeAfter } from "@/components/solodoor/kitchen/KitchenBeforeAfter";
 import { KitchenCatalog } from "@/components/solodoor/kitchen/KitchenCatalog";
 import { KitchenHero } from "@/components/solodoor/kitchen/KitchenHero";
 import { KitchenIntro } from "@/components/solodoor/kitchen/KitchenIntro";
@@ -47,6 +49,8 @@ function KitchenPage() {
       <KitchenIntro />
       <KitchenValues />
       <KitchenCatalog />
+      <Reviews pill="אם עד עכשיו לא התקשרתם, תראו מה רושמים עלינו החברים!" />
+      <KitchenBeforeAfter />
     </PageShell>
   );
 }
