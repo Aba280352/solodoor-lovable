@@ -1,10 +1,9 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 import { Icon } from "./Icon";
-import { ProductCard, ProductMedia } from "./ProductCard";
+import { ProductCard, ProductZoomDialog } from "./ProductCard";
 import { Container, Pill } from "./primitives";
 import { bestSellers, type Product } from "./data";
 import { useQuiz } from "./quiz-context";
@@ -64,39 +63,7 @@ export function BestSellers() {
         </div>
       </Container>
 
-      <Dialog open={zoomed !== null} onOpenChange={(open) => !open && setZoomed(null)}>
-        <DialogContent
-          overlayClassName="items-center justify-center p-4 lg:p-8"
-          className="grid max-h-[88vh] w-full max-w-270 grid-cols-1 overflow-hidden rounded-[1rem] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]"
-        >
-          <DialogClose
-            aria-label="סגירה"
-            className="fixed top-3 left-3 flex size-11 cursor-pointer items-center justify-center p-0 text-background lg:top-6 lg:left-7"
-          >
-            <Icon name="Times" size={30} />
-          </DialogClose>
-          {zoomed && (
-            <>
-              <div className="relative min-h-60 overflow-hidden bg-muted lg:min-h-130">
-                <ProductMedia product={zoomed} />
-              </div>
-              <div className="flex flex-col items-start justify-center gap-5 p-6 text-right lg:px-13 lg:py-14">
-                <Pill className="tracking-[0.04em]">{active.tab}</Pill>
-                <DialogTitle className="fs-28 leading-[1.15] font-bold tracking-[-0.02em] text-foreground lg:fs-40">
-                  {zoomed.name}
-                </DialogTitle>
-                <span className="fs-24 font-bold text-foreground lg:fs-30">{zoomed.price}</span>
-                <DialogDescription className="max-w-[40ch] fs-18 leading-[1.85] font-light text-foreground">
-                  ציפוי בהתקנה מקצועית, עם הגנה מפני שריטות ודעיכה בצבע. הדגם מותאם למידות שלכם ומותקן בפריסה רחבה.
-                </DialogDescription>
-                <Button asChild className="mt-2 px-11 py-4">
-                  <a href="#">לפרטים נוספים</a>
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ProductZoomDialog product={zoomed} label={active.tab} onClose={() => setZoomed(null)} />
     </section>
   );
 }

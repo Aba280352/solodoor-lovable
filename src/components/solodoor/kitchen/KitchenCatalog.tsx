@@ -1,7 +1,10 @@
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 
 import { Icon } from "../Icon";
-import { ProductCard } from "../ProductCard";
+import { ProductCard, ProductZoomDialog } from "../ProductCard";
+import type { Product } from "../data";
 import { Container } from "../primitives";
 import { KITCHEN_CATALOG_PDF, kitchenProducts } from "./data";
 
@@ -11,6 +14,8 @@ import { KITCHEN_CATALOG_PDF, kitchenProducts } from "./data";
  * The products are placeholders until the shop database exists.
  */
 export function KitchenCatalog() {
+  const [zoomed, setZoomed] = useState<Product | null>(null);
+
   return (
     <section id="catalog" data-reveal className="scroll-mt-16 pt-14 pb-16 lg:scroll-mt-20 lg:pt-24 lg:pb-26">
       <Container>
@@ -53,7 +58,7 @@ export function KitchenCatalog() {
       {/* Edge to edge: no max width, only the page gutters. */}
       <div className="mt-10 grid grid-cols-2 gap-3 px-5 lg:mt-16 lg:grid-cols-4 lg:gap-6 lg:px-12">
         {kitchenProducts.map((product) => (
-          <ProductCard key={product.name} product={product} mediaClassName="h-40 lg:h-80" />
+          <ProductCard key={product.name} product={product} onZoom={setZoomed} mediaClassName="h-40 lg:h-80" />
         ))}
       </div>
 
@@ -65,6 +70,8 @@ export function KitchenCatalog() {
           </a>
         </Button>
       </div>
+
+      <ProductZoomDialog product={zoomed} label="ציפוי מטבחים" onClose={() => setZoomed(null)} />
     </section>
   );
 }
