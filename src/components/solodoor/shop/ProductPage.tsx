@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
+import { DragRow } from "../DragRow";
 import { Icon } from "../Icon";
 import { Reviews } from "../Reviews";
 import { ICON_DATA, type IconName } from "../icon-data";
@@ -71,7 +72,7 @@ function Gallery({ images }: { images: GalleryImage[] }) {
         <CoverImage src={main.src} alt={main.alt} fetchPriority="high" />
       </div>
       {images.length > 1 && (
-        <div className="-mx-5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:grid lg:grid-cols-7 lg:gap-2.5 lg:overflow-visible lg:px-0">
+        <DragRow className="-mx-5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:grid lg:grid-cols-7 lg:gap-2.5 lg:overflow-visible lg:px-0">
           {images.map((image, i) => (
             <button
               key={image.src}
@@ -87,7 +88,7 @@ function Gallery({ images }: { images: GalleryImage[] }) {
               <img src={image.src} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
             </button>
           ))}
-        </div>
+        </DragRow>
       )}
     </div>
   );
@@ -130,7 +131,7 @@ function Details({ data, application }: { data: ProductData; application: Applic
   return (
     <section data-reveal className="pt-14 pb-4 lg:pt-22 lg:pb-6">
       <Container>
-        <div role="tablist" className="-mx-5 flex gap-2 overflow-x-auto border-b border-border px-5 scrollbar-none lg:mx-0 lg:gap-3 lg:px-0">
+        <DragRow role="tablist" className="-mx-5 flex gap-2 overflow-x-auto border-b border-border px-5 scrollbar-none lg:mx-0 lg:gap-3 lg:px-0">
           {panels.map((panel) => (
             <button
               key={panel.key}
@@ -146,7 +147,7 @@ function Details({ data, application }: { data: ProductData; application: Applic
               {panel.title}
             </button>
           ))}
-        </div>
+        </DragRow>
 
         <div className="max-w-[78ch] pt-7 text-right lg:pt-9">
           <div role="tabpanel" hidden={open !== "description"} className="flex flex-col gap-4">
@@ -323,7 +324,7 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
           {tabs.length > 1 && (
             <div className="mt-5">
               <span className="fs-15 font-semibold text-foreground lg:fs-16">על מה מדביקים?</span>
-              <div className="-mx-5 mt-2.5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+              <DragRow className="-mx-5 mt-2.5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
                 {tabs.map((a) => (
                   <Link
                     key={a.slug}
@@ -342,7 +343,7 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
                     {a.label}
                   </Link>
                 ))}
-              </div>
+              </DragRow>
             </div>
           )}
         </Container>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
+import { DragRow } from "../DragRow";
 import { Container, Pill } from "../primitives";
 import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
 import { FAQ_CATEGORIES, categoryLabel, filterFaq, selectedCategories, type FaqEntry, type FaqSearch } from "./faq-items";
@@ -134,7 +135,7 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
         <Container className="py-3 lg:py-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
             <span className="flex-none fs-15 font-semibold text-foreground lg:fs-16">מה מעניין אתכם?</span>
-            <div className="-mx-5 flex flex-auto gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+            <DragRow className="-mx-5 flex flex-auto gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
               <Chip active={selected.length === 0} onClick={() => setSelected([])}>
                 הכל
               </Chip>
@@ -146,7 +147,7 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
                   </span>
                 </Chip>
               ))}
-            </div>
+            </DragRow>
             <div className="relative w-full flex-none lg:w-72">
               <span className="pointer-events-none absolute inset-y-0 start-3.5 flex items-center text-foreground">
                 <Icon name="Search" size={17} />
