@@ -73,17 +73,14 @@ function Question({ entry, open, onToggle, showTags }: { entry: FaqEntry; open: 
               <Icon name="AngleLeft" size={13} />
             </Link>
           )}
-          {showTags && (
+          {/* Tags only for questions that matter to a few categories; the general ones need none. */}
+          {showTags && entry.categories.length < 7 && (
             <span className="flex flex-wrap gap-1.5">
-              {entry.categories.length >= 7 ? (
-                <span className="rounded-full bg-muted px-3 py-1 fs-13 font-medium text-foreground">לכל סוגי הטפט</span>
-              ) : (
-                entry.categories.map((key) => (
-                  <span key={key} className="rounded-full bg-muted px-3 py-1 fs-13 font-medium text-foreground">
-                    {categoryLabel(key)}
-                  </span>
-                ))
-              )}
+              {entry.categories.map((key) => (
+                <span key={key} className="rounded-full bg-muted px-3 py-1 fs-13 font-medium text-foreground">
+                  {categoryLabel(key)}
+                </span>
+              ))}
             </span>
           )}
         </div>
