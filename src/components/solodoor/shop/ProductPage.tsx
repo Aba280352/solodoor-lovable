@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,8 @@ import { DEFAULT_APPLICATION, catalogImage, type Application, type FaqItem, type
 interface GalleryImage {
   src: string;
   alt: string;
+  /** Set on the photo of a surface (door, fridge, ...): picking it switches the page to that surface's tab. */
+  application?: string;
 }
 
 /** The surface tab for this product, or null for products without tabs (designed doors, rugs). */
@@ -41,18 +43,17 @@ export function productFaqs(data: ProductData, application: Application | null):
 function galleryImages(data: ProductData, application: Application | null, variant: ProductVariant | null): GalleryImage[] {
   const { product } = data;
   const list: GalleryImage[] = [];
-  const push = (path: string | null | undefined, alt: string) => {
+  const push = (path: string | null | undefined, alt: string, applicationSlug?: string) => {
     const src = catalogImage(path);
-    if (src && !list.some((i) => i.src === src)) list.push({ src, alt });
+    if (src && !list.some((i) => i.src === src)) list.push({ src, alt, application: applicationSlug });
   };
   if (product.product_type === "wallpaper") {
-    const current = data.productApplications.find((pa) => pa.application_slug === application?.slug);
-    push(current?.image_path, current?.image_alt ?? product.title);
-    for (const image of data.images) push(image.image_path, image.alt ?? product.title);
+    // The surfaces keep a fixed order, so the thumbnails do not move when the tab changes; the swatch and roll follow.
     for (const a of data.applications) {
       const pa = data.productApplications.find((p) => p.application_slug === a.slug);
-      push(pa?.image_path, pa?.image_alt ?? product.title);
+      push(pa?.image_path, pa?.image_alt ?? product.title, a.slug);
     }
+    for (const image of data.images) push(image.image_path, image.alt ?? product.title);
   } else if (product.product_type === "designed_door") {
     push(variant?.image_path, `טפט מעוצב לדלת, ${variant?.title ?? product.title}`);
     for (const v of data.variants) push(v.image_path, `טפט מעוצב לדלת, ${v.title}`);
@@ -62,8 +63,20 @@ function galleryImages(data: ProductData, application: Application | null, varia
   return list;
 }
 
-function Gallery({ images }: { images: GalleryImage[] }) {
-  const [index, setIndex] = useState(0);
+/**
+ * Main photo and thumbnails. Thumbnails of a surface work like the tabs above the gallery: they open that surface's
+ * tab (its price, text and questions). The swatch and roll photos only change the main photo.
+ */
+function Gallery({
+  images,
+  activeApplication,
+  onPickApplication,
+}: {
+  images: GalleryImage[];
+  activeApplication?: string;
+  onPickApplication: (slug: string) => void;
+}) {
+  const [index, setIndex] = useState(() => Math.max(0, images.findIndex((i) => i.application && i.application === activeApplication)));
   const main = images[Math.min(index, images.length - 1)];
   if (!main) return <div className="aspect-square rounded-lg bg-muted" />;
   return (
@@ -77,7 +90,10 @@ function Gallery({ images }: { images: GalleryImage[] }) {
             <button
               key={image.src}
               type="button"
-              onClick={() => setIndex(i)}
+              onClick={() => {
+                setIndex(i);
+                if (image.application && image.application !== activeApplication) onPickApplication(image.application);
+              }}
               aria-label={image.alt}
               aria-pressed={i === index}
               className={cn(
@@ -302,6 +318,14 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
   const heading = productHeading(data, application);
   const tabs = product.product_type === "wallpaper" ? data.applications.filter((a) => data.productApplications.some((pa) => pa.application_slug === a.slug)) : [];
   const shopSearch = { cat: application ? application.slug : product.product_type };
+  const navigate = useNavigate();
+  const openTab = (slug: string) =>
+    navigate({
+      to: "/product/$slug",
+      params: { slug: product.slug },
+      search: slug === DEFAULT_APPLICATION ? {} : { tab: slug },
+      resetScroll: false,
+    });
 
   return (
     <>
@@ -349,7 +373,7 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
         </Container>
 
         <Container className="grid grid-cols-1 gap-8 pt-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16 lg:pt-7">
-          <Gallery key={`${application?.slug}:${variant?.variant_key}`} images={images} />
+          <Gallery key={`${application?.slug}:${variant?.variant_key}`} images={images} activeApplication={application?.slug} onPickApplication={openTab} />
 
           <div className="flex flex-col gap-5 text-right">
             <div>
@@ -363,7 +387,7 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
               key={application?.slug ?? product.handle}
               data={data}
               application={application}
-              image={images[0]?.src ?? null}
+              image={(images.find((i) => i.application && i.application === application?.slug) ?? images[0])?.src ?? null}
               variant={variant}
               onVariant={(v) => setVariantKey(v.variant_key)}
             />
