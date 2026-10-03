@@ -4,7 +4,7 @@ import { CoverImage, MediaPlaceholder } from "../primitives";
 import { catalogImage, formatPrice, type StyleItem } from "./catalog";
 
 /** A wallpaper in a style archive: the flat swatch, and the roll photo fading in on hover. */
-export function StyleCard({ item }: { item: StyleItem }) {
+export function StyleCard({ item }: { item: Pick<StyleItem, "slug" | "title" | "base_price" | "swatch" | "roll"> }) {
   const name = `טפט ${item.title}`;
   const swatch = catalogImage(item.swatch);
   const roll = catalogImage(item.roll);

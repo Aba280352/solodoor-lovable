@@ -127,6 +127,9 @@ export interface ShopItem {
   /** application slug → image path (wallpapers only). */
   images: Record<string, string>;
   cover: string | null;
+  /** Wallpapers: the flat swatch and the roll photo, used when the shop shows wallpapers by style. */
+  swatch: string | null;
+  roll: string | null;
 }
 
 /** Where the catalogue images are served from: the site's own /catalog-images folder. */
@@ -167,7 +170,7 @@ function toShopItems(
         ? (byApp[DEFAULT_APPLICATION] ?? Object.values(byApp)[0] ?? null)
         : product.product_type === "designed_door"
           ? (variants.find((v) => v.product_handle === product.handle)?.image_path ?? null)
-          : (images.find((i) => i.product_handle === product.handle)?.image_path ?? null);
+          : (images.find((i) => i.product_handle === product.handle && i.kind === "main")?.image_path ?? null);
     return {
       handle: product.handle,
       slug: product.slug,
@@ -181,6 +184,8 @@ function toShopItems(
         .map((v) => ({ key: v.variant_key, color: v.color, image: v.image_path })),
       images: byApp,
       cover,
+      swatch: images.find((i) => i.product_handle === product.handle && i.kind === "swatch")?.image_path ?? null,
+      roll: images.find((i) => i.product_handle === product.handle && i.kind === "roll")?.image_path ?? null,
     };
   });
 }
@@ -193,7 +198,14 @@ async function shopItemsFor(products: Product[]): Promise<ShopItem[]> {
     rows<ProductVariant>(
       supabase.from("product_variants").select("*").in("product_handle", handles).order("sort_order"),
     ),
-    rows<ProductImage>(supabase.from("product_images").select("*").in("product_handle", handles).eq("kind", "main")),
+    rows<ProductImage>(
+      supabase
+        .from("product_images")
+        .select("*")
+        .in("product_handle", handles)
+        .in("kind", ["main", "swatch", "roll"])
+        .order("sort_order"),
+    ),
   ]);
   return toShopItems(products, productApplications, variants, images);
 }

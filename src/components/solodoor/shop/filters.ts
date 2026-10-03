@@ -46,6 +46,8 @@ export interface ActiveFilters {
   colors: string[];
   /** One category opened from a menu or a link: its page offers only filters that make sense inside it. */
   archive: boolean;
+  /** Only a style (and maybe colours) is chosen, no category: the shop then shows plain wallpaper swatches. */
+  styleOnly: boolean;
   /** False when only designed doors or rugs are selected: surfaces and styles then do not apply. */
   wallpapersInScope: boolean;
 }
@@ -64,6 +66,7 @@ export function activeFilters(search: ShopSearch, data: ShopData): ActiveFilters
     styles,
     colors,
     archive: cats.length === 1 && search.all !== "y",
+    styleOnly: cats.length === 0 && styles.length > 0,
     wallpapersInScope: cats.length === 0 || uses.length > 0,
   };
 }

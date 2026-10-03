@@ -8,6 +8,7 @@ import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { ShopCard } from "./ShopCard";
 import { ShopFilters } from "./ShopFilters";
+import { StyleCard } from "./StyleCard";
 import { type ShopData } from "./catalog";
 import { activeFilters, filterItems, shopHeading, type ShopSearch } from "./filters";
 
@@ -94,9 +95,14 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
 
             {items.length ? (
               <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-6">
-                {items.map((item) => (
-                  <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} colors={filters.colors} />
-                ))}
+                {items.map((item) =>
+                  filters.styleOnly ? (
+                    // Browsing by style: wallpapers only, every card the same flat swatch.
+                    <StyleCard key={item.handle} item={item} />
+                  ) : (
+                    <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} colors={filters.colors} />
+                  ),
+                )}
               </div>
             ) : (
               <p className="mt-8 fs-18 text-foreground">לא נמצאו מוצרים בסינון הזה. נסו להסיר חלק מהסינונים.</p>
