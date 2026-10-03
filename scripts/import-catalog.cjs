@@ -63,7 +63,7 @@ const TABLES = [
   ["faqs", "10_faqs.csv", null],
 ];
 
-const ARRAY_COLUMNS = new Set(["recommended_addons", "applies_to", "product_types"]);
+const ARRAY_COLUMNS = new Set(["recommended_addons", "applies_to", "product_types", "colors"]);
 
 function toRow(record) {
   const out = {};

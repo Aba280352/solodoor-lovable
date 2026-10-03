@@ -19,6 +19,8 @@ export interface Product {
   thickness_mm: number | null;
   sample_available: boolean;
   installation_available: boolean;
+  /** Colour families (see colors.ts); empty when not set yet. */
+  colors: string[];
   sort_order: number;
 }
 
@@ -117,6 +119,7 @@ export interface ShopItem {
   product_type: ProductType;
   style_family: string | null;
   base_price: number;
+  colors: string[];
   /** application slug → image path (wallpapers only). */
   images: Record<string, string>;
   cover: string | null;
@@ -168,6 +171,7 @@ function toShopItems(
       product_type: product.product_type,
       style_family: product.style_family,
       base_price: product.base_price,
+      colors: product.colors ?? [],
       images: byApp,
       cover,
     };

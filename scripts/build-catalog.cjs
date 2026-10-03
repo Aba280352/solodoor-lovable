@@ -254,6 +254,40 @@ const WALLPAPERS = {
  */
 const MADE_SWATCHES = new Set(["charcoal-plaster", "veined-marble"]);
 
+/**
+ * Colour families for the shop's colour filter (keys match src/components/solodoor/shop/colors.ts).
+ * Wallpapers are set by hand from the measured swatch colour; designed doors take the first
+ * colour word of each photo's name; rugs have none for now.
+ */
+const WALLPAPER_COLORS = {
+  "warm-light-stone": ["cream"], "cool-light-stone": ["grey"], "sand-stone": ["cream"],
+  grey: ["grey"], "light-grey": ["grey"], "dark-grey": ["grey"], "silver-grey": ["grey"],
+  "dark-beige-texture": ["cream"], concrete: ["grey"], "light-concrete": ["grey"], "stainless-steel": ["grey"],
+  sand: ["cream"], "light-grey-plaster": ["grey"], "cloudy-concrete-plaster": ["grey"], "cloudy-grey-plaster": ["grey"],
+  "charcoal-plaster": ["grey"], "cloudy-white-plaster": ["white"], "pistachio-green": ["green"],
+  "smoky-blue": ["blue"], "deep-blue": ["blue"], "vanilla-white": ["white"], "warm-white": ["white"],
+  "white-texture": ["white"], "glossy-white": ["white"], "matte-white": ["white"], "powder-white": ["white"],
+  "white-stripes": ["white"], "off-white": ["white"], nescafe: ["cream"], "sahara-wood": ["cream"],
+  "walnut-wood": ["brown"], "oak-wood": ["brown"], "grey-wood": ["grey"], "butcher-wood": ["brown"],
+  "beech-wood": ["cream"], "cherry-wood": ["brown"], "mahogany-wood": ["brown"], "antique-wood": ["brown"],
+  "black-wood": ["black"], "wood-planks": ["brown"], "smoky-cream": ["cream"], "pearl-cream-texture": ["cream"],
+  "matte-black": ["black"], "black-stripes": ["black"], "veined-marble": ["white"], cream: ["cream"],
+  "smoky-light-blue": ["blue"],
+};
+const COLOR_WORDS = [
+  ["white", ["לבן", "חלבי"]], ["black", ["שחור"]], ["cream", ["בז", "שמנת", "קרם", "הוואנה"]],
+  ["grey", ["אפור", "אפרפר"]], ["brown", ["חום", "עץ"]], ["blue", ["כחול", "תכלת"]],
+  ["green", ["ירוק"]], ["purple", ["סגול"]],
+];
+/** The first colour word in a photo's name decides its family ("לבן פסים שחורים" is white). */
+function colorOfName(name) {
+  for (const word of clean(name).split(" ")) {
+    const hit = COLOR_WORDS.find(([, stems]) => stems.some((stem) => word.includes(stem)));
+    if (hit) return hit[0];
+  }
+  return null;
+}
+
 const MATERIAL = "ציפוי פולימרי בהדבקה עצמית";
 const DURABILITY = "ציפוי פולימרי עבה ועמיד בהדבקה עצמית, עם שכבת הגנה מפני שריטות ודהיית צבע";
 
@@ -357,6 +391,7 @@ for (const folder of dirs(MAIN)) {
     thickness_mm: THICKNESS_MM,
     sample_available: true,
     installation_available: true,
+    colors: WALLPAPER_COLORS[handle] ?? [],
     is_active: true,
     sort_order: ++sort,
     shopify_product_id: "",
@@ -430,6 +465,7 @@ function addDesigned(name, handleSuffix, photos, dirPath) {
     thickness_mm: "",
     sample_available: false,
     installation_available: true,
+    colors: [...new Set(photos.map((f) => colorOfName(stem(f))).filter(Boolean))],
     is_active: true,
     sort_order: ++sort,
     shopify_product_id: "",
@@ -495,6 +531,7 @@ for (const f of files(RUGS).filter((x) => isImage(x) && x.startsWith("שטיח �
     thickness_mm: 2.5,
     sample_available: false,
     installation_available: false,
+    colors: [],
     is_active: true,
     sort_order: ++sort,
     shopify_product_id: "",
@@ -511,7 +548,7 @@ for (const f of files(RUGS).filter((x) => isImage(x) && x.startsWith("שטיח �
 writeCsv(
   OUT,
   "02_products.csv",
-  ["handle", "slug", "title", "product_type", "style_family", "finish", "material", "base_price", "price_unit", "short_description", "long_description", "roll_width_cm", "thickness_mm", "sample_available", "installation_available", "is_active", "sort_order", "shopify_product_id"],
+  ["handle", "slug", "title", "product_type", "style_family", "finish", "material", "base_price", "price_unit", "short_description", "long_description", "roll_width_cm", "thickness_mm", "sample_available", "installation_available", "colors", "is_active", "sort_order", "shopify_product_id"],
   products,
 );
 writeCsv(

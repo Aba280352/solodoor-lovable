@@ -39,6 +39,7 @@ create table products (
   thickness_mm           numeric(4,1),
   sample_available       boolean not null default false,
   installation_available boolean not null default false,
+  colors                 text[] not null default '{}',   -- colour families for the shop filter
   is_active              boolean not null default true,
   sort_order             int not null default 0,
   shopify_product_id     text

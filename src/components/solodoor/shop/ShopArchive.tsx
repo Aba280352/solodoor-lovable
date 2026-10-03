@@ -18,7 +18,7 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
   const { title, intro } = shopHeading(filters, data);
   // The surface whose photo and price the cards show.
   const application = data.applications.find((a) => a.slug === filters.uses[0]);
-  const activeCount = filters.cats.length + filters.styles.length;
+  const activeCount = filters.cats.length + filters.styles.length + filters.colors.length;
   const [sheetOpen, setSheetOpen] = useState(false);
   const isRoot = title === "החנות של סולודור";
 
@@ -57,7 +57,7 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
       <section className="pt-6 pb-16 lg:pt-10 lg:pb-26">
         <Container className="lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:items-start lg:gap-10">
           {/* Desktop: the filters stay beside the grid while it scrolls. */}
-          <aside aria-label="סינון" className="hidden lg:sticky lg:top-24 lg:block lg:rounded-lg lg:border lg:border-border lg:bg-card lg:p-6">
+          <aside aria-label="סינון" className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-7.5rem)] lg:overflow-y-auto lg:rounded-lg lg:border lg:border-border lg:bg-card lg:p-6 lg:[scrollbar-width:thin]">
             <ShopFilters data={data} filters={filters} />
           </aside>
 

@@ -1,10 +1,14 @@
 /** The shop's filter model: what is in the URL, and how it narrows the product list. */
 import { STYLE_FAMILIES, type Application, type ShopData, type ShopItem } from "./catalog";
+import { COLOR_FAMILIES } from "./colors";
 
 /** Search params of /חנות. Lists are comma separated in the URL (?cat=door,kitchen). */
 export interface ShopSearch {
   cat?: string;
   style?: string;
+  color?: string;
+  /** "y" when the visitor narrows the whole shop by ticking categories, as opposed to opening one archive. */
+  all?: string;
 }
 
 /** A category tick-box: either a product type, or a surface a wallpaper is used on. */
@@ -39,6 +43,9 @@ export interface ActiveFilters {
   types: string[];
   uses: string[];
   styles: string[];
+  colors: string[];
+  /** One category opened from a menu or a link: its page offers only filters that make sense inside it. */
+  archive: boolean;
   /** False when only designed doors or rugs are selected: surfaces and styles then do not apply. */
   wallpapersInScope: boolean;
 }
@@ -49,17 +56,20 @@ export function activeFilters(search: ShopSearch, data: ShopData): ActiveFilters
   const types = cats.filter((c) => valid.find((v) => v.key === c)?.kind === "type");
   const uses = cats.filter((c) => valid.find((v) => v.key === c)?.kind === "use");
   const styles = splitList(search.style).filter((s) => STYLE_FAMILIES.some((f) => f.key === s));
+  const colors = splitList(search.color).filter((c) => COLOR_FAMILIES.some((f) => f.key === c));
   return {
     cats,
     types,
     uses,
     styles,
+    colors,
+    archive: cats.length === 1 && search.all !== "y",
     wallpapersInScope: cats.length === 0 || uses.length > 0,
   };
 }
 
 export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] {
-  const { cats, types, uses, styles } = filters;
+  const { cats, types, uses, styles, colors } = filters;
   const styleLabels: (string | undefined)[] = styles.map((s) => STYLE_FAMILIES.find((f) => f.key === s)?.label);
   return data.items.filter((item) => {
     if (cats.length) {
@@ -68,8 +78,28 @@ export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] 
       if (!inType && !inUse) return false;
     }
     if (styles.length && (item.product_type !== "wallpaper" || !styleLabels.includes(item.style_family ?? undefined))) return false;
+    if (colors.length && !colors.some((c) => item.colors.includes(c))) return false;
     return true;
   });
+}
+
+export interface ColorOption {
+  key: string;
+  /** Products of the current category that have this colour, with the other filters applied. */
+  count: number;
+}
+
+/**
+ * The colours offered in the sidebar: only those that exist in the current category
+ * (the whole shop, or the archive the visitor is in), each with how many products it would show.
+ */
+export function colorOptions(data: ShopData, filters: ActiveFilters): ColorOption[] {
+  const inCategory = filterItems(data, { ...filters, styles: [], colors: [] });
+  const narrowed = filterItems(data, { ...filters, colors: [] });
+  return COLOR_FAMILIES.filter((family) => inCategory.some((item) => item.colors.includes(family.key))).map((family) => ({
+    key: family.key,
+    count: narrowed.filter((item) => item.colors.includes(family.key)).length,
+  }));
 }
 
 /** Heading and intro for the current filter. Also used for the page title and description. */
