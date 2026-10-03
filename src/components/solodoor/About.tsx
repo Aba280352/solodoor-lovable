@@ -12,7 +12,7 @@ export function About() {
   const { openQuiz } = useQuiz();
 
   return (
-    <section data-reveal>
+    <section id="about" data-reveal className="scroll-mt-16 lg:scroll-mt-20">
       <div className="grid grid-cols-1 items-stretch gap-10 px-5 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-14 lg:px-27 lg:py-24">
         <div className="flex min-w-0 flex-col items-start justify-center text-right">
           <Pill className="tracking-[0.16em]">אודות סולודור</Pill>

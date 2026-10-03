@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
 import { Container } from "./primitives";
-import { FOOTER_ANCHORS, scrollToFooterAnchor } from "./shop/footer-anchors";
+import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
 import {
   FOOTER_BANNER,
@@ -36,6 +36,21 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
       <Icon name="AngleLeft" size={13} />
     </>
   );
+  if (label === "אודות") {
+    // The real "about" section lives on the home page.
+    return (
+      <Link
+        to="/"
+        hash="about"
+        onClick={(e) => {
+          if (scrollToAboutOnHome()) e.preventDefault();
+        }}
+        className={footerLinkClass}
+      >
+        {inner}
+      </Link>
+    );
+  }
   const anchor = FOOTER_ANCHORS[label];
   if (anchor) {
     return (
@@ -100,7 +115,7 @@ export function SiteFooter() {
         <div className="bg-background pt-14">
           <Container>
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-10 lg:grid-cols-[1.15fr_0.85fr_1fr_1.5fr] lg:gap-9">
-              <div id="about" className="col-span-full scroll-mt-24 text-right lg:col-span-1">
+              <div className="col-span-full text-right lg:col-span-1">
                 <img src={LOGO_SRC} alt="SOLODOOR" className="block h-11 w-37.5" />
                 <span className="mt-3 block fs-16 leading-[1.7] text-foreground">ציפוי דלתות. בדיוק הסגנון שלכם.</span>
                 <div className="mt-5 flex items-center gap-3">

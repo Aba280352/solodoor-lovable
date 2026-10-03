@@ -9,7 +9,7 @@ import { CartButton, SearchButton } from "./HeaderActions";
 import { Icon } from "./Icon";
 import { LOGO_SRC, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
 import { useQuiz } from "./quiz-context";
-import { FOOTER_ANCHORS, scrollToFooterAnchor } from "./shop/footer-anchors";
+import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
 
 type MenuKey = "style" | "use" | null;
@@ -73,6 +73,21 @@ const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-fo
 function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
+  if (label === "אודות") {
+    return (
+      <DialogClose asChild>
+        <Link
+          to="/"
+          hash="about"
+          // No preventDefault: the dialog's close handler skips prevented clicks. The sheet closes first, then the page scrolls.
+          onClick={() => window.setTimeout(scrollToAboutOnHome, 150)}
+          className={mobileLinkClass}
+        >
+          {label}
+        </Link>
+      </DialogClose>
+    );
+  }
   if (anchor) {
     // Close the sheet first, so the page can scroll again before it jumps to the footer.
     return (
@@ -117,6 +132,20 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
 function NavItem({ label }: { label: string }) {
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
+  if (label === "אודות") {
+    return (
+      <Link
+        to="/"
+        hash="about"
+        onClick={(e) => {
+          if (scrollToAboutOnHome()) e.preventDefault();
+        }}
+        className={navLinkClass}
+      >
+        {label}
+      </Link>
+    );
+  }
   if (anchor) {
     return (
       <a
