@@ -9,6 +9,7 @@ import { CartButton, SearchButton } from "./HeaderActions";
 import { Icon } from "./Icon";
 import { LOGO_SRC, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
 import { useQuiz } from "./quiz-context";
+import { FOOTER_ANCHORS, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
 
 type MenuKey = "style" | "use" | null;
@@ -70,6 +71,22 @@ const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-fo
 /** Real pages and in-page jumps close the menu; placeholders do nothing yet. */
 function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
   const to = PAGE_PATHS[label];
+  const anchor = FOOTER_ANCHORS[label];
+  if (anchor) {
+    // Close the sheet first, so the page can scroll again before it jumps to the footer.
+    return (
+      <DialogClose asChild>
+        <a
+          href={`#${anchor}`}
+          // No preventDefault: the dialog's close handler skips prevented clicks, and the sheet must close.
+          onClick={() => window.setTimeout(() => scrollToFooterAnchor(anchor), 150)}
+          className={mobileLinkClass}
+        >
+          {label}
+        </a>
+      </DialogClose>
+    );
+  }
   if (diy) {
     return (
       <DialogClose asChild>
@@ -98,6 +115,21 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
 /** Desktop nav item; the current page gets the clay underline. */
 function NavItem({ label }: { label: string }) {
   const to = PAGE_PATHS[label];
+  const anchor = FOOTER_ANCHORS[label];
+  if (anchor) {
+    return (
+      <a
+        href={`#${anchor}`}
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToFooterAnchor(anchor);
+        }}
+        className={navLinkClass}
+      >
+        {label}
+      </a>
+    );
+  }
   if (!to) {
     return (
       <a href="#" className={navLinkClass}>

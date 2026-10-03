@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
 import { Container } from "./primitives";
+import { FOOTER_ANCHORS, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
 import {
   FOOTER_BANNER,
@@ -34,6 +35,21 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
       <Icon name="AngleLeft" size={13} />
     </>
   );
+  const anchor = FOOTER_ANCHORS[label];
+  if (anchor) {
+    return (
+      <a
+        href={`#${anchor}`}
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToFooterAnchor(anchor);
+        }}
+        className={footerLinkClass}
+      >
+        {inner}
+      </a>
+    );
+  }
   if (category) {
     return (
       <Link to="/חנות" search={shopSearchFor(label)} className={footerLinkClass}>
@@ -83,7 +99,7 @@ export function SiteFooter() {
         <div className="bg-background pt-14">
           <Container>
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-10 lg:grid-cols-[1.15fr_0.85fr_1fr_1.5fr] lg:gap-9">
-              <div className="col-span-full text-right lg:col-span-1">
+              <div id="about" className="col-span-full scroll-mt-24 text-right lg:col-span-1">
                 <img src={LOGO_SRC} alt="SOLODOOR" className="block h-11 w-37.5" />
                 <span className="mt-3 block fs-16 leading-[1.7] text-foreground">ציפוי דלתות. בדיוק הסגנון שלכם.</span>
                 <div className="mt-5 flex items-center gap-3">
@@ -124,7 +140,7 @@ export function SiteFooter() {
                 </div>
               ))}
 
-              <div className="col-span-full flex flex-col lg:col-span-1">
+              <div id="contact" className="col-span-full flex scroll-mt-24 flex-col lg:col-span-1">
                 <form
                   onSubmit={(e) => e.preventDefault()}
                   className="rounded-[0.5rem] border border-border bg-card px-5 pt-7 pb-7.5 text-right lg:px-7.5"
