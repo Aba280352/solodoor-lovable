@@ -29,9 +29,9 @@ export interface MenuItem {
 
 export const styleMenu: MenuItem[] = [
   { name: "עצים", img: img("style-wood") },
+  { name: "מומלצים", img: img("style-black") },
   { name: "חלקים", img: img("style-plain") },
   { name: "דמויי אבן ובטון", img: img("style-stone") },
-  { name: "הנמכרים ביותר", img: img("style-black") },
 ];
 
 export const useMenu: MenuItem[] = [

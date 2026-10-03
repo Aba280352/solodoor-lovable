@@ -10,26 +10,35 @@ import { Icon } from "./Icon";
 import { LOGO_SRC, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
 import { useQuiz } from "./quiz-context";
 import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
-import { shopSearchFor } from "./shop/links";
+import { MenuLink } from "./shop/MenuLink";
+import { STYLE_HUB_PATH } from "./shop/styles";
 
 type MenuKey = "style" | "use" | null;
 
 const navLinkClass =
   "py-1.5 fs-15 font-medium whitespace-nowrap text-foreground transition-colors duration-160 ease-standard hover:text-clay";
 
-function MegaMenu({ title, items }: { title: string; items: MenuItem[] }) {
+function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: boolean }) {
   return (
     <div className="absolute inset-x-0 top-full z-20 border-y border-border bg-card shadow-menu">
       <div className="mx-auto max-w-330 px-12 pt-7 pb-8">
-        <div className="mb-4.5 fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{title}</div>
+        <div className="mb-4.5 flex items-center justify-between gap-4">
+          <span className="fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{title}</span>
+          {allLink && (
+            <Link to={STYLE_HUB_PATH} className="inline-flex items-center gap-2 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay">
+              <span>לכל הסגנונות</span>
+              <Icon name="AngleLeft" size={12} />
+            </Link>
+          )}
+        </div>
         <div className="grid grid-cols-7 gap-4">
           {items.map((item) => (
-            <Link key={item.name} to="/חנות" search={shopSearchFor(item.name)} className="group block">
+            <MenuLink key={item.name} name={item.name} className="group block">
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-muted transition-colors duration-240 ease-standard group-hover:border-foreground">
                 <img src={item.img} alt={item.name} className="block size-full object-cover" />
               </div>
               <div className="mt-2.5 fs-16 font-medium text-foreground">{item.name}</div>
-            </Link>
+            </MenuLink>
           ))}
         </div>
       </div>
@@ -180,7 +189,7 @@ function NavItem({ label }: { label: string }) {
 }
 
 /** Collapsed by default; opens only when its row is tapped. */
-function MobileMenuGroup({ title, items }: { title: string; items: MenuItem[] }) {
+function MobileMenuGroup({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-border">
@@ -197,14 +206,21 @@ function MobileMenuGroup({ title, items }: { title: string; items: MenuItem[] })
       </button>
       {open && (
         <div className="flex flex-col gap-3 pb-4">
+          {allLink && (
+            <DialogClose asChild>
+              <Link to={STYLE_HUB_PATH} className="fs-16 font-medium text-clay">
+                לכל הסגנונות
+              </Link>
+            </DialogClose>
+          )}
           {items.map((item) => (
             <DialogClose key={item.name} asChild>
-              <Link to="/חנות" search={shopSearchFor(item.name)} className="flex items-center gap-4">
+              <MenuLink name={item.name} className="flex items-center gap-4">
               <div className="size-20 flex-none overflow-hidden rounded-md border border-border bg-muted">
                 <img src={item.img} alt={item.name} className="block size-full object-cover" />
               </div>
               <div className="fs-16 font-medium text-foreground">{item.name}</div>
-              </Link>
+              </MenuLink>
             </DialogClose>
           ))}
         </div>
@@ -245,7 +261,7 @@ function MobileMenu() {
             <MobileNavLink key={label} label={label} />
           ))}
           <MobileMenuGroup title="טפט לפי שימוש" items={useMenu} />
-          <MobileMenuGroup title="טפט לפי סגנון" items={styleMenu} />
+          <MobileMenuGroup title="טפט לפי סגנון" items={styleMenu} allLink />
           <MobileNavLink label="צפייה בכל החנות" />
           <MobileNavLink label="עשה זאת בעצמך" diy />
           {mobileNavAfter.map((label) => (
@@ -306,7 +322,7 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {menu === "style" && <MegaMenu title="בחרו טפט לפי סגנון" items={styleMenu} />}
+      {menu === "style" && <MegaMenu title="בחרו טפט לפי סגנון" items={styleMenu} allLink />}
       {menu === "use" && <MegaMenu title="בחרו טפט לפי שימוש" items={useMenu} />}
     </header>
   );

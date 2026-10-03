@@ -20,6 +20,8 @@ import { Route as Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char14
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport } from './routes/טפט-לפי-סגנון.index'
+import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport } from './routes/טפט-לפי-סגנון.$style'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -87,6 +89,22 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute =
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport.update(
+    {
+      id: '/טפט-לפי-סגנון/',
+      path: '/טפט-לפי-סגנון/',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
+const Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute =
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport.update(
+    {
+      id: '/טפט-לפי-סגנון/$style',
+      path: '/טפט-לפי-סגנון/$style',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -99,7 +117,9 @@ export interface FileRoutesByFullPath {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
+  '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -111,7 +131,9 @@ export interface FileRoutesByTo {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin': typeof AdminIndexRoute
+  '/טפט-לפי-סגנון': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,7 +147,9 @@ export interface FileRoutesById {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
+  '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,7 +164,9 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
+    | '/טפט-לפי-סגנון/$style'
     | '/admin/'
+    | '/טפט-לפי-סגנון/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -152,7 +178,9 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
+    | '/טפט-לפי-סגנון/$style'
     | '/admin'
+    | '/טפט-לפי-סגנון'
   id:
     | '__root__'
     | '/'
@@ -165,7 +193,9 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
+    | '/טפט-לפי-סגנון/$style'
     | '/admin/'
+    | '/טפט-לפי-סגנון/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -178,6 +208,8 @@ export interface RootRouteChildren {
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   ProductSlugRoute: typeof ProductSlugRoute
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -259,6 +291,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/טפט-לפי-סגנון/': {
+      id: '/טפט-לפי-סגנון/'
+      path: '/טפט-לפי-סגנון'
+      fullPath: '/טפט-לפי-סגנון/'
+      preLoaderRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/טפט-לפי-סגנון/$style': {
+      id: '/טפט-לפי-סגנון/$style'
+      path: '/טפט-לפי-סגנון/$style'
+      fullPath: '/טפט-לפי-סגנון/$style'
+      preLoaderRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -288,6 +334,10 @@ const rootRouteChildren: RootRouteChildren = {
   Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route:
     Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route,
   ProductSlugRoute: ProductSlugRoute,
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute:
+    Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute,
+  Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute:
+    Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

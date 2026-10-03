@@ -271,3 +271,45 @@ export async function fetchProduct(slug: string): Promise<ProductData | null> {
     related: await shopItemsFor(relatedProducts),
   };
 }
+
+/** A wallpaper as the style archives need it: its flat swatch, and the roll photo shown on hover. */
+export interface StyleItem {
+  handle: string;
+  slug: string;
+  title: string;
+  style_family: string | null;
+  finish: string | null;
+  base_price: number;
+  colors: string[];
+  swatch: string | null;
+  roll: string | null;
+}
+
+/** Every wallpaper with its swatch and roll photo. The style pages filter this list in the page. */
+export async function fetchStyleItems(): Promise<StyleItem[]> {
+  const products = await rows<Product>(
+    supabase.from("products").select("*").eq("product_type", "wallpaper").order("sort_order"),
+  );
+  if (!products.length) return [];
+  const images = await rows<ProductImage>(
+    supabase
+      .from("product_images")
+      .select("*")
+      .in("product_handle", products.map((p) => p.handle))
+      .in("kind", ["swatch", "roll"])
+      .order("sort_order"),
+  );
+  const first = (handle: string, kind: ProductImage["kind"]) =>
+    images.find((i) => i.product_handle === handle && i.kind === kind)?.image_path ?? null;
+  return products.map((product) => ({
+    handle: product.handle,
+    slug: product.slug,
+    title: product.title,
+    style_family: product.style_family,
+    finish: product.finish,
+    base_price: product.base_price,
+    colors: product.colors ?? [],
+    swatch: first(product.handle, "swatch"),
+    roll: first(product.handle, "roll"),
+  }));
+}

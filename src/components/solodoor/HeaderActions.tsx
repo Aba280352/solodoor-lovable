@@ -11,7 +11,7 @@ import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
 import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
 import { formatPrice } from "./shop/catalog";
-import { shopSearchFor } from "./shop/links";
+import { MenuLink } from "./shop/MenuLink";
 
 const iconTrigger = "inline-flex cursor-pointer items-center text-foreground";
 
@@ -60,12 +60,12 @@ export function SearchButton() {
           <div className="mt-3 flex flex-col gap-2">
             {results.map((item) => (
               <DialogClose key={item.name} asChild>
-                <Link to="/חנות" search={shopSearchFor(item.name)} className="flex items-center gap-4">
+                <MenuLink name={item.name} className="flex items-center gap-4">
                 <div className="size-16 flex-none overflow-hidden rounded-md border border-border bg-muted">
                   <img src={item.img} alt={item.name} className="block size-full object-cover" />
                 </div>
                 <span className="fs-18 font-medium text-foreground">{item.name}</span>
-                </Link>
+                </MenuLink>
               </DialogClose>
             ))}
           </div>
