@@ -22,10 +22,11 @@ const footerLinkClass =
   "flex items-center justify-between gap-2.5 fs-16 text-foreground transition-colors duration-160 ease-standard hover:text-clay";
 
 /** Pages that exist get a real link; the rest stay placeholders for now. */
-const FOOTER_PATHS: Record<string, "/" | "/ציפוי-דלתות" | "/ציפוי-מטבחים" | "/מאמרים"> = {
+const FOOTER_PATHS: Record<string, "/" | "/ציפוי-דלתות" | "/ציפוי-מטבחים" | "/מאמרים" | "/שאלות-נפוצות"> = {
   "דף הבית": "/",
   "ציפוי דלתות": "/ציפוי-דלתות",
   מאמרים: "/מאמרים",
+  "שאלות נפוצות": "/שאלות-נפוצות",
 };
 
 function FooterLink({ label, category }: { label: string; category: boolean }) {

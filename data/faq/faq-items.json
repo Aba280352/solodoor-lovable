@@ -1,0 +1,669 @@
+[
+ {
+  "question": "אפשר להדביק לבד?",
+  "answer": "כן. הטפט מגיע בהדבקה עצמית, ומדביקים אותו על המשטח הקיים עם קלף וסכין יפנית. עובדים לאט, מהמרכז החוצה, ומחליקים בועות לכיוון הקצוות. מי שמעדיף יכול להוסיף התקנה מקצועית בהזמנה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 1
+ },
+ {
+  "question": "המחיר כולל התקנה?",
+  "answer": "לא. המחיר הוא לחומר בלבד. מי שמעדיף מתקין יכול לסמן התקנה מקצועית בהזמנה, בתוספת 500 ש\"ח להזמנה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 2
+ },
+ {
+  "question": "איך מנקים את הטפט?",
+  "answer": "ניקוי עדין במטלית לחה. כדאי להימנע מסקוטש מחוספס ומחומרים שורטים.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 3
+ },
+ {
+  "question": "כמה עולה משלוח וכמה זמן לוקח לקבל?",
+  "answer": "משלוח עד הבית לכל הארץ בעלות של 55 ש\"ח. ההזמנה מגיעה תוך 7 ימי עסקים.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door",
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 4
+ },
+ {
+  "question": "מה המינימום להזמנה?",
+  "answer": "טפט הנמכר לפי מטר מוזמן במינימום של 2 מטר. דלת נמכרת לפי צד: יחידה אחת מכסה צד אחד של דלת בגודל רגיל.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 5
+ },
+ {
+  "question": "אפשר להחזיר או להחליף?",
+  "answer": "טפט שנחתך לפי המידה שהזמנתם מיוצר במיוחד עבורכם, ולכן אי אפשר להחזיר או להחליף אותו. לא בטוחים בגוון? הזמינו דוגמית לפני הרכישה. קיבלתם מוצר פגום או שונה ממה שהזמנתם? שלחו לנו תמונה בווצאפ ונטפל בזה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 6
+ },
+ {
+  "question": "אילו כלים צריך כדי להדביק?",
+  "answer": "קלף להחלקת הטפט וסכין יפנית לחיתוך. במשטח שיש מומלץ גם סיליקון לסגירת החיבור לקיר ולכיור. אפשר להוסיף את הכלים להזמנה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 7
+ },
+ {
+  "question": "איך מתבצעת ההתקנה?",
+  "answer": "לאחר בחירת הדגם והמידות, אפשר להדביק בעצמכם או להוסיף התקנה מקצועית בבית הלקוח, עם גימור נקי ומדויק.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 8
+ },
+ {
+  "question": "איך מודדים נכון לפני הזמנה?",
+  "answer": "אפשר להיעזר בטיפ המדידה שבדף המוצר או לשלוח תמונה ומידות משוערות בווצאפ, כדי שנוכל לכוון אתכם בצורה נכונה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 9
+ },
+ {
+  "question": "האם הציפוי עמיד לאורך זמן?",
+  "answer": "כן. הציפויים נבחרים לשימוש יומיומי, עם עמידות טובה ושמירה על מראה אסתטי לאורך זמן.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 10
+ },
+ {
+  "question": "כמה זמן לוקח התהליך?",
+  "answer": "משך התהליך משתנה לפי סוג המשטח והיקף העבודה, אך המטרה היא לייצר תהליך נוח, מדויק ויעיל.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 11
+ },
+ {
+  "question": "איך שומרים על הציפוי?",
+  "answer": "ניקוי עדין במטלית לחה ושימוש נכון ישמרו על מראה נקי, אסתטי ועמיד לאורך זמן.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 12
+ },
+ {
+  "question": "האם זה מתאים גם למטבחים ולמקררים?",
+  "answer": "כן. יש פתרונות ייעודיים גם לדלתות, מטבחים, מקררים, משטחי שיש, קירות וארונות חשמל.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 13
+ },
+ {
+  "question": "האם טפט מתקלף?",
+  "answer": "בתנאים מסוימים כן, אבל ברוב המקרים הקילוף הוא תוצאה של חומר לא מתאים, הכנת שטח חסרה, לחות או התקנה לא מדויקת. חיפוי איכותי שמותקן על משטח שהוכן נכון נשאר יפה ועמיד במשך שנים.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": "האם-טפט-מתקלף",
+  "sort_order": 14
+ },
+ {
+  "question": "כמה זמן מחזיק טפט?",
+  "answer": "זה תלוי בחומר, במשטח, בהתקנה ובתחזוקה. חומר איכותי והתקנה נכונה יכולים ללוות את הבית שנים רבות, ואילו בחירה לא מתאימה למשטח או טיפול אגרסיבי מקצרים את חייו.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": "kama-zman-mahazik-tapet",
+  "sort_order": 15
+ },
+ {
+  "question": "מה ההבדל בין PVC למדבקה רגילה?",
+  "answer": "PVC הוא חומר פולימרי נפוץ, גמיש ועמיד. מדבקה היא הגדרה רחבה לאופן שבו חומר מודבק על משטח, ולכן גם מדבקה יכולה להיות מ-PVC, אבל לא כל מדבקה היא חיפוי PVC איכותי ועבה. ההבדל נמצא בעובי החומר, באיכות הדבק ובהתקנה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": "pvc-mul-madbeka",
+  "sort_order": 16
+ },
+ {
+  "question": "האם ציפוי PVC עמיד לשריטות?",
+  "answer": "כן, ציפוי PVC איכותי ועבה מתמודד היטב עם השחיקה הרגילה של החיים בבית. הוא לא חסין לחלוטין מפני כל פגיעה, בדיוק כמו צבע בתנור או משטח עץ, ולכן איכות הציפוי והתקנה קובעות הרבה.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": "is-pvc-coating-scratch-resistant",
+  "sort_order": 17
+ },
+ {
+  "question": "איך מנקים ציפוי פולימרי בלי לפגוע בגימור?",
+  "answer": "בדרך כלל לא צריך חומרים חזקים או קרצוף. ניקוי עדין ונכון במטלית לחה שומר על הצבע, הטקסטורה והגימור לאורך שנים.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet",
+   "designed_door"
+  ],
+  "article": "eich-menakim-tzipui-polimeri",
+  "sort_order": 18
+ },
+ {
+  "question": "אפשר לראות את הגוון לפני שמזמינים?",
+  "answer": "כן. אפשר להזמין דוגמית לבית, ללא תשלום, ולראות את הצבע והטקסטורה באור של הבית שלכם.",
+  "categories": [
+   "door",
+   "kitchen",
+   "fridge",
+   "countertop",
+   "wall",
+   "electric-cabinet"
+  ],
+  "article": null,
+  "sort_order": 19
+ },
+ {
+  "question": "כמה חומר צריך לדלת?",
+  "answer": "יחידה אחת מכסה צד אחד של דלת בגודל רגיל. כדי לחדש את שני הצדדים מזמינים שתי יחידות.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 20
+ },
+ {
+  "question": "צריך לפרק את הידית?",
+  "answer": "מומלץ לפרק את הידית ואת העינית לפני ההדבקה ולהחזיר אותן בסיום. כך הטפט יוצא חלק ורציף.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 21
+ },
+ {
+  "question": "זה מתאים גם לדלת כניסה וגם לדלת פנים?",
+  "answer": "כן. הטפט נדבק על כל דלת עם משטח חלק, נקי ויבש.",
+  "categories": [
+   "door"
+  ],
+  "article": null,
+  "sort_order": 22
+ },
+ {
+  "question": "כמה חומר צריך למטבח?",
+  "answer": "מודדים גובה ורוחב של כל חזית, מחברים ומוסיפים כ-10% רזרבה. רוחב הגליל הוא 122 ס\"מ.",
+  "categories": [
+   "kitchen"
+  ],
+  "article": null,
+  "sort_order": 23
+ },
+ {
+  "question": "הטפט מחזיק בתנאים של מטבח?",
+  "answer": "כן. הציפוי מיועד לשימוש יומיומי במטבח, כולל חום ורטיבות.",
+  "categories": [
+   "kitchen"
+  ],
+  "article": null,
+  "sort_order": 24
+ },
+ {
+  "question": "צריך לפרק את הדלתות של הארונות?",
+  "answer": "לא חובה. מספיק לפרק את הידיות, ולהדביק חזית אחרי חזית.",
+  "categories": [
+   "kitchen"
+  ],
+  "article": null,
+  "sort_order": 25
+ },
+ {
+  "question": "כמה חומר צריך למקרר?",
+  "answer": "מודדים גובה ורוחב של כל דלת וכל צד שרוצים לכסות, ומוסיפים כ-10% רזרבה. רוחב הגליל הוא 122 ס\"מ.",
+  "categories": [
+   "fridge"
+  ],
+  "article": null,
+  "sort_order": 26
+ },
+ {
+  "question": "איך מכינים את המקרר להדבקה?",
+  "answer": "מנקים היטב את המשטח משומן ומאבק ומייבשים. אם אפשר, מפרקים את הידיות לפני ההדבקה.",
+  "categories": [
+   "fridge"
+  ],
+  "article": null,
+  "sort_order": 27
+ },
+ {
+  "question": "אפשר לכסות רק את הדלתות?",
+  "answer": "כן. אפשר לכסות רק את החזית, או גם את הצדדים הגלויים של המקרר.",
+  "categories": [
+   "fridge"
+  ],
+  "article": null,
+  "sort_order": 28
+ },
+ {
+  "question": "כמה חומר צריך למשטח השיש?",
+  "answer": "מודדים אורך ועומק של המשטח כולל הקנט הקדמי, ומוסיפים כ-10% רזרבה. רוחב הגליל הוא 122 ס\"מ.",
+  "categories": [
+   "countertop"
+  ],
+  "article": null,
+  "sort_order": 29
+ },
+ {
+  "question": "למה צריך סיליקון?",
+  "answer": "הסיליקון סוגר את החיבור בין הטפט לקיר ולכיור, כדי שמים לא ייכנסו מתחת לציפוי.",
+  "categories": [
+   "countertop"
+  ],
+  "article": null,
+  "sort_order": 30
+ },
+ {
+  "question": "אפשר להניח סיר חם על המשטח?",
+  "answer": "מומלץ להשתמש בתחתית לסירים ובקרש חיתוך, כמו בכל משטח עבודה, כדי לשמור על הציפוי לאורך זמן.",
+  "categories": [
+   "countertop"
+  ],
+  "article": null,
+  "sort_order": 31
+ },
+ {
+  "question": "כמה חומר צריך לקיר?",
+  "answer": "מודדים רוחב וגובה של הקיר ומחשבים כמה רצועות צריך. רוחב הגליל הוא 122 ס\"מ. מוסיפים כ-10% רזרבה.",
+  "categories": [
+   "wall"
+  ],
+  "article": null,
+  "sort_order": 32
+ },
+ {
+  "question": "על איזה קיר אפשר להדביק?",
+  "answer": "על קיר חלק, נקי ויבש. קיר מחוספס או מתקלף צריך החלקה לפני ההדבקה.",
+  "categories": [
+   "wall"
+  ],
+  "article": null,
+  "sort_order": 33
+ },
+ {
+  "question": "איך מחברים בין רצועות?",
+  "answer": "מדביקים רצועה אחרי רצועה מלמעלה למטה, ומצמידים את הרצועות זו לזו בקו ישר.",
+  "categories": [
+   "wall"
+  ],
+  "article": null,
+  "sort_order": 34
+ },
+ {
+  "question": "כמה חומר צריך לארון חשמל?",
+  "answer": "מודדים גובה ורוחב של דלת הארון ומוסיפים כמה סנטימטרים לכל צד לקיפול.",
+  "categories": [
+   "electric-cabinet"
+  ],
+  "article": null,
+  "sort_order": 35
+ },
+ {
+  "question": "הארון נשאר נגיש אחרי ההדבקה?",
+  "answer": "כן. מדביקים על הדלת של הארון בלבד, והיא נפתחת ונסגרת כרגיל.",
+  "categories": [
+   "electric-cabinet"
+  ],
+  "article": null,
+  "sort_order": 36
+ },
+ {
+  "question": "אפשר להתאים את הארון לדלת הכניסה?",
+  "answer": "כן. אפשר להזמין את אותו גוון לדלת ולארון החשמל, כדי שהכניסה תיראה אחידה.",
+  "categories": [
+   "electric-cabinet"
+  ],
+  "article": null,
+  "sort_order": 37
+ },
+ {
+  "question": "מה ההבדל בין טפט מעוצב לטפט חלק?",
+  "answer": "טפט מעוצב מודפס עם דוגמה, מסגרות או פסים ואפקט עומק תלת ממדי. טפט חלק הוא גוון או טקסטורה אחידים.",
+  "categories": [
+   "designed_door"
+  ],
+  "article": null,
+  "sort_order": 38
+ },
+ {
+  "question": "איך מנקים את השטיח?",
+  "answer": "לניקוי שוטף מספיק בדרך כלל לנגב במטלית לחה ובמים. אין להשתמש באקונומיקה, בחומרים המכילים אלכוהול, במסירי שומנים חריפים או בסקוטש מחוספס.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 39
+ },
+ {
+  "question": "האם השטיח מתאים למטבח?",
+  "answer": "כן. משטח ה-PVC אינו סופג נוזלים וקל לניקוי, ולכן הוא מתאים במיוחד למטבח ולאזורים שבהם יש לכלוך והתזות.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 40
+ },
+ {
+  "question": "האם השטיח מחליק?",
+  "answer": "רמת האחיזה של השטיח תלויה בסוג הרצפה ובמצבה. מומלץ להניח אותו על משטח ישר, נקי ויבש.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 41
+ },
+ {
+  "question": "מה עובי השטיח?",
+  "answer": "עובי השטיח הוא 2.5 מ\"מ, כך שהוא בעל פרופיל דק ונשאר שטוח על הרצפה.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 42
+ },
+ {
+  "question": "האם הוא מתאים לילדים ולחיות מחמד?",
+  "answer": "כן. המשטח אינו סופג נוזלים וקל לניקוי, ולכן הוא נוח במיוחד לבתים עם ילדים וחיות מחמד.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 43
+ },
+ {
+  "question": "אפשר להזמין מידה אישית?",
+  "answer": "כן. בנוסף למידות הקבועות, אפשר לבדוק אפשרות לייצור במידה אישית בהתאם למגבלות הייצור.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 44
+ },
+ {
+  "question": "האם הצבע יהיה בדיוק כמו בתמונה?",
+  "answer": "ייתכנו הבדלים קלים בגוון ובבהירות בין התצוגה במסך לבין המוצר המודפס בפועל.",
+  "categories": [
+   "pvc_rug"
+  ],
+  "article": null,
+  "sort_order": 45
+ },
+ {
+  "question": "האם טפט לדלת עמיד למים?",
+  "answer": "טפט או ציפוי איכותי לדלת יכול להיות עמיד מאוד למים, ללחות ולניקוי, אבל לא כל טפט הוא אותו חומר ולא כל התקנה תיתן את אותה תוצאה. ההבדל נמצא בסוג הציפוי, במצב הדלת לפני ההדבקה ובאיכות ההתקנה.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "is-door-wallpaper-water-resistant",
+  "sort_order": 46
+ },
+ {
+  "question": "כמה זמן מחזיק ציפוי לדלת?",
+  "answer": "אין מספר קסם אחד. ציפוי איכותי שמותאם נכון לדלת ומותקן במקצועיות יכול להיראות מצוין במשך שנים, בעוד שחומר דק או התקנה חפוזה מאבדים מהמראה מוקדם יותר.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "kama-zman-machzik-tzipuy-ladelet",
+  "sort_order": 47
+ },
+ {
+  "question": "מה עדיף, ציפוי פולימרי או צביעת דלת?",
+  "answer": "ההבדל האמיתי הוא לא רק במחיר הראשוני אלא בעמידות, ברמת הגימור ובכמה זמן התוצאה נשארת יפה. צביעה יכולה להתאים לדלת עץ איכותית במצב מצוין, ואילו ציפוי פולימרי עוטף את הדלת בחומר חדש ומעוצב.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "tzifui-polimeri-mul-tzviat-dlatot",
+  "sort_order": 48
+ },
+ {
+  "question": "מה עדיף לדלת, פורניר או פולימר?",
+  "answer": "פורניר הוא חומר טבעי עם אופי ייחודי, ופולימר הוא ציפוי עמיד שנותן שינוי גדול בלי שיפוץ יקר ומלכלך. הבחירה תלויה בשימוש היומיומי, במצב התשתית, ברמת התחזוקה שמתאימה לכם ובתקציב.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "veneer-vs-polymer",
+  "sort_order": 49
+ },
+ {
+  "question": "מתי משתלם לצפות דלת במקום להחליף אותה?",
+  "answer": "כשהדלת עצמה תקינה, חזקה ונפתחת כמו שצריך, ציפוי מקצועי משנה את המראה שלה מהיסוד בלי שיפוץ ארוך ויקר. קודם בודקים את מצב הדלת, ואם יש בעיה מבנית מטפלים בה לפני הציפוי.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "tzifuy-delet-bimkom-hachlafa",
+  "sort_order": 50
+ },
+ {
+  "question": "האם אפשר לצפות דלת שרוטה בלי להחליף אותה?",
+  "answer": "ברוב המקרים כן. ציפוי איכותי מסתיר שריטות ופגמים אסתטיים, בתנאי שהדלת עצמה יציבה. הוא אינו תחליף לתיקון של בעיה מבנית, חלודה עמוקה או מנגנון שלא עובד.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "can-you-cover-a-scratched-door",
+  "sort_order": 51
+ },
+ {
+  "question": "האם אפשר לצפות דלת פגומה?",
+  "answer": "ברוב המקרים כן, אחרי שבודקים מה באמת נפגע, מכינים את המשטח כמו שצריך ובוחרים ציפוי שמתאים לדלת. ציפוי אינו פתרון לבעיית בטיחות או לחלודה מתקדמת.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "haim-efshar-letzapot-delet-peguma",
+  "sort_order": 52
+ },
+ {
+  "question": "איך מסתירים שריטות בדלת הבית?",
+  "answer": "זה תלוי בעומק הפגיעה ובמצב הדלת. לשריטות נקודתיות יש פתרונות מהירים, ולדלת שחוקה אפשר לחדש את כל המראה בציפוי עמיד.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "how-to-hide-scratches-on-home-door",
+  "sort_order": 53
+ },
+ {
+  "question": "מה עושים עם דלת מתקלפת?",
+  "answer": "קודם בודקים אם הדלת עצמה עדיין תקינה, נסגרת היטב ויציבה. אם כן, ברוב המקרים אפשר להחזיר לה מראה חדש ונקי בציפוי, בלי להחליף אותה.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "ma-osim-im-delet-mitkalefet",
+  "sort_order": 54
+ },
+ {
+  "question": "איך מחדשים דלת כניסה ישנה בלי להחליף אותה?",
+  "answer": "לא תמיד צריך להחליף דלת תקינה. חיפוי איכותי מחדש את המראה, מתאים אותה לעיצוב הבית ושומר על הדלת הקיימת, ובחומר נכון ובהתקנה מקצועית התוצאה נראית כמו שדרוג מדויק ולא כמו פתרון זמני.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "איך-לחדש-דלת-כניסה-ישנה",
+  "sort_order": 55
+ },
+ {
+  "question": "מה משפיע על המחיר של ציפוי לדלת פלדלת?",
+  "answer": "המחיר אינו אחיד לכל דלת. הוא מושפע ממצב הדלת, מהעיצוב שבוחרים, מסוג החומר, מהיקף העבודה ומהגימור. בחנות מופיע מחיר ברור לצד אחד של דלת, ואפשר להוסיף התקנה מקצועית.",
+  "categories": [
+   "door",
+   "designed_door"
+  ],
+  "article": "mechir-tzipuy-delet-pladelet",
+  "sort_order": 56
+ },
+ {
+  "question": "מה משתלם יותר, חידוש מטבח בציפוי או החלפה?",
+  "answer": "בהרבה בתים גוף הארונות חזק, החלוקה נוחה והמשטח תקין, ורק המראה החיצוני מיושן. במצב כזה ציפוי מאפשר להחליף צבע וסגנון בלי לפרק את המטבח. לא כל מטבח מתאים לחידוש בציפוי, וההחלטה תלויה במצב התשתית, בהרגלי השימוש ובתקציב.",
+  "categories": [
+   "kitchen"
+  ],
+  "article": "hidush-mitbah-be-tzipui-mul-hahlafa",
+  "sort_order": 57
+ },
+ {
+  "question": "מה כדאי לבדוק לפני שמחפים מקרר?",
+  "answer": "אם המקרר עובד מצוין, אפשר לחדש את הנראות שלו בציפוי במקום להחליף אותו. כדאי לבדוק את מצב המקרר, אילו חלקים רוצים לחפות ואיך מטפלים בידיות, בפינות ובדפנות גלויות.",
+  "categories": [
+   "fridge"
+  ],
+  "article": "madric-lehipuy-mekarerim",
+  "sort_order": 58
+ },
+ {
+  "question": "איך מחפים קיר בצורה נקייה ועמידה?",
+  "answer": "בוחרים חומר נכון, מכינים את הקיר בצורה מדויקת ומדביקים בגימור נקי. חשוב להבין מה מצב הקיר, איזה חיפוי מתאים לו ואיך בוחרים עיצוב שמשתלב בבית.",
+  "categories": [
+   "wall"
+  ],
+  "article": "איך-מחפים-קיר",
+  "sort_order": 59
+ },
+ {
+  "question": "אפשר לחפות ארון חשמל ביתי?",
+  "answer": "כן. חיפוי ארון חשמל הופך את הנקודה הטכנית הזאת לחלק מהעיצוב, בלי להחליף את הארון ובלי לפגוע בתפקיד שלו.",
+  "categories": [
+   "electric-cabinet"
+  ],
+  "article": "home-electrical-cabinet-cladding",
+  "sort_order": 60
+ }
+]

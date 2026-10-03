@@ -69,6 +69,16 @@ export function Faq() {
           </div>
         </div>
 
+        <div className="mt-8 flex justify-center">
+          <Link
+            to="/שאלות-נפוצות"
+            className="inline-flex items-center gap-2 border-b border-primary pb-0.5 fs-17 font-medium text-foreground transition-[gap] duration-240 ease-standard hover:gap-3.5"
+          >
+            <span>לכל השאלות והתשובות, לפי סוג הטפט</span>
+            <Icon name="AngleLeft" size={13} />
+          </Link>
+        </div>
+
         <div className="mt-13 flex flex-col items-center gap-5.5">
           <span className="text-center fs-28 leading-[1.15] font-medium tracking-[-0.02em] text-foreground lg:fs-44">
             יש לכם שאלה נוספת? אנחנו כאן לעזור

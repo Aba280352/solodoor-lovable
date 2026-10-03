@@ -16,6 +16,7 @@ import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/�
 import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } from './routes/מאמרים'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport } from './routes/ציפוי-מטבחים'
+import { Route as Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport } from './routes/שאלות-נפוצות'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
@@ -63,6 +64,14 @@ const Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Ch
       getParentRoute: () => rootRouteImport,
     } as any,
   )
+const Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route =
+  Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport.update(
+    {
+      id: '/שאלות-נפוצות',
+      path: '/שאלות-נפוצות',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -87,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -98,6 +108,7 @@ export interface FileRoutesByTo {
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -111,6 +122,7 @@ export interface FileRoutesById {
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
   '/product/$slug': typeof ProductSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
     | '/מאמרים'
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
+    | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
     | '/admin/'
@@ -136,6 +149,7 @@ export interface FileRouteTypes {
     | '/מאמרים'
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
+    | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
     | '/admin'
@@ -148,6 +162,7 @@ export interface FileRouteTypes {
     | '/מאמרים'
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
+    | '/שאלות-נפוצות'
     | '/admin/$id'
     | '/product/$slug'
     | '/admin/'
@@ -161,6 +176,7 @@ export interface RootRouteChildren {
   Char1502Char1488Char1502Char1512Char1497Char1501Route: typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
+  Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   ProductSlugRoute: typeof ProductSlugRoute
 }
 
@@ -215,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/שאלות-נפוצות': {
+      id: '/שאלות-נפוצות'
+      path: '/שאלות-נפוצות'
+      fullPath: '/שאלות-נפוצות'
+      preLoaderRoute: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -262,6 +285,8 @@ const rootRouteChildren: RootRouteChildren = {
     Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route,
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route:
     Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route,
+  Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route:
+    Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route,
   ProductSlugRoute: ProductSlugRoute,
 }
 export const routeTree = rootRouteImport
