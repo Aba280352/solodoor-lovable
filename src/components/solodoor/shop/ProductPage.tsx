@@ -292,10 +292,10 @@ function ProductFaq({ items }: { items: FaqItem[] }) {
 }
 
 /** The product page. `tab` comes from the URL, so every surface has its own address. */
-export function ProductPage({ data, tab }: { data: ProductData; tab: string | undefined }) {
+export function ProductPage({ data, tab, variant: initialVariant }: { data: ProductData; tab: string | undefined; variant?: string }) {
   const { product } = data;
   const application = currentApplication(data, tab);
-  const [variantKey, setVariantKey] = useState(data.variants[0]?.variant_key);
+  const [variantKey, setVariantKey] = useState(data.variants.find((v) => v.variant_key === initialVariant)?.variant_key ?? data.variants[0]?.variant_key);
   const variant = data.variants.find((v) => v.variant_key === variantKey) ?? data.variants[0] ?? null;
   const images = galleryImages(data, application, variant);
   const heading = productHeading(data, application);

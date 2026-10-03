@@ -72,6 +72,7 @@ create table product_variants (
   variant_key        text not null,
   title              text not null,
   price              numeric(10,2) not null,
+  color              text,                      -- colour family of this photo (see products.colors)
   image_path         text,
   sort_order         int not null default 0,
   is_active          boolean not null default true,

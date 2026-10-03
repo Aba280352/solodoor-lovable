@@ -95,7 +95,7 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
             {items.length ? (
               <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-6">
                 {items.map((item) => (
-                  <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} />
+                  <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} colors={filters.colors} />
                 ))}
               </div>
             ) : (

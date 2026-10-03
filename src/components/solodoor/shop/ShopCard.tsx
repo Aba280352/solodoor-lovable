@@ -8,6 +8,8 @@ interface ShopCardProps {
   /** The surface the visitor is browsing; picks the photo, the price and the tab the card opens. */
   application?: Application;
   rugFromPrice?: number | null;
+  /** Selected colour families; a designed door then shows (and opens on) its photo in that colour. */
+  colors?: string[];
 }
 
 /** What the card says under the name, e.g. "₪119 למטר". */
@@ -19,9 +21,10 @@ function priceLabel(item: ShopItem, application?: Application, rugFromPrice?: nu
 }
 
 /** Shop grid card. The whole card is one link to the product page. */
-export function ShopCard({ item, application, rugFromPrice }: ShopCardProps) {
+export function ShopCard({ item, application, rugFromPrice, colors = [] }: ShopCardProps) {
   const isWallpaper = item.product_type === "wallpaper";
-  const path = (isWallpaper && application ? item.images[application.slug] : null) ?? item.cover;
+  const matching = colors.length ? item.variants.find((v) => v.color && colors.includes(v.color)) : undefined;
+  const path = matching?.image ?? (isWallpaper && application ? item.images[application.slug] : null) ?? item.cover;
   const src = catalogImage(path);
   const name = isWallpaper ? `טפט ${item.title}` : item.product_type === "designed_door" ? `דגם ${item.title}` : item.title;
 
@@ -29,7 +32,7 @@ export function ShopCard({ item, application, rugFromPrice }: ShopCardProps) {
     <Link
       to="/product/$slug"
       params={{ slug: item.slug }}
-      search={isWallpaper && application ? { tab: application.slug } : {}}
+      search={isWallpaper && application ? { tab: application.slug } : matching ? { variant: matching.key } : {}}
       className="group flex flex-col overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">

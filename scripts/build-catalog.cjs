@@ -12,6 +12,7 @@
  * to data/private/, which is not committed.
  */
 const fs = require("fs");
+const { execFileSync } = require("child_process");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -274,6 +275,11 @@ const WALLPAPER_COLORS = {
   "matte-black": ["black"], "black-stripes": ["black"], "veined-marble": ["white"], cream: ["cream"],
   "smoky-light-blue": ["blue"],
 };
+/** Families that look alike in a render; a name/pixel mismatch inside a group is not worth flagging. */
+const NEAR = {
+  white: ["cream", "grey"], cream: ["white", "grey", "brown"], grey: ["white", "cream", "black", "blue"],
+  black: ["grey"], brown: ["cream", "black"], blue: ["grey"],
+};
 const COLOR_WORDS = [
   ["white", ["לבן", "חלבי"]], ["black", ["שחור"]], ["cream", ["בז", "שמנת", "קרם", "הוואנה"]],
   ["grey", ["אפור", "אפרפר"]], ["brown", ["חום", "עץ"]], ["blue", ["כחול", "תכלת"]],
@@ -286,6 +292,26 @@ function colorOfName(name) {
     if (hit) return hit[0];
   }
   return null;
+}
+
+/**
+ * Rug colours, read by eye from the photos (the rugs are staged in rooms, so pixels would mostly
+ * measure the room). Index = rug number (rug-01 is 1).
+ */
+const RUG_COLORS = {
+  1: ["multi"], 2: ["multi"], 3: ["multi"], 4: ["cream"], 5: ["brown"], 6: ["cream"], 7: ["grey", "cream"],
+  8: ["cream"], 9: ["cream", "green"], 10: ["cream"], 11: ["grey"], 12: ["multi"], 13: ["black"],
+  14: ["cream", "black"], 15: ["grey"], 16: ["green"], 17: ["cream"], 18: ["cream", "green"], 19: ["brown"],
+  20: ["blue"], 21: ["cream"], 22: ["cream", "black"], 23: ["cream"], 24: ["white", "grey"], 25: ["brown"],
+  26: ["brown"], 27: ["brown"], 28: ["cream"], 29: ["grey"], 30: ["white"], 31: ["cream", "green"],
+  32: ["multi"], 33: ["white"], 34: ["cream", "green"], 35: ["brown"], 36: ["blue"], 37: ["cream"],
+  38: ["multi"], 39: ["cream", "green"],
+};
+
+/** Colour family of door photos by their pixels (see scripts/color-of-image.cjs). */
+function pixelFamilies(files) {
+  const out = execFileSync("node", [path.join(__dirname, "color-of-image.cjs"), "--json", ...files], { encoding: "utf8", maxBuffer: 1 << 24 });
+  return JSON.parse(out).map((r) => r.family);
 }
 
 const MATERIAL = "ציפוי פולימרי בהדבקה עצמית";
@@ -449,6 +475,16 @@ const designedLong = (name, variants) =>
 function addDesigned(name, handleSuffix, photos, dirPath) {
   const handle = `door-${handleSuffix}`;
   const title = clean(name);
+  // The name decides when it carries a colour; photos without one are read from their pixels.
+  const pixels = pixelFamilies(photos.map((f) => path.join(SRC, dirPath, f)));
+  const photoColors = photos.map((f, i) => {
+    const byName = colorOfName(stem(f));
+    if (byName && byName !== pixels[i] && !(NEAR[byName] ?? []).includes(pixels[i])) {
+      notes.push(`צבע שונה בין השם לתמונה: ${clean(stem(f))} (שם: ${byName}, תמונה: ${pixels[i]})`);
+    }
+    return byName ?? pixels[i];
+  });
+  const variantColors = [...new Set(photoColors)];
   products.push({
     handle,
     slug: heSlug(name),
@@ -465,7 +501,7 @@ function addDesigned(name, handleSuffix, photos, dirPath) {
     thickness_mm: "",
     sample_available: false,
     installation_available: true,
-    colors: [...new Set(photos.map((f) => colorOfName(stem(f))).filter(Boolean))],
+    colors: variantColors,
     is_active: true,
     sort_order: ++sort,
     shopify_product_id: "",
@@ -476,6 +512,7 @@ function addDesigned(name, handleSuffix, photos, dirPath) {
       variant_key: `v${i + 1}`,
       title: clean(stem(f)),
       price: PRICE_DESIGNED_DOOR_SIDE,
+      color: photoColors[i],
       image_path: image(`products/${handle}/v${i + 1}.webp`, `${dirPath}/${f}`),
       sort_order: i + 1,
       is_active: true,
@@ -531,7 +568,7 @@ for (const f of files(RUGS).filter((x) => isImage(x) && x.startsWith("שטיח �
     thickness_mm: 2.5,
     sample_available: false,
     installation_available: false,
-    colors: [],
+    colors: RUG_COLORS[rugN] ?? [],
     is_active: true,
     sort_order: ++sort,
     shopify_product_id: "",
@@ -561,7 +598,7 @@ writeCsv(OUT, "04_product_images.csv", ["product_handle", "kind", "sort_order", 
 writeCsv(
   OUT,
   "05_product_variants.csv",
-  ["product_handle", "variant_key", "title", "price", "image_path", "sort_order", "is_active", "shopify_variant_id"],
+  ["product_handle", "variant_key", "title", "price", "color", "image_path", "sort_order", "is_active", "shopify_variant_id"],
   productVariants,
 );
 

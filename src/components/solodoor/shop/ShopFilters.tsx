@@ -152,16 +152,6 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
             );
           })}
         </div>
-        {filters.archive && (
-          <button
-            type="button"
-            onClick={() => go({ cat: undefined, all: undefined })}
-            className="mt-2 inline-flex cursor-pointer items-center gap-1.5 fs-14 font-medium text-clay"
-          >
-            <Icon name="AngleRight" size={11} />
-            לכל החנות
-          </button>
-        )}
       </Group>
 
       {colors.length > 0 && (
@@ -176,7 +166,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
                   onChange={(on) => go({ color: joinList(toggle(filters.colors, option.key, on)) })}
                   label={family.label}
                   count={option.count}
-                  style={{ backgroundColor: family.hex }}
+                  style={{ background: family.fill }}
                   checkTone={option.key === "white" || option.key === "cream" ? "dark" : "light"}
                 />
               );

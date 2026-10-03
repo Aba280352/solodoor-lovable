@@ -65,6 +65,8 @@ export interface ProductVariant {
   variant_key: string;
   title: string;
   price: number;
+  /** Colour family of this photo. */
+  color: string | null;
   image_path: string | null;
   sort_order: number;
 }
@@ -120,6 +122,8 @@ export interface ShopItem {
   style_family: string | null;
   base_price: number;
   colors: string[];
+  /** Every photo of a designed door with its colour, so a colour filter can show the matching one. */
+  variants: { key: string; color: string | null; image: string | null }[];
   /** application slug → image path (wallpapers only). */
   images: Record<string, string>;
   cover: string | null;
@@ -172,6 +176,9 @@ function toShopItems(
       style_family: product.style_family,
       base_price: product.base_price,
       colors: product.colors ?? [],
+      variants: variants
+        .filter((v) => v.product_handle === product.handle)
+        .map((v) => ({ key: v.variant_key, color: v.color, image: v.image_path })),
       images: byApp,
       cover,
     };
@@ -184,7 +191,7 @@ async function shopItemsFor(products: Product[]): Promise<ShopItem[]> {
   const [productApplications, variants, images] = await Promise.all([
     rows<ProductApplication>(supabase.from("product_applications").select("*").in("product_handle", handles)),
     rows<ProductVariant>(
-      supabase.from("product_variants").select("*").in("product_handle", handles).order("sort_order").eq("sort_order", 1),
+      supabase.from("product_variants").select("*").in("product_handle", handles).order("sort_order"),
     ),
     rows<ProductImage>(supabase.from("product_images").select("*").in("product_handle", handles).eq("kind", "main")),
   ]);
