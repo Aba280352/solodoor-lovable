@@ -1,7 +1,7 @@
 delete from faq_items;
 insert into faq_items (question, answer, categories, article_slug, sort_order) values
 ($q$אפשר להדביק לבד?$q$, $q$כן. הטפט מגיע בהדבקה עצמית, ומדביקים אותו על המשטח הקיים עם קלף וסכין יפנית. עובדים לאט, מהמרכז החוצה, ומחליקים בועות לכיוון הקצוות. מי שמעדיף יכול להוסיף התקנה מקצועית בהזמנה.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door}', null, 1),
-($q$המחיר כולל התקנה?$q$, $q$לא. המחיר הוא לחומר בלבד. מי שמעדיף מתקין יכול לסמן התקנה מקצועית בהזמנה, בתוספת 500 ש"ח להזמנה.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door}', null, 2),
+($q$המחיר כולל התקנה?$q$, $q$לא. המחיר הוא לחומר בלבד. מי שמעדיף מתקין יכול לסמן התקנה מקצועית בהזמנה, בתוספת 490 ש"ח להזמנה.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door}', null, 2),
 ($q$איך מנקים את הטפט?$q$, $q$ניקוי עדין במטלית לחה. כדאי להימנע מסקוטש מחוספס ומחומרים שורטים.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door}', null, 3),
 ($q$כמה עולה משלוח וכמה זמן לוקח לקבל?$q$, $q$משלוח עד הבית לכל הארץ בעלות של 55 ש"ח. ההזמנה מגיעה תוך 7 ימי עסקים.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door,pvc_rug}', null, 4),
 ($q$מה המינימום להזמנה?$q$, $q$טפט הנמכר לפי מטר מוזמן במינימום של 2 מטר. דלת נמכרת לפי צד: יחידה אחת מכסה צד אחד של דלת בגודל רגיל.$q$, '{door,kitchen,fridge,countertop,wall,electric-cabinet,designed_door}', null, 5),
