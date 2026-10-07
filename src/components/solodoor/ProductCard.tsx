@@ -73,9 +73,9 @@ export function ProductZoomDialog({ product, label, onClose }: ProductZoomDialog
       >
         <DialogClose
           aria-label="סגירה"
-          className="fixed top-3 left-3 flex size-11 cursor-pointer items-center justify-center p-0 text-background lg:top-6 lg:left-7"
+          className="absolute top-3 left-3 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full border border-border bg-background p-0 text-foreground transition-colors duration-240 ease-standard hover:bg-primary lg:top-4 lg:left-4"
         >
-          <Icon name="Times" size={30} />
+          <Icon name="Times" size={22} />
         </DialogClose>
         {product && (
           <>
