@@ -23,5 +23,5 @@ door-number-6,מספר לדלת 6,door_number,19.9,{door},הספרה 6 לדלת.
 door-number-7,מספר לדלת 7,door_number,19.9,{door},הספרה 7 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-7.webp,true,22,
 door-number-8,מספר לדלת 8,door_number,19.9,{door},הספרה 8 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-8.webp,true,23,
 door-number-9,מספר לדלת 9,door_number,19.9,{door},הספרה 9 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-9.webp,true,24,
-installation,התקנה מקצועית,service,490,{all},"מתקין של סולודור מגיע אליכם ומדביק את הטפט. תוספת קבועה להזמנה, מעבר למחיר החומר.",,true,25,
+installation,התקנה מקצועית,service,490,"{door,designed_door}","מתקין של סולודור מגיע אליכם ומדביק את הטפט. תוספת קבועה להזמנה, מעבר למחיר החומר.",,true,25,
 sample,דוגמית לבית,sample,0,{all},"דוגמית של הגוון נשלחת אליכם הביתה, כדי לראות את הצבע והטקסטורה לפני שמזמינים.",,true,26,

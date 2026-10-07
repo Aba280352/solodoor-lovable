@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -6,11 +7,13 @@ import { cn } from "@/lib/utils";
 import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
 import { styleFamilies } from "./data";
+import { STYLE_HUB_PATH, stylePageForName } from "./shop/styles";
 
 function StyleCard({ family }: { family: (typeof styleFamilies)[number] }) {
   // Hovering a swatch previews it in the card image; leaving returns to the default.
   const [hovered, setHovered] = useState<number | null>(null);
   const current = family.swatches[hovered ?? 0];
+  const page = stylePageForName(family.name);
 
   return (
     <div className="flex flex-col-reverse overflow-hidden rounded-lg border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground lg:grid lg:grid-cols-[minmax(0,1fr)_16.25rem]">
@@ -34,13 +37,13 @@ function StyleCard({ family }: { family: (typeof styleFamilies)[number] }) {
             </span>
           ))}
         </div>
-        <a
-          href="#"
+        <Link
+          {...(page ? { to: "/טפט-לפי-סגנון/$style", params: { style: page.slug } } : { to: STYLE_HUB_PATH })}
           className="inline-flex items-center gap-2.5 fs-19 font-semibold text-foreground transition-[gap,color] duration-240 ease-standard hover:gap-4 hover:text-clay"
         >
           <span>לצפייה בדגמים</span>
           <Icon name="ArrowLeft" size={22} />
-        </a>
+        </Link>
       </div>
       <div className="relative h-48 overflow-hidden bg-muted lg:h-65">
         {family.swatches.map((src) => (
@@ -77,10 +80,10 @@ export function StyleFamilies() {
 
         <div className="mt-10 flex justify-center lg:mt-14">
           <Button asChild className="w-full px-17 lg:w-auto">
-            <a href="#">
+            <Link to={STYLE_HUB_PATH}>
               <span>לכל הדגמים</span>
               <Icon name="ArrowLeft" size={16} />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>

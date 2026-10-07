@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { cart, type CartLine } from "./cart";
-import { catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
+import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 
 interface ProductBuyBoxProps {
   data: ProductData;
@@ -102,7 +102,11 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const applies = (addon: Addon) => addon.applies_to.includes("all") || (application ? addon.applies_to.includes(application.slug) : false);
   const stripOptions = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
   const numberAddons = onDoor ? addons.filter((a) => a.addon_type === "door_number") : [];
-  const installAddon = product.installation_available ? addons.find((a) => a.addon_type === "service") : undefined;
+  // Installation is offered only on the surfaces listed in the add-on (doors). Designed doors have no tab, so their type is the key.
+  const surfaceKey = application?.slug ?? product.product_type;
+  const installAddon = product.installation_available
+    ? addons.find((a) => a.addon_type === "service" && (a.applies_to.includes("all") || a.applies_to.includes(surfaceKey)))
+    : undefined;
   const sampleAddon = product.sample_available ? addons.find((a) => a.addon_type === "sample") : undefined;
   const toolAddons = isRug
     ? []
@@ -218,11 +222,11 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         <span className={sectionTitle}>{qtyLabel}</span>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Stepper value={qty} min={min} step={step} onChange={setQty} label={qtyLabel} />
-          {isWallpaper && application && (
+          {(perSide || (isWallpaper && application)) && (
             <span className="max-w-[34ch] fs-15 leading-[1.5] text-foreground">
               {perSide
-                ? "יחידה אחת מכסה צד אחד של דלת בגודל רגיל."
-                : `רוחב הגליל ${application.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר.`}
+                ? `יחידה אחת מכסה צד אחד של דלת, ${DOOR_SIZE_TEXT}.`
+                : `רוחב הגליל ${application?.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר.`}
             </span>
           )}
         </div>

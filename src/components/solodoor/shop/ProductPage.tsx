@@ -10,7 +10,7 @@ import { ICON_DATA, type IconName } from "../icon-data";
 import { Container, CoverImage, Pill } from "../primitives";
 import { ProductBuyBox } from "./ProductBuyBox";
 import { ShopCard } from "./ShopCard";
-import { DEFAULT_APPLICATION, catalogImage, type Application, type FaqItem, type ProductData, type ProductVariant } from "./catalog";
+import { DEFAULT_APPLICATION, DOOR_SIZE_TEXT, catalogImage, type Application, type FaqItem, type ProductData, type ProductVariant } from "./catalog";
 
 interface GalleryImage {
   src: string;
@@ -127,6 +127,10 @@ function Paragraphs({ text, className }: { text: string | null; className?: stri
 function Details({ data, application }: { data: ProductData; application: Application | null }) {
   const { product } = data;
   const [open, setOpen] = useState("description");
+  const surfaceKey = application?.slug ?? product.product_type;
+  const installOffered =
+    product.installation_available &&
+    data.addons.some((a) => a.addon_type === "service" && (a.applies_to.includes("all") || a.applies_to.includes(surfaceKey)));
 
   const specs: [string, string | null][] = [
     ["סגנון", product.style_family],
@@ -134,8 +138,9 @@ function Details({ data, application }: { data: ProductData; application: Applic
     ["חומר", product.material],
     ["רוחב הגליל", product.roll_width_cm ? `${product.roll_width_cm} ס"מ` : null],
     ["עובי", product.thickness_mm ? `${product.thickness_mm} מ"מ` : null],
+    ["מידות הדלת", product.product_type === "designed_door" || application?.sell_unit === "side" ? `${DOOR_SIZE_TEXT} (לצד אחד של דלת)` : null],
     ["נמכר לפי", product.product_type === "pvc_rug" ? "מידה" : application?.sell_unit === "meter" ? "מטר" : "צד של דלת"],
-    ["התקנה", product.installation_available ? "עצמית, או מתקין בתוספת תשלום" : "אין צורך בהתקנה"],
+    ["התקנה", installOffered ? "עצמית, או מתקין בתוספת תשלום" : product.product_type === "pvc_rug" ? "אין צורך בהתקנה" : "עצמית"],
   ];
   const panels = [
     { key: "description", title: "תיאור" },

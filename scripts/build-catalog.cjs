@@ -69,7 +69,7 @@ const PRICE_PER_METER_DOOR = 125;
 const PRICE_DOOR_SIDE = 250;
 const PRICE_DESIGNED_DOOR_SIDE = 305;
 // Decided with the client in chat.
-const PRICE_INSTALLATION = 500; // per order
+const PRICE_INSTALLATION = 490; // per order, doors only (see applies_to below)
 const PRICE_DOOR_NUMBER = 19.9; // per digit
 // A designed door with strips costs 305 a side against 250 for a plain one.
 const PRICE_STRIPS = PRICE_DESIGNED_DOOR_SIDE - PRICE_DOOR_SIDE;
@@ -411,7 +411,7 @@ for (const folder of dirs(MAIN)) {
       `טפט ${title} הוא ${look}. ${fam.line}`,
       "הטפט מתאים לדלתות, לחזיתות מטבח, למקררים, למשטחי שיש, לקירות ולארונות חשמל. בכל לשונית בעמוד תמצאו הדמיה, מחיר והנחיות שמתאימות למשטח שבחרתם.",
       `זה ${DURABILITY}. מדביקים אותו ישירות על המשטח הקיים, בלי לפרק ובלי להחליף.`,
-      "המוצר מתאים להתקנה עצמית: מודדים, מזמינים ומדביקים בבית עם קלף וסכין יפנית. מעדיפים שנעשה את זה בשבילכם? אפשר להוסיף התקנה מקצועית בהזמנה.",
+      "המוצר מתאים להתקנה עצמית: מודדים, מזמינים ומדביקים בבית עם קלף וסכין יפנית. מעדיפים שנעשה את זה בשבילכם? בדלתות אפשר להוסיף התקנה מקצועית בהזמנה.",
     ].join("\n\n"),
     roll_width_cm: ROLL_WIDTH_CM,
     thickness_mm: THICKNESS_MM,
@@ -633,7 +633,7 @@ const addons = [
     // The photos do not exist yet; they will be made from the client's reference.
     image_path: `addons/door-number-${digit}.webp`,
   })),
-  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["all"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. תוספת קבועה להזמנה, מעבר למחיר החומר." },
+  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["door", "designed_door"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. תוספת קבועה להזמנה, מעבר למחיר החומר." },
   { slug: "sample", title: "דוגמית לבית", addon_type: "sample", price: PRICE_SAMPLE, applies_to: ["all"], description: "דוגמית של הגוון נשלחת אליכם הביתה, כדי לראות את הצבע והטקסטורה לפני שמזמינים." },
 ].map((a, i) => ({ image_path: "", ...a, is_active: true, sort_order: i + 1, shopify_variant_id: "" }));
 
@@ -680,7 +680,7 @@ const infoTabs = [
     body: [
       `משלוח עד הבית לכל הארץ בעלות של ${SHIPPING_PRICE} ש"ח. ההזמנה מגיעה תוך ${SHIPPING_DAYS} ימי עסקים.`,
       "הטפט נשלח מגולגל באריזה קשיחה, כדי שיגיע בלי קפלים.",
-      "הזמנתם גם התקנה? נתאם איתכם מועד בטלפון או בווצאפ אחרי ההזמנה.",
+      "הזמנתם גם התקנה לדלת? נתאם איתכם מועד בטלפון או בווצאפ אחרי ההזמנה.",
     ].join("\n\n"),
     product_types: ["wallpaper", "designed_door", "pvc_rug"],
   },
@@ -705,9 +705,10 @@ writeCsv(OUT, "09_info_tabs.csv", ["slug", "title", "body", "product_types", "so
 
 /* ───────────── 10 FAQs: one set per category, shared by every model in it ───────────── */
 
-const commonFaq = (surface) => [
+const SELF_INSTALL_ANSWER = "לא. המחיר הוא לחומר בלבד, וההדבקה נעשית בעצמכם. אפשר להוסיף להזמנה את כלי העבודה הדרושים, ואם יש שאלות נשמח לעזור בוואטסאפ ובטלפון.";
+const commonFaq = (surface, installOffered = false) => [
   ["אפשר להדביק לבד?", `כן. הטפט מגיע בהדבקה עצמית, ומדביקים אותו על ${surface} עם קלף וסכין יפנית. עובדים לאט, מהמרכז החוצה, ומחליקים בועות לכיוון הקצוות.`],
-  ["המחיר כולל התקנה?", `לא. המחיר הוא לחומר בלבד. מי שמעדיף מתקין יכול לסמן התקנה מקצועית בהזמנה, בתוספת ${PRICE_INSTALLATION} ש"ח להזמנה.`],
+  ["המחיר כולל התקנה?", installOffered ? `לא. המחיר הוא לחומר בלבד. מי שמעדיף מתקין יכול לסמן התקנה מקצועית בהזמנה, בתוספת ${PRICE_INSTALLATION} ש"ח להזמנה.` : SELF_INSTALL_ANSWER],
   ["אפשר לראות את הגוון לפני שמזמינים?", "כן. אפשר להזמין דוגמית לבית ולראות את הצבע והטקסטורה באור של הבית שלכם."],
   ["איך מנקים את הטפט?", "ניקוי עדין במטלית לחה. כדאי להימנע מסקוטש מחוספס ומחומרים שורטים."],
 ];
@@ -717,7 +718,7 @@ const faqSets = {
     ["כמה חומר צריך לדלת?", "יחידה אחת מכסה צד אחד של דלת בגודל רגיל. כדי לחדש את שני הצדדים מזמינים שתי יחידות."],
     ["צריך לפרק את הידית?", "מומלץ לפרק את הידית ואת העינית לפני ההדבקה ולהחזיר אותן בסיום. כך הטפט יוצא חלק ורציף."],
     ["זה מתאים גם לדלת כניסה וגם לדלת פנים?", "כן. הטפט נדבק על כל דלת עם משטח חלק, נקי ויבש."],
-    ...commonFaq("הדלת"),
+    ...commonFaq("הדלת", true),
   ],
   kitchen: [
     ["כמה חומר צריך למטבח?", `מודדים גובה ורוחב של כל חזית, מחברים ומוסיפים כ-10% רזרבה. רוחב הגליל הוא ${ROLL_WIDTH_CM} ס"מ.`],
@@ -753,7 +754,7 @@ const faqSets = {
     ["מה ההבדל בין טפט מעוצב לטפט חלק?", "טפט מעוצב מודפס עם דוגמה, מסגרות או פסים ואפקט עומק תלת ממדי. טפט חלק הוא גוון או טקסטורה אחידים."],
     ["כמה חומר צריך לדלת?", "יחידה אחת מכסה צד אחד של דלת בגודל רגיל. כדי לחדש את שני הצדדים מזמינים שתי יחידות."],
     ["צריך לפרק את הידית?", "מומלץ לפרק את הידית ואת העינית לפני ההדבקה ולהחזיר אותן בסיום."],
-    ...commonFaq("הדלת").filter(([q]) => !q.includes("הגוון")),
+    ...commonFaq("הדלת", true).filter(([q]) => !q.includes("הגוון")),
   ],
   pvc_rug: [
     ["איך מנקים את השטיח?", "לניקוי שוטף מספיק בדרך כלל לנגב במטלית לחה ובמים. אין להשתמש באקונומיקה, בחומרים המכילים אלכוהול, במסירי שומנים חריפים או בסקוטש מחוספס."],

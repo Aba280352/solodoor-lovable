@@ -147,6 +147,11 @@ export const STYLE_FAMILIES = [
 
 export const DEFAULT_APPLICATION = "door";
 
+/** The largest door one unit covers, in cm. Shown wherever a door is sold. */
+export const DOOR_MAX_HEIGHT_CM = 207;
+export const DOOR_MAX_WIDTH_CM = 97;
+export const DOOR_SIZE_TEXT = `עד ${DOOR_MAX_HEIGHT_CM} ס"מ גובה ו-${DOOR_MAX_WIDTH_CM} ס"מ רוחב`;
+
 // The generated client is typed per project; rows are cast to the interfaces above.
 async function rows<T>(query: PromiseLike<{ data: unknown; error: { message: string } | null }>): Promise<T[]> {
   const { data, error } = await query;
