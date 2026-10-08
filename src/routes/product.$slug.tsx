@@ -11,12 +11,7 @@ const text = (value: unknown) => (typeof value === "string" && value ? value : u
 // One page per design. The surface tab is part of the URL (?tab=fridge), so a visitor
 // looking for a fridge wallpaper lands on the same product, on the fridge tab.
 export const Route = createFileRoute("/product/$slug")({
-  validateSearch: (search: Record<string, unknown>): { tab?: string; variant?: string; img?: string } => ({
-    tab: text(search.tab),
-    variant: text(search.variant),
-    // ?img=swatch opens the page on the flat colour photo (the style archives link this way).
-    img: search.img === "swatch" ? "swatch" : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { tab?: string; variant?: string } => ({ tab: text(search.tab), variant: text(search.variant) }),
   loader: async ({ params }) => {
     const data = await fetchProduct(params.slug);
     if (!data) throw notFound();
@@ -93,10 +88,10 @@ export const Route = createFileRoute("/product/$slug")({
 
 function ProductRoute() {
   const data = Route.useLoaderData();
-  const { tab, variant, img } = Route.useSearch();
+  const { tab, variant } = Route.useSearch();
   return (
     <PageShell>
-      <ProductPage key={data.product.handle} data={data} tab={tab} variant={variant} img={img} />
+      <ProductPage key={data.product.handle} data={data} tab={tab} variant={variant} />
     </PageShell>
   );
 }
