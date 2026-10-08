@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { STYLE_FAMILIES, type ShopData } from "./catalog";
 import { COLOR_FAMILIES } from "./colors";
-import { categoriesFor, colorOptions, filterItems, joinList, type ActiveFilters, type ShopSearch } from "./filters";
+import { categoriesFor, colorOptions, joinList, shopCards, type ActiveFilters, type ShopSearch } from "./filters";
 
 interface ShopFiltersProps {
   data: ShopData;
@@ -128,7 +128,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
   const toggle = (list: string[], key: string, on: boolean) => (on ? [...list, key] : list.filter((k) => k !== key));
 
   // How many products a category holds on its own, under the current style and colour filters.
-  const countFor = (change: Partial<ActiveFilters>) => filterItems(data, { ...filters, ...change }).length;
+  const countFor = (change: Partial<ActiveFilters>) => shopCards(data, { ...filters, ...change }).length;
   // Inside an archive its own category is not a filter that can be cleared.
   const hasFilters = (!filters.archive && filters.cats.length > 0) || filters.styles.length > 0 || filters.colors.length > 0;
 

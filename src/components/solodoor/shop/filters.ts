@@ -1,5 +1,5 @@
 /** The shop's filter model: what is in the URL, and how it narrows the product list. */
-import { STYLE_FAMILIES, type Application, type ShopData, type ShopItem } from "./catalog";
+import { STYLE_FAMILIES, variantColors, type Application, type ShopData, type ShopItem, type ShopVariant } from "./catalog";
 import { COLOR_FAMILIES } from "./colors";
 
 /** Search params of /חנות. Lists are comma separated in the URL (?cat=door,kitchen). */
@@ -86,6 +86,29 @@ export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] 
   });
 }
 
+/** One card of the shop grid. */
+export interface ShopCardEntry {
+  item: ShopItem;
+  /** Set for designed doors: the colour photo this card shows and opens. */
+  variant?: ShopVariant;
+}
+
+const cardColors = (card: ShopCardEntry) => (card.variant ? variantColors(card.variant.color) : card.item.colors);
+
+/**
+ * The grid: one card per product, except designed doors, which get one card for every colour photo
+ * (all of them, or the ones in the chosen colours).
+ */
+export function shopCards(data: ShopData, filters: ActiveFilters): ShopCardEntry[] {
+  return filterItems(data, filters).flatMap((item): ShopCardEntry[] => {
+    if (item.product_type !== "designed_door" || !item.variants.length) return [{ item }];
+    const variants = filters.colors.length
+      ? item.variants.filter((v) => variantColors(v.color).some((c) => filters.colors.includes(c)))
+      : item.variants;
+    return variants.map((variant) => ({ item, variant }));
+  });
+}
+
 export interface ColorOption {
   key: string;
   /** Products of the current category that have this colour, with the other filters applied. */
@@ -97,11 +120,11 @@ export interface ColorOption {
  * (the whole shop, or the archive the visitor is in), each with how many products it would show.
  */
 export function colorOptions(data: ShopData, filters: ActiveFilters): ColorOption[] {
-  const inCategory = filterItems(data, { ...filters, styles: [], colors: [] });
-  const narrowed = filterItems(data, { ...filters, colors: [] });
-  return COLOR_FAMILIES.filter((family) => inCategory.some((item) => item.colors.includes(family.key))).map((family) => ({
+  const inCategory = shopCards(data, { ...filters, styles: [], colors: [] });
+  const narrowed = shopCards(data, { ...filters, colors: [] });
+  return COLOR_FAMILIES.filter((family) => inCategory.some((card) => cardColors(card).includes(family.key))).map((family) => ({
     key: family.key,
-    count: narrowed.filter((item) => item.colors.includes(family.key)).length,
+    count: narrowed.filter((card) => cardColors(card).includes(family.key)).length,
   }));
 }
 

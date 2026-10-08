@@ -10,12 +10,12 @@ import { ShopCard } from "./ShopCard";
 import { ShopFilters } from "./ShopFilters";
 import { StyleCard } from "./StyleCard";
 import { type ShopData } from "./catalog";
-import { activeFilters, filterItems, shopHeading, type ShopSearch } from "./filters";
+import { activeFilters, shopCards, shopHeading, type ShopSearch } from "./filters";
 
 /** The shop archive: heading, the filters beside the grid (in a sheet on mobile), and the products. */
 export function ShopArchive({ data, search }: { data: ShopData; search: ShopSearch }) {
   const filters = activeFilters(search, data);
-  const items = filterItems(data, filters);
+  const items = shopCards(data, filters);
   const { title, intro } = shopHeading(filters, data);
   // The surface whose photo and price the cards show.
   const application = data.applications.find((a) => a.slug === filters.uses[0]);
@@ -95,12 +95,18 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
 
             {items.length ? (
               <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-6">
-                {items.map((item) =>
+                {items.map(({ item, variant }) =>
                   filters.styleOnly ? (
                     // Browsing by style: wallpapers only, every card the same flat swatch.
                     <StyleCard key={item.handle} item={item} />
                   ) : (
-                    <ShopCard key={item.handle} item={item} application={application} rugFromPrice={data.rugFromPrice} colors={filters.colors} />
+                    <ShopCard
+                      key={variant ? `${item.handle}:${variant.key}` : item.handle}
+                      item={item}
+                      variant={variant}
+                      application={application}
+                      rugFromPrice={data.rugFromPrice}
+                    />
                   ),
                 )}
               </div>

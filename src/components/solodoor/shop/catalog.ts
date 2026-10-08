@@ -65,7 +65,7 @@ export interface ProductVariant {
   variant_key: string;
   title: string;
   price: number;
-  /** Colour family of this photo. */
+  /** Colour families of this photo, comma separated (see variantColors). */
   color: string | null;
   image_path: string | null;
   sort_order: number;
@@ -113,6 +113,18 @@ export interface FaqItem {
   answer: string;
 }
 
+/** One colour photo of a designed door, as the shop grid shows it. */
+export interface ShopVariant {
+  key: string;
+  title: string;
+  /** Colour families of the photo, comma separated: a very light grey door is listed under grey and white. */
+  color: string | null;
+  image: string | null;
+}
+
+/** The colour families of a variant photo. */
+export const variantColors = (color: string | null | undefined) => (color ? color.split(",").filter(Boolean) : []);
+
 /** A product as the shop grid needs it: the photo to show for each tab, and a default one. */
 export interface ShopItem {
   handle: string;
@@ -123,7 +135,7 @@ export interface ShopItem {
   base_price: number;
   colors: string[];
   /** Every photo of a designed door with its colour, so a colour filter can show the matching one. */
-  variants: { key: string; color: string | null; image: string | null }[];
+  variants: ShopVariant[];
   /** application slug → image path (wallpapers only). */
   images: Record<string, string>;
   cover: string | null;
@@ -186,7 +198,7 @@ function toShopItems(
       colors: product.colors ?? [],
       variants: variants
         .filter((v) => v.product_handle === product.handle)
-        .map((v) => ({ key: v.variant_key, color: v.color, image: v.image_path })),
+        .map((v) => ({ key: v.variant_key, title: v.title, color: v.color, image: v.image_path })),
       images: byApp,
       cover,
       swatch: images.find((i) => i.product_handle === product.handle && i.kind === "swatch")?.image_path ?? null,

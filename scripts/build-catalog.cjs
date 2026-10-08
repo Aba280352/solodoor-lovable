@@ -472,19 +472,36 @@ const designedLong = (name, variants) =>
     "יחידה אחת מכסה צד אחד של דלת. אפשר להדביק לבד עם קלף וסכין יפנית, או להוסיף התקנה מקצועית בהזמנה.",
   ].join("\n\n");
 
+/**
+ * Door colours checked by eye, photo by photo (October 2026). They win over the name and the pixel reading.
+ * A value with a comma lists the photo under both families: these doors are a very light grey that reads as off-white.
+ * The two Bari doors are named after their window, but the door itself is light grey.
+ */
+const COLOR_BY_EYE = {
+  "בארי חלון חלבי": "grey",
+  "בארי חלון לבן": "grey",
+  "אפור בהיר אלכסונים פסים שחורים": "grey,white",
+  "אפור בהיר גאומטרי שחור": "grey,white",
+  "אפור בטון בהיר אלכסונים": "grey,white",
+  "אפור מסגרות שקוע": "grey,white",
+  "מסגרת אורך אפור בהיר": "grey,white",
+};
+
 function addDesigned(name, handleSuffix, photos, dirPath) {
   const handle = `door-${handleSuffix}`;
   const title = clean(name);
   // The name decides when it carries a colour; photos without one are read from their pixels.
   const pixels = pixelFamilies(photos.map((f) => path.join(SRC, dirPath, f)));
   const photoColors = photos.map((f, i) => {
+    const byEye = COLOR_BY_EYE[clean(stem(f))];
+    if (byEye) return byEye;
     const byName = colorOfName(stem(f));
     if (byName && byName !== pixels[i] && !(NEAR[byName] ?? []).includes(pixels[i])) {
       notes.push(`צבע שונה בין השם לתמונה: ${clean(stem(f))} (שם: ${byName}, תמונה: ${pixels[i]})`);
     }
     return byName ?? pixels[i];
   });
-  const variantColors = [...new Set(photoColors)];
+  const variantColors = [...new Set(photoColors.flatMap((c) => (c ? c.split(",") : [])))];
   products.push({
     handle,
     slug: heSlug(name),
