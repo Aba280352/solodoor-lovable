@@ -176,9 +176,9 @@ export function SiteFooter() {
                     <input type="checkbox" className="m-0 size-4 cursor-pointer accent-primary" />
                     <span>
                       אני מאשר/ת את{" "}
-                      <a href="#" className="border-b border-primary text-foreground">
+                      <Link to="/privacy-policy" target="_blank" className="border-b border-primary text-foreground">
                         מדיניות הפרטיות
-                      </a>
+                      </Link>
                     </span>
                   </label>
                 </form>
@@ -192,12 +192,12 @@ export function SiteFooter() {
                 className="block h-auto w-125 max-w-full"
               />
               <div className="flex flex-wrap items-center justify-center gap-4.5 fs-15 text-foreground">
-                {footerLegal.map((label, i) => (
+                {footerLegal.map(({ label, to }, i) => (
                   <Fragment key={label}>
                     {i > 0 && <span className="block h-3 w-px bg-border" />}
-                    <a href="#" className="text-foreground">
+                    <Link to={to} className="text-foreground transition-colors duration-160 ease-standard hover:text-clay">
                       {label}
-                    </a>
+                    </Link>
                   </Fragment>
                 ))}
               </div>

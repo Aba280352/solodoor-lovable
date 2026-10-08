@@ -389,7 +389,11 @@ export const footerColumns = [
   },
 ];
 
-export const footerLegal = ["הצהרת נגישות", "מדיניות פרטיות", "תנאי שימוש"];
+export const footerLegal: { label: string; to: "/accessibility" | "/privacy-policy" | "/terms" }[] = [
+  { label: "הצהרת נגישות", to: "/accessibility" },
+  { label: "מדיניות פרטיות", to: "/privacy-policy" },
+  { label: "תנאי שימוש", to: "/terms" },
+];
 
 /* ───────────── Quantity calculator ───────────── */
 

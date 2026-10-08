@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/חנות'
 import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } from './routes/מאמרים'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
@@ -33,9 +36,24 @@ const SlugRoute = SlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char1495Char1504Char1493Char1514Route =
@@ -109,7 +127,10 @@ const Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Ch
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -124,6 +145,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/accessibility': typeof AccessibilityRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -139,7 +163,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -156,7 +183,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/accessibility'
     | '/admin'
+    | '/privacy-policy'
+    | '/terms'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -171,6 +201,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/accessibility'
+    | '/privacy-policy'
+    | '/terms'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -185,7 +218,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$slug'
+    | '/accessibility'
     | '/admin'
+    | '/privacy-policy'
+    | '/terms'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -201,7 +237,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
+  AccessibilityRoute: typeof AccessibilityRoute
   AdminRoute: typeof AdminRouteWithChildren
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  TermsRoute: typeof TermsRoute
   Char1495Char1504Char1493Char1514Route: typeof Char1495Char1504Char1493Char1514Route
   Char1502Char1488Char1502Char1512Char1497Char1501Route: typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -228,11 +267,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/חנות': {
@@ -323,7 +383,10 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
+  AccessibilityRoute: AccessibilityRoute,
   AdminRoute: AdminRouteWithChildren,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  TermsRoute: TermsRoute,
   Char1495Char1504Char1493Char1514Route: Char1495Char1504Char1493Char1514Route,
   Char1502Char1488Char1502Char1512Char1497Char1501Route:
     Char1502Char1488Char1502Char1512Char1497Char1501Route,
