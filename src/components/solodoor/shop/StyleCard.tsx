@@ -13,6 +13,7 @@ export function StyleCard({ item }: { item: Pick<StyleItem, "slug" | "title" | "
     <Link
       to="/product/$slug"
       params={{ slug: item.slug }}
+      search={{ img: "swatch" }}
       className="group flex flex-col overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground focus-visible:border-foreground"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">

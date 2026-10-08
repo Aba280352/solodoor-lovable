@@ -17,6 +17,8 @@ interface GalleryImage {
   alt: string;
   /** Set on the photo of a surface (door, fridge, ...): picking it switches the page to that surface's tab. */
   application?: string;
+  /** Set on the flat colour photo and the roll photo of a wallpaper. */
+  kind?: "swatch" | "roll";
 }
 
 /** The surface tab for this product, or null for products without tabs (designed doors, rugs). */
@@ -43,9 +45,9 @@ export function productFaqs(data: ProductData, application: Application | null):
 function galleryImages(data: ProductData, application: Application | null, variant: ProductVariant | null): GalleryImage[] {
   const { product } = data;
   const list: GalleryImage[] = [];
-  const push = (path: string | null | undefined, alt: string, applicationSlug?: string) => {
+  const push = (path: string | null | undefined, alt: string, applicationSlug?: string, kind?: GalleryImage["kind"]) => {
     const src = catalogImage(path);
-    if (src && !list.some((i) => i.src === src)) list.push({ src, alt, application: applicationSlug });
+    if (src && !list.some((i) => i.src === src)) list.push({ src, alt, application: applicationSlug, kind });
   };
   if (product.product_type === "wallpaper") {
     // The surfaces keep a fixed order, so the thumbnails do not move when the tab changes; the swatch and roll follow.
@@ -53,7 +55,7 @@ function galleryImages(data: ProductData, application: Application | null, varia
       const pa = data.productApplications.find((p) => p.application_slug === a.slug);
       push(pa?.image_path, pa?.image_alt ?? product.title, a.slug);
     }
-    for (const image of data.images) push(image.image_path, image.alt ?? product.title);
+    for (const image of data.images) push(image.image_path, image.alt ?? product.title, undefined, image.kind === "swatch" || image.kind === "roll" ? image.kind : undefined);
   } else if (product.product_type === "designed_door") {
     push(variant?.image_path, `טפט מעוצב לדלת, ${variant?.title ?? product.title}`);
     for (const v of data.variants) push(v.image_path, `טפט מעוצב לדלת, ${v.title}`);
@@ -70,13 +72,19 @@ function galleryImages(data: ProductData, application: Application | null, varia
 function Gallery({
   images,
   activeApplication,
+  openOn,
   onPickApplication,
 }: {
   images: GalleryImage[];
   activeApplication?: string;
+  /** "swatch": start on the flat colour photo instead of the photo of the surface. */
+  openOn?: string;
   onPickApplication: (slug: string) => void;
 }) {
-  const [index, setIndex] = useState(() => Math.max(0, images.findIndex((i) => i.application && i.application === activeApplication)));
+  const [index, setIndex] = useState(() => {
+    const swatch = openOn === "swatch" ? images.findIndex((i) => i.kind === "swatch") : -1;
+    return swatch >= 0 ? swatch : Math.max(0, images.findIndex((i) => i.application && i.application === activeApplication));
+  });
   const main = images[Math.min(index, images.length - 1)];
   if (!main) return <div className="aspect-square rounded-lg bg-muted" />;
   return (
@@ -314,7 +322,7 @@ function ProductFaq({ items }: { items: FaqItem[] }) {
 }
 
 /** The product page. `tab` comes from the URL, so every surface has its own address. */
-export function ProductPage({ data, tab, variant: initialVariant }: { data: ProductData; tab: string | undefined; variant?: string }) {
+export function ProductPage({ data, tab, variant: initialVariant, img }: { data: ProductData; tab: string | undefined; variant?: string; img?: string }) {
   const { product } = data;
   const application = currentApplication(data, tab);
   const [variantKey, setVariantKey] = useState(data.variants.find((v) => v.variant_key === initialVariant)?.variant_key ?? data.variants[0]?.variant_key);
@@ -378,7 +386,7 @@ export function ProductPage({ data, tab, variant: initialVariant }: { data: Prod
         </Container>
 
         <Container className="grid grid-cols-1 gap-8 pt-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16 lg:pt-7">
-          <Gallery key={`${application?.slug}:${variant?.variant_key}`} images={images} activeApplication={application?.slug} onPickApplication={openTab} />
+          <Gallery key={`${application?.slug}:${variant?.variant_key}`} images={images} activeApplication={application?.slug} openOn={img} onPickApplication={openTab} />
 
           <div className="flex flex-col gap-5 text-right">
             <div>
