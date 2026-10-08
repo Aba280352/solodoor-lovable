@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 import { CartButton, SearchButton } from "./HeaderActions";
 import { Icon } from "./Icon";
-import { LOGO_SRC, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
+import { LOGO_SRC, RUGS_LABEL, navLinks, styleMenu, useMenu, type MenuItem } from "./data";
 import { useQuiz } from "./quiz-context";
 import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { MenuLink } from "./shop/MenuLink";
@@ -16,7 +16,7 @@ import { STYLE_HUB_PATH } from "./shop/styles";
 type MenuKey = "style" | "use" | null;
 
 const navLinkClass =
-  "py-1.5 fs-15 font-medium whitespace-nowrap text-foreground transition-colors duration-160 ease-standard hover:text-clay";
+  "py-1.5 fs-14 font-medium whitespace-nowrap text-foreground transition-colors duration-160 ease-standard hover:text-clay";
 
 /** The main archives the two menu entries lead to: the whole shop, and the wallpaper styles. */
 type ArchivePath = "/חנות" | typeof STYLE_HUB_PATH;
@@ -63,7 +63,7 @@ function MenuButton({ label, to, onOpen, onClose }: { label: string; to: Archive
       onMouseEnter={onOpen}
       onFocus={onOpen}
       onClick={onClose}
-      className="inline-flex cursor-pointer items-center gap-1.5 border-b-2 border-transparent py-1.5 fs-15 whitespace-nowrap text-foreground hover:text-clay"
+      className="inline-flex cursor-pointer items-center gap-1.5 border-b-2 border-transparent py-1.5 fs-14 whitespace-nowrap text-foreground hover:text-clay"
     >
       <span>{label}</span>
       <span className="inline-flex transition-transform duration-160 ease-standard hover:translate-y-px">
@@ -85,7 +85,7 @@ const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי
 
 /** Mobile menu order, by importance: home, the two catalogue groups, the shop, then the rest. */
 const mobileNavBefore = ["בית"];
-const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים"];
+const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", RUGS_LABEL, "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים"];
 
 const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-foreground";
 
@@ -93,6 +93,15 @@ const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-fo
 function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
+  if (label === RUGS_LABEL) {
+    return (
+      <DialogClose asChild>
+        <Link to="/חנות" search={{ cat: "pvc_rug" }} className={mobileLinkClass} activeProps={{ className: "text-clay" }}>
+          {label}
+        </Link>
+      </DialogClose>
+    );
+  }
   if (label === "אודות") {
     return (
       <DialogClose asChild>
@@ -152,6 +161,13 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
 function NavItem({ label }: { label: string }) {
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
+  if (label === RUGS_LABEL) {
+    return (
+      <Link to="/חנות" search={{ cat: "pvc_rug" }} className={navLinkClass} activeProps={{ className: "border-b-2 border-primary" }}>
+        {label}
+      </Link>
+    );
+  }
   if (label === "אודות") {
     return (
       <Link
@@ -328,7 +344,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-2 lg:flex">
+        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-1.5 lg:flex">
           {navLinks.map((label, i) => (
             <Fragment key={label}>
               <NavItem label={label} />

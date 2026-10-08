@@ -12,12 +12,16 @@ export const promoItems: { icon: IconName; label: string }[] = [
   { icon: "Brush", label: "התקנה מקצועית ומדויקת" },
 ];
 
+/** The PVC rugs are their own menu entry (they are not wallpaper); it opens the rugs archive. */
+export const RUGS_LABEL = "שטיחי PVC";
+
+/** The desktop menu row. "אודות" is left out so the row stays on one line; it is in the mobile menu and the footer. */
 export const navLinks = [
   "בית",
   "מאמרים",
   "ציפוי מטבחים",
   "ציפוי דלתות",
-  "אודות",
+  RUGS_LABEL,
   "שאלות נפוצות",
   "יצירת קשר",
 ];
@@ -42,8 +46,6 @@ export const useMenu: MenuItem[] = [
   { name: "טפטים לקיר", img: img("use-wall") },
   { name: "טפטים לשיש", img: img("use-counter") },
   { name: "טפטים למטבח", img: img("use-kitchen") },
-  // The rugs are a product line of their own, but they belong in the "by use" list. Photo: a catalogue rug.
-  { name: "שטיחי PVC מעוצבים", img: `${import.meta.env.BASE_URL}catalog-images/products/rug-03/main.webp` },
 ];
 
 export const heroSlides = [
