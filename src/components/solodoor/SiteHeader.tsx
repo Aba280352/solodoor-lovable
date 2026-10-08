@@ -40,7 +40,7 @@ function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[];
             </Link>
           )}
         </div>
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.max(7, items.length)}, minmax(0, 1fr))` }}>
           {items.map((item) => (
             <MenuLink key={item.name} name={item.name} className="group block">
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-muted transition-colors duration-240 ease-standard group-hover:border-foreground">
@@ -278,7 +278,7 @@ function MobileMenu() {
           {mobileNavBefore.map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
-          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} allLink={{ label: "לכל המוצרים", to: "/חנות" }} />
+          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} />
           <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />
           <MobileNavLink label="צפייה בכל החנות" />
           <MobileNavLink label="עשה זאת בעצמך" diy />
@@ -355,7 +355,7 @@ export function SiteHeader() {
       </div>
 
       {menu === "style" && <MegaMenu title="בחרו טפט לפי סגנון" items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />}
-      {menu === "use" && <MegaMenu title="בחרו טפט לפי שימוש" items={useMenu} allLink={{ label: "לכל המוצרים", to: "/חנות" }} />}
+      {menu === "use" && <MegaMenu title="בחרו טפט לפי שימוש" items={useMenu} />}
     </header>
   );
 }

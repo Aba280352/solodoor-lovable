@@ -42,6 +42,8 @@ export const useMenu: MenuItem[] = [
   { name: "טפטים לקיר", img: img("use-wall") },
   { name: "טפטים לשיש", img: img("use-counter") },
   { name: "טפטים למטבח", img: img("use-kitchen") },
+  // The rugs are a product line of their own, but they belong in the "by use" list. Photo: a catalogue rug.
+  { name: "שטיחי PVC מעוצבים", img: `${import.meta.env.BASE_URL}catalog-images/products/rug-03/main.webp` },
 ];
 
 export const heroSlides = [
