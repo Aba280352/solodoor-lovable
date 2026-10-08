@@ -21,15 +21,21 @@ const navLinkClass =
 /** The main archives the two menu entries lead to: the whole shop, and the wallpaper styles. */
 type ArchivePath = "/חנות" | typeof STYLE_HUB_PATH;
 
-function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: boolean }) {
+/** The link that sits with a menu and leads to its whole archive. */
+interface AllLink {
+  label: string;
+  to: ArchivePath;
+}
+
+function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: AllLink }) {
   return (
     <div className="absolute inset-x-0 top-full z-20 border-y border-border bg-card shadow-menu">
       <div className="mx-auto max-w-330 px-12 pt-7 pb-8">
         <div className="mb-4.5 flex items-center justify-between gap-4">
           <span className="fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{title}</span>
           {allLink && (
-            <Link to={STYLE_HUB_PATH} className="inline-flex items-center gap-2 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay">
-              <span>לכל הסגנונות</span>
+            <Link to={allLink.to} className="inline-flex items-center gap-2 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay">
+              <span>{allLink.label}</span>
               <Icon name="AngleLeft" size={12} />
             </Link>
           )}
@@ -194,7 +200,7 @@ function NavItem({ label }: { label: string }) {
 }
 
 /** Collapsed by default; opens only when its row is tapped. */
-function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: ArchivePath; items: MenuItem[]; allLink?: boolean }) {
+function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: ArchivePath; items: MenuItem[]; allLink?: AllLink }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-border">
@@ -220,8 +226,8 @@ function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: Arc
         <div className="flex flex-col gap-3 pb-4">
           {allLink && (
             <DialogClose asChild>
-              <Link to={STYLE_HUB_PATH} className="fs-16 font-medium text-clay">
-                לכל הסגנונות
+              <Link to={allLink.to} className="fs-16 font-medium text-clay">
+                {allLink.label}
               </Link>
             </DialogClose>
           )}
@@ -272,8 +278,8 @@ function MobileMenu() {
           {mobileNavBefore.map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
-          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} />
-          <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink />
+          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} allLink={{ label: "לכל המוצרים", to: "/חנות" }} />
+          <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />
           <MobileNavLink label="צפייה בכל החנות" />
           <MobileNavLink label="עשה זאת בעצמך" diy />
           {mobileNavAfter.map((label) => (
@@ -348,8 +354,8 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {menu === "style" && <MegaMenu title="בחרו טפט לפי סגנון" items={styleMenu} allLink />}
-      {menu === "use" && <MegaMenu title="בחרו טפט לפי שימוש" items={useMenu} />}
+      {menu === "style" && <MegaMenu title="בחרו טפט לפי סגנון" items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />}
+      {menu === "use" && <MegaMenu title="בחרו טפט לפי שימוש" items={useMenu} allLink={{ label: "לכל המוצרים", to: "/חנות" }} />}
     </header>
   );
 }

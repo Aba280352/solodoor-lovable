@@ -217,7 +217,7 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
           </aside>
 
           <div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="sticky top-16 z-30 -mx-5 flex items-center justify-between gap-4 border-b border-border bg-background/95 px-5 py-3 backdrop-blur lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
               <p className="fs-16 font-medium text-foreground" aria-live="polite">
                 {shown.length === 1 ? "טפט אחד" : `${shown.length} טפטים`}
               </p>
