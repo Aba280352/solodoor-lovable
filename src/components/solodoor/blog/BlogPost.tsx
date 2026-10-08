@@ -11,6 +11,7 @@ import { Container, CoverImage, Pill } from "../primitives";
 import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
 import { ArticleCard } from "./ArticleCard";
 import { AUTHOR, articleImage, articleUrl, formatDate, prepareContent, readingMinutes, type Article, type ArticleSummary, type TocItem } from "./articles";
+import { whatsappHref } from "../whatsapp";
 
 interface BlogPostProps {
   article: Article;
@@ -226,7 +227,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Button asChild className="px-8 py-4">
-                  <a href="#">
+                  <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                     <span>לשיחה בווצאפ</span>
                     <Icon name="ChatDots" size={17} />
                   </a>

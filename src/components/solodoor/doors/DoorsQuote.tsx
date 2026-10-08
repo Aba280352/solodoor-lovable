@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { Pill } from "../primitives";
 import { DOORS_PHONE, DOORS_PHONE_HREF, doorTypes, quoteSteps } from "./data";
+import { whatsappHref } from "../whatsapp";
 
 /**
  * The page's conversion block, on the single black band: how it works in three
@@ -106,7 +107,7 @@ export function DoorsQuote() {
             <span className="block text-center fs-15 font-medium lg:fs-16">מעדיפים לדבר איתנו ישירות?</span>
             <div className="mt-3 grid grid-cols-2 gap-2.5">
               <Button asChild variant="secondary" className="px-3 py-3.5 fs-15 lg:fs-17">
-                <a href="#">
+                <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                   <span>ווצאפ</span>
                   <Icon name="ChatDots" size={17} />
                 </a>

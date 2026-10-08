@@ -10,6 +10,7 @@ import { DragRow } from "../DragRow";
 import { Container, Pill } from "../primitives";
 import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
 import { FAQ_CATEGORIES, categoryLabel, filterFaq, selectedCategories, type FaqEntry, type FaqSearch } from "./faq-items";
+import { whatsappHref } from "../whatsapp";
 
 /** Heading and intro for the current filter; also used for the page title and description. */
 export function faqHeading(selected: string[]) {
@@ -197,7 +198,7 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-none">
                 <Button asChild className="px-8 py-4">
-                  <a href="#">
+                  <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                     <span>לשיחה בווצאפ</span>
                     <Icon name="ChatDots" size={17} />
                   </a>

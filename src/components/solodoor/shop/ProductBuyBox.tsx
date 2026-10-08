@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { cart, type CartLine } from "./cart";
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
+import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
 interface ProductBuyBoxProps {
   data: ProductData;
@@ -354,7 +355,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             <Icon name="ArrowLeft" size={16} />
           </Button>
           <Button asChild variant="outline" className="px-3 py-3.5 fs-16">
-            <a href="#">
+            <a href={whatsappHref(`${WHATSAPP_MESSAGE}, אשמח להתייעץ לגבי ${productTitle}`)} target="_blank" rel="noopener noreferrer">
               <span>התייעצות בווצאפ</span>
               <Icon name="ChatDots" size={17} />
             </a>

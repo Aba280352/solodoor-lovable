@@ -9,6 +9,7 @@ import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
 import { heroSlides, heroTrust } from "./data";
 import { useQuiz } from "./quiz-context";
+import { whatsappHref } from "./whatsapp";
 
 const SLIDE_MS = 3500;
 
@@ -63,7 +64,7 @@ export function Hero() {
 
           <div className="mt-4 flex w-full flex-col items-stretch gap-2 lg:mt-9 lg:w-auto lg:gap-3 lg:flex-row lg:items-center">
             <Button asChild className="flex-none px-7 py-3 lg:py-[0.9375rem]">
-              <a href="#">
+              <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                 <span>להתייעצות בווצאפ</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>

@@ -7,6 +7,7 @@ import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { aboutGallery, aboutStats, aboutSurfaces } from "./data";
 import { useQuiz } from "./quiz-context";
+import { whatsappHref } from "./whatsapp";
 
 export function About() {
   const { openQuiz } = useQuiz();
@@ -64,7 +65,7 @@ export function About() {
 
           <div className="mt-8 flex w-full flex-col items-center gap-4 lg:flex-row lg:gap-7">
             <Button asChild className="w-full flex-auto px-9 lg:w-auto">
-              <a href="#">
+              <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                 <span>להתייעצות בוואטסאפ</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>

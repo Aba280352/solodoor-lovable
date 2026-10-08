@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { ROLL_WIDTH_CM, WASTE_RATE } from "./data";
+import { whatsappHref } from "./whatsapp";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -161,7 +162,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
           </Button>
         </DialogClose>
         <Button asChild variant="secondary" className="mt-3 w-full py-4">
-          <a href="#">
+          <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
             <span>להתייעצות איתנו בווצאפ</span>
             <Icon name="ChatDots" size={20} />
           </a>

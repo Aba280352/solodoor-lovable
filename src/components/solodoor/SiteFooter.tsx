@@ -122,7 +122,8 @@ export function SiteFooter() {
                   {footerSocial.map((social) => (
                     <a
                       key={social.label}
-                      href="#"
+                      href={social.href ?? "#"}
+                      {...(social.href ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       aria-label={social.label}
                       className="inline-flex size-10.5 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors duration-240 ease-standard hover:bg-secondary hover:text-secondary-foreground"
                     >

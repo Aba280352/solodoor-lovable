@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "./Icon";
 import { Container, CoverImage, Pill } from "./primitives";
 import { faqImages, faqItems } from "./data";
+import { whatsappHref } from "./whatsapp";
 
 export function Faq() {
   // One question open at a time; the side image follows the last one touched.
@@ -85,7 +86,7 @@ export function Faq() {
           </span>
           <div className="flex w-full flex-col items-stretch justify-center gap-3.5 lg:w-auto lg:flex-row lg:items-center">
             <Button asChild className="border border-primary py-4.5">
-              <a href="#">
+              <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                 <span>לשיחה בווצאפ</span>
                 <Icon name="ChatDots" size={17} />
               </a>

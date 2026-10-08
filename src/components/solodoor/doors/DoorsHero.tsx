@@ -7,6 +7,7 @@ import { Pill } from "../primitives";
 import { REVIEW_COUNT } from "../data";
 import { DoorViewer } from "./DoorViewer";
 import { doorsTrust } from "./data";
+import { whatsappHref } from "../whatsapp";
 
 /**
  * Opening screen of the door-coating landing page. Built for paid traffic and
@@ -54,7 +55,7 @@ export function DoorsHero() {
               </a>
             </Button>
             <Button asChild variant="secondary" className="px-3 py-3.5 fs-15 lg:px-9 lg:py-[1.0625rem] lg:fs-18">
-              <a href="#">
+              <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
                 <span>להתייעצות בווצאפ</span>
                 <Icon name="ChatDots" size={17} />
               </a>

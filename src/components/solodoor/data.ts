@@ -1,4 +1,5 @@
 import type { IconName } from "./icon-data";
+import { whatsappHref } from "./whatsapp";
 
 /** BASE_URL is "/" everywhere except the GitHub Pages preview, which lives under /solodoor-lovable/. */
 const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
@@ -367,9 +368,9 @@ export const FOOTER_BANNER = img("footer-door");
 export const PAYMENTS_SRC = img("payments");
 export const TEXTURE_SRC = img("texture-seamless");
 
-export const footerSocial: { label: string; icon: IconName }[] = [
+export const footerSocial: { label: string; icon: IconName; href?: string }[] = [
   { label: "אינסטגרם", icon: "ImageGallery" },
-  { label: "וואטסאפ", icon: "ChatDots" },
+  { label: "וואטסאפ", icon: "ChatDots", href: whatsappHref() },
   { label: "פייסבוק", icon: "CommentDots" },
   { label: "יוטיוב", icon: "Headphones" },
 ];

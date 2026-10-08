@@ -7,6 +7,7 @@ import { Icon } from "../Icon";
 import type { IconName } from "../icon-data";
 import { Pill } from "../primitives";
 import { KitchenShowcase } from "./KitchenShowcase";
+import { whatsappHref } from "../whatsapp";
 
 /** The three promises the old page made, kept word for word. */
 const trust: { icon: IconName; label: string }[] = [
@@ -47,7 +48,7 @@ export function KitchenHero() {
 
         <div className="mt-5 flex w-full flex-col items-stretch gap-2 lg:mt-7 lg:w-auto lg:flex-row lg:items-center lg:gap-3">
           <Button asChild className="flex-none px-7 py-3 lg:px-10 lg:py-[0.9375rem]">
-            <a href="#">
+            <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
               <span>להתייעצות בווצאפ</span>
               <Icon name="ArrowLeft" size={16} />
             </a>
