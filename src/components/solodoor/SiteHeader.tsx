@@ -288,11 +288,25 @@ export function SiteHeader() {
       className="sticky top-0 z-40 border-b border-border bg-background"
     >
       <div className="mx-auto grid h-16 max-w-330 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-6 px-5 lg:gap-4 lg:h-19 lg:px-12">
-        <Link to="/" className="flex items-center">
+        {/* The whole header height is the tap target. The image ignores touches, so the link itself gets them (iPhone Safari
+            can swallow a tap on an image inside a link, or open the "save image" menu on a long press). */}
+        <Link
+          to="/"
+          aria-label="SOLODOOR, לדף הבית"
+          onClick={(e) => {
+            // Already on the home page: the router would do nothing, so scroll to the top and drop any #hash.
+            if (window.location.pathname !== "/") return;
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+            if (window.location.hash) history.replaceState(null, "", `/${window.location.search}`);
+          }}
+          className="flex h-full min-h-11 min-w-11 touch-manipulation items-center"
+        >
           <img
             src={LOGO_SRC}
-            alt="SOLODOOR"
-            className="block h-10 w-auto lg:h-[3.6875rem] lg:w-[11.6875rem]"
+            alt=""
+            draggable={false}
+            className="pointer-events-none block h-10 w-auto select-none [-webkit-touch-callout:none] lg:h-[3.6875rem] lg:w-[11.6875rem]"
           />
         </Link>
 
