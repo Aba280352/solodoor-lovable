@@ -18,6 +18,9 @@ type MenuKey = "style" | "use" | null;
 const navLinkClass =
   "py-1.5 fs-15 font-medium whitespace-nowrap text-foreground transition-colors duration-160 ease-standard hover:text-clay";
 
+/** The main archives the two menu entries lead to: the whole shop, and the wallpaper styles. */
+type ArchivePath = "/חנות" | typeof STYLE_HUB_PATH;
+
 function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: boolean }) {
   return (
     <div className="absolute inset-x-0 top-full z-20 border-y border-border bg-card shadow-menu">
@@ -46,19 +49,21 @@ function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[];
   );
 }
 
-function MenuButton({ label, onOpen }: { label: string; onOpen: () => void }) {
+/** A nav entry that opens its mega menu on hover or focus, and goes to the main archive when clicked. */
+function MenuButton({ label, to, onOpen, onClose }: { label: string; to: ArchivePath; onOpen: () => void; onClose: () => void }) {
   return (
-    <button
-      type="button"
+    <Link
+      to={to}
       onMouseEnter={onOpen}
-      onClick={onOpen}
+      onFocus={onOpen}
+      onClick={onClose}
       className="inline-flex cursor-pointer items-center gap-1.5 border-b-2 border-transparent py-1.5 fs-15 whitespace-nowrap text-foreground hover:text-clay"
     >
       <span>{label}</span>
       <span className="inline-flex transition-transform duration-160 ease-standard hover:translate-y-px">
         <Icon name="AngleDown" size={14} />
       </span>
-    </button>
+    </Link>
   );
 }
 
@@ -189,21 +194,28 @@ function NavItem({ label }: { label: string }) {
 }
 
 /** Collapsed by default; opens only when its row is tapped. */
-function MobileMenuGroup({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: boolean }) {
+function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: ArchivePath; items: MenuItem[]; allLink?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-border">
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full cursor-pointer items-center justify-between py-3.5 text-right fs-18 font-medium text-foreground"
-      >
-        <span>{title}</span>
-        <span className={cn("inline-flex transition-transform duration-240 ease-standard", open && "rotate-180")}>
-          <Icon name="AngleDown" size={16} />
-        </span>
-      </button>
+      <div className="flex items-center justify-between">
+        <DialogClose asChild>
+          <Link to={to} className="flex-auto py-3.5 text-right fs-18 font-medium text-foreground">
+            {title}
+          </Link>
+        </DialogClose>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-label={`${title}, הצגת הרשימה`}
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex size-11 flex-none cursor-pointer items-center justify-center text-foreground"
+        >
+          <span className={cn("inline-flex transition-transform duration-240 ease-standard", open && "rotate-180")}>
+            <Icon name="AngleDown" size={16} />
+          </span>
+        </button>
+      </div>
       {open && (
         <div className="flex flex-col gap-3 pb-4">
           {allLink && (
@@ -260,8 +272,8 @@ function MobileMenu() {
           {mobileNavBefore.map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
-          <MobileMenuGroup title="טפט לפי שימוש" items={useMenu} />
-          <MobileMenuGroup title="טפט לפי סגנון" items={styleMenu} allLink />
+          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} />
+          <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink />
           <MobileNavLink label="צפייה בכל החנות" />
           <MobileNavLink label="עשה זאת בעצמך" diy />
           {mobileNavAfter.map((label) => (
@@ -321,8 +333,8 @@ export function SiteHeader() {
               )}
             </Fragment>
           ))}
-          <MenuButton label="טפט לפי סגנון" onOpen={() => setMenu("style")} />
-          <MenuButton label="טפט לפי שימוש" onOpen={() => setMenu("use")} />
+          <MenuButton label="טפט לפי סגנון" to={STYLE_HUB_PATH} onOpen={() => setMenu("style")} onClose={() => setMenu(null)} />
+          <MenuButton label="טפט לפי שימוש" to="/חנות" onOpen={() => setMenu("use")} onClose={() => setMenu(null)} />
         </nav>
 
         <div className="col-start-3 flex items-center gap-3.5">
