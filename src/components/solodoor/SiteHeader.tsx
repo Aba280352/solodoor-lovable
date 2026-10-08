@@ -85,7 +85,7 @@ const PAGE_PATHS: Record<string, "/" | "/ציפוי-מטבחים" | "/ציפוי
 
 /** Mobile menu order, by importance: home, the two catalogue groups, the shop, then the rest. */
 const mobileNavBefore = ["בית"];
-const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", RUGS_LABEL, "אודות", "יצירת קשר", "שאלות נפוצות", "מאמרים"];
+const mobileNavAfter = ["ציפוי מטבחים", "ציפוי דלתות", RUGS_LABEL, "אודות", "צור קשר", "שאלות נפוצות", "מאמרים"];
 
 const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-foreground";
 
@@ -344,7 +344,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-1.5 lg:flex">
+        <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-2 lg:flex">
           {navLinks.map((label, i) => (
             <Fragment key={label}>
               <NavItem label={label} />

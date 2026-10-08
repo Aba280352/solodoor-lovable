@@ -23,7 +23,7 @@ export const navLinks = [
   "ציפוי דלתות",
   RUGS_LABEL,
   "שאלות נפוצות",
-  "יצירת קשר",
+  "צור קשר",
 ];
 
 export interface MenuItem {
