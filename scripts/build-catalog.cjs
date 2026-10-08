@@ -621,6 +621,23 @@ writeCsv(
 
 /* ───────────── 06 add-ons ───────────── */
 
+/**
+ * Door strip designs, with the client's own price list (October 2026). The key is the number of the picture in the
+ * strips folder. The design "one stepped strip" has no picture yet. Strips are offered only with installation.
+ */
+const STRIP_DESIGNS = {
+  "strips-01": { title: "2 פסים לרוחב", price: 100, sort: 5, picture: true },
+  "strips-04": { title: "3 פסים לרוחב", price: 150, sort: 6, picture: true },
+  "strips-07": { title: "4 פסים לרוחב", price: 200, sort: 7, picture: true },
+  "strips-09": { title: "פס אחד לאורך", price: 100, sort: 8, picture: true },
+  "strips-10": { title: "פס אחד מדורג", price: 100, sort: 9, picture: false },
+  "strips-02": { title: "2 פסים לאורך", price: 200, sort: 10, picture: true },
+  "strips-03": { title: "2 פסים מדורגים", price: 200, sort: 11, picture: true },
+  "strips-05": { title: "3 פסים לאורך", price: 300, sort: 12, picture: true },
+  "strips-06": { title: "3 פסים מדורגים", price: 300, sort: 13, picture: true },
+  "strips-08": { title: "פסים אלכסוניים", price: 200, sort: 14, picture: true },
+};
+
 const addons = [
   { slug: "squeegee", image_path: "addons/squeegee.webp", title: "קלף", addon_type: "diy_tool", price: PRICE_SQUEEGEE, applies_to: ["all"], description: "קלף להחלקת הטפט ולהוצאת בועות אוויר בזמן ההדבקה." },
   { slug: "knife", image_path: "addons/knife.webp", title: "סכין יפנית", addon_type: "diy_tool", price: PRICE_KNIFE, applies_to: ["all"], description: "סכין יפנית לחיתוך מדויק של הטפט בקצוות, בפינות וסביב ידיות." },
@@ -630,14 +647,15 @@ const addons = [
     .filter(isImage)
     .map((f, i) => {
       const slug = `strips-${String(i + 1).padStart(2, "0")}`;
+      const design = STRIP_DESIGNS[slug];
       return {
         slug,
-        title: clean(stem(f)),
+        title: design.title,
         addon_type: "door_strips",
-        price: PRICE_STRIPS,
+        price: design.price,
         applies_to: ["door"],
-        description: `תוספת לדלת: ${clean(stem(f))}. המחיר לצד אחד של דלת.`,
-        image_path: image(`addons/${slug}.webp`, `${MAIN}/${STRIPS_DIR}/${f}`),
+        description: `עיצוב פסים לדלת: ${design.title}. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.`,
+        image_path: design.picture ? image(`addons/${slug}.webp`, `${MAIN}/${STRIPS_DIR}/${f}`) : null,
       };
     }),
   ...Array.from({ length: 10 }, (_, digit) => ({

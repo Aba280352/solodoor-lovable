@@ -101,13 +101,16 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const qtyLabel = isRug ? "כמות" : perSide ? "כמה צדדים?" : "כמה מטרים?";
 
   const applies = (addon: Addon) => addon.applies_to.includes("all") || (application ? addon.applies_to.includes(application.slug) : false);
-  const stripOptions = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
   const numberAddons = onDoor ? addons.filter((a) => a.addon_type === "door_number") : [];
   // Installation is offered only on the surfaces listed in the add-on (doors). Designed doors have no tab, so their type is the key.
   const surfaceKey = application?.slug ?? product.product_type;
   const installAddon = product.installation_available
     ? addons.find((a) => a.addon_type === "service" && (a.applies_to.includes("all") || a.applies_to.includes(surfaceKey)))
     : undefined;
+  // Strips on a door are put on by the installer, so nobody gluing it themselves would order them:
+  // the choice appears only once professional installation is ticked.
+  const allStrips = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
+  const stripOptions = installation && installAddon ? allStrips : [];
   const sampleAddon = product.sample_available ? addons.find((a) => a.addon_type === "sample") : undefined;
   const toolAddons = isRug
     ? []
@@ -140,7 +143,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       },
     ];
     if (stripAddon) {
-      result.push({ id: `${product.handle}:${stripAddon.slug}`, title: `פסי ניקל: ${stripAddon.title}`, note: productTitle, image: catalogImage(stripAddon.image_path), price: stripAddon.price, qty });
+      result.push({ id: `${product.handle}:${stripAddon.slug}`, title: `עיצוב פסים: ${stripAddon.title}`, note: productTitle, image: catalogImage(stripAddon.image_path), price: stripAddon.price, qty });
     }
     for (const digit of new Set(digits)) {
       const addon = numberAddons.find((a) => a.slug === `door-number-${digit}`);
@@ -241,44 +244,6 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         )}
       </div>
 
-      {stripOptions.length > 0 && (
-        <div className="flex flex-col gap-2.5">
-          <span className={sectionTitle}>
-            פסי ניקל לדלת <span className="font-normal">(תוספת {formatPrice(stripOptions[0].price)} לצד)</span>
-          </span>
-          <div className="grid grid-cols-4 gap-2 lg:grid-cols-6">
-            <button
-              type="button"
-              onClick={() => setStrips(null)}
-              aria-pressed={strips === null}
-              className={cn(
-                "flex aspect-[3/4] cursor-pointer items-center justify-center rounded-md border bg-card px-1 text-center fs-13 leading-[1.3] font-medium text-foreground transition-colors duration-160 ease-standard",
-                strips === null ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
-              )}
-            >
-              בלי פסים
-            </button>
-            {stripOptions.map((option) => (
-              <button
-                key={option.slug}
-                type="button"
-                title={option.title}
-                aria-label={option.title}
-                aria-pressed={strips === option.slug}
-                onClick={() => setStrips(option.slug)}
-                className={cn(
-                  "relative aspect-[3/4] cursor-pointer overflow-hidden rounded-md border bg-muted transition-colors duration-160 ease-standard",
-                  strips === option.slug ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
-                )}
-              >
-                <img src={catalogImage(option.image_path) ?? ""} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
-              </button>
-            ))}
-          </div>
-          {stripAddon && <span className="fs-15 text-foreground">נבחר: {stripAddon.title}</span>}
-        </div>
-      )}
-
       {numberAddons.length > 0 && (
         <div className="flex flex-col gap-2.5">
           <label htmlFor="door-number" className={sectionTitle}>
@@ -316,6 +281,63 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             text="מתקין של סולודור מגיע אליכם. תוספת קבועה להזמנה."
             price={`+${formatPrice(installAddon.price)}`}
           />
+          {!installation && allStrips.length > 0 && (
+            <span className="fs-14 leading-[1.5] text-foreground">בהתקנה על ידי סולודור אפשר להוסיף לדלת עיצוב פסים.</span>
+          )}
+        </div>
+      )}
+
+      {/* Only with installation: the installer puts the strips on. Every design has its own price. */}
+      {installation && stripOptions.length > 0 && (
+        <div className="flex flex-col gap-2.5">
+          <span className={sectionTitle}>
+            עיצוב פסים לדלת <span className="font-normal">(לא חובה, המחיר לצד אחד של דלת)</span>
+          </span>
+          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-3">
+            <button
+              type="button"
+              onClick={() => setStrips(null)}
+              aria-pressed={strips === null}
+              className={cn(
+                "col-span-full flex min-h-12 cursor-pointer items-center justify-center rounded-md border bg-card px-2 text-center fs-15 leading-[1.3] font-medium text-foreground transition-colors duration-160 ease-standard",
+                strips === null ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
+              )}
+            >
+              בלי פסים
+            </button>
+            {stripOptions.map((option) => {
+              const src = catalogImage(option.image_path);
+              return (
+                <button
+                  key={option.slug}
+                  type="button"
+                  aria-pressed={strips === option.slug}
+                  onClick={() => setStrips(option.slug)}
+                  className={cn(
+                    "flex cursor-pointer flex-col overflow-hidden rounded-md border bg-card text-center transition-colors duration-160 ease-standard",
+                    strips === option.slug ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
+                  )}
+                >
+                  <span className="relative block aspect-[4/5] w-full overflow-hidden bg-muted">
+                    {src ? (
+                      <img src={src} alt={`דלת עם ${option.title}`} loading="lazy" className="absolute inset-0 size-full object-cover" />
+                    ) : (
+                      <span className="absolute inset-0 flex items-center justify-center px-3 fs-14 leading-[1.4] text-foreground">{option.title}</span>
+                    )}
+                  </span>
+                  <span className="flex flex-col gap-0.5 px-2 py-2.5">
+                    {src && <span className="fs-14 leading-[1.3] font-medium text-foreground">{option.title}</span>}
+                    <span className="fs-14 font-bold text-foreground">+{formatPrice(option.price)}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {stripAddon && (
+            <span className="fs-15 text-foreground">
+              נבחר: {stripAddon.title}, +{formatPrice(stripAddon.price * qty)} {qty > 1 ? `ל${qty} צדדים` : "לצד אחד"}
+            </span>
+          )}
         </div>
       )}
 
