@@ -9,6 +9,9 @@ const SITE = "https://solodoor.co.il";
 
 // One archive per style: /טפט-לפי-סגנון/עצים, /מומלצים, /חלקים, /אבן-ובטון.
 export const Route = createFileRoute("/טפט-לפי-סגנון/$style")({
+  validateSearch: (search: Record<string, unknown>): { color?: string } => ({
+    color: typeof search.color === "string" && search.color ? search.color : undefined,
+  }),
   loader: async ({ params }) => {
     const page = stylePage(params.style);
     if (!page) throw notFound();
@@ -48,9 +51,10 @@ export const Route = createFileRoute("/טפט-לפי-סגנון/$style")({
 
 function StyleRoute() {
   const { page, items } = Route.useLoaderData();
+  const { color } = Route.useSearch();
   return (
     <PageShell>
-      <StyleArchive key={page.slug} items={items} page={page} />
+      <StyleArchive key={page.slug} items={items} page={page} color={color} />
     </PageShell>
   );
 }

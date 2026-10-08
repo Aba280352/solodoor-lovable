@@ -9,6 +9,9 @@ const SITE = "https://solodoor.co.il";
 
 // The main archive of wallpaper styles: every wallpaper, with a way into each style.
 export const Route = createFileRoute("/טפט-לפי-סגנון/")({
+  validateSearch: (search: Record<string, unknown>): { color?: string } => ({
+    color: typeof search.color === "string" && search.color ? search.color : undefined,
+  }),
   loader: () => fetchStyleItems(),
   head: () => ({
     meta: [
@@ -38,9 +41,10 @@ export const Route = createFileRoute("/טפט-לפי-סגנון/")({
 
 function StyleHubRoute() {
   const items = Route.useLoaderData();
+  const { color } = Route.useSearch();
   return (
     <PageShell>
-      <StyleArchive items={items} page={null} />
+      <StyleArchive items={items} page={null} color={color} />
     </PageShell>
   );
 }

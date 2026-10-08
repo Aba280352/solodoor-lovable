@@ -20,7 +20,7 @@ const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
 const STYLE_SWATCH: Record<string, string> = { plain: img("style-plain"), wood: img("style-wood"), stone: img("style-stone") };
 
 /** A filter group that can be folded, so a long sidebar never hides the group below it. */
-function Group({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+export function Group({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <section className="border-t border-border pt-4 first:border-t-0 first:pt-0">
@@ -44,7 +44,7 @@ function Group({ title, children, defaultOpen = true }: { title: string; childre
   );
 }
 
-function Checkbox({ checked, onChange, label, count }: { checked: boolean; onChange: (v: boolean) => void; label: string; count: number }) {
+export function Checkbox({ checked, onChange, label, count }: { checked: boolean; onChange: (v: boolean) => void; label: string; count: number }) {
   return (
     <label className={cn("flex cursor-pointer items-center gap-3 py-1.5", count === 0 && !checked && "opacity-45")}>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="sr-only" />
@@ -66,7 +66,7 @@ function Checkbox({ checked, onChange, label, count }: { checked: boolean; onCha
 }
 
 /** A small round swatch with a label under it, used for colours and style families. */
-function Swatch({
+export function Swatch({
   checked,
   onChange,
   label,

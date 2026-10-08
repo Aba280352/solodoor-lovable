@@ -1,87 +1,140 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-import { DragRow } from "../DragRow";
 import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
+import { Group, Swatch } from "./ShopFilters";
 import { StyleCard } from "./StyleCard";
-import type { StyleItem } from "./catalog";
+import { variantColors, type StyleItem } from "./catalog";
+import { splitList } from "./filters";
 import { STYLE_HUB, STYLE_PAGES, colorOptionsFor, itemsForStyle, styleImage, type StylePage } from "./styles";
 
-const chipClass =
-  "inline-flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2 fs-15 font-medium whitespace-nowrap transition-colors duration-160 ease-standard lg:px-5 lg:fs-16";
-const chipOn = "border-secondary bg-secondary text-secondary-foreground";
-const chipOff = "border-input bg-card text-foreground hover:border-foreground";
+/** Wallpapers of a list that have at least one of the chosen colours (all of them when none is chosen). */
+const withColors = (items: StyleItem[], colors: string[]) =>
+  colors.length ? items.filter((i) => colors.some((c) => i.colors.includes(c))) : items;
 
-/** Links between the hub and the four style archives. */
-function StyleNav({ current }: { current: StylePage | null }) {
-  return (
-    <DragRow className="-mx-5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
-      <Link to="/טפט-לפי-סגנון" aria-current={current ? undefined : "page"} className={cn(chipClass, current ? chipOff : chipOn)}>
-        כל הסגנונות
-      </Link>
-      {STYLE_PAGES.map((page) => (
-        <Link
-          key={page.slug}
-          to="/טפט-לפי-סגנון/$style"
-          params={{ style: page.slug }}
-          aria-current={current?.slug === page.slug ? "page" : undefined}
-          className={cn(chipClass, current?.slug === page.slug ? chipOn : chipOff)}
-        >
-          {page.name}
-        </Link>
-      ))}
-    </DragRow>
+/** A row that looks like a ticked box and opens a style page, so the style list reads like the shop's categories. */
+function StyleRow({ page, active, count, label }: { page: StylePage | null; active: boolean; count: number; label: string }) {
+  const inner = (
+    <>
+      <span
+        aria-hidden="true"
+        className={cn(
+          "flex size-5 flex-none items-center justify-center rounded-[0.25rem] border transition-colors duration-160 ease-standard",
+          active ? "border-secondary bg-secondary text-secondary-foreground" : "border-input bg-card text-transparent",
+        )}
+      >
+        <Icon name="Check" size={12} />
+      </span>
+      <span className="flex-auto fs-16 text-foreground">{label}</span>
+      <span className="fs-14 text-foreground/60" dir="ltr">
+        {count}
+      </span>
+    </>
+  );
+  const className = "flex items-center gap-3 py-1.5";
+  return page ? (
+    <Link to="/טפט-לפי-סגנון/$style" params={{ style: page.slug }} aria-current={active ? "page" : undefined} className={className}>
+      {inner}
+    </Link>
+  ) : (
+    <Link to="/טפט-לפי-סגנון" aria-current={active ? "page" : undefined} className={className}>
+      {inner}
+    </Link>
   );
 }
 
-/** Colour circles that narrow the wallpapers on the page. */
-function ColorRow({
+/** The sidebar: the styles as a list, the colours as swatches. Same blocks as the shop's filters. */
+function StyleFilters({
   items,
-  selected,
-  onToggle,
-  onClear,
+  page,
+  colors,
+  onColors,
+  onNavigate,
 }: {
   items: StyleItem[];
-  selected: string[];
-  onToggle: (key: string) => void;
-  onClear: () => void;
+  page: StylePage | null;
+  colors: string[];
+  onColors: (next: string[]) => void;
+  onNavigate?: () => void;
 }) {
-  const options = colorOptionsFor(items);
-  if (options.length < 2) return null;
+  const inPage = page ? itemsForStyle(items, page) : items;
+  const options = colorOptionsFor(inPage);
+  const toggle = (key: string, on: boolean) => {
+    onColors(on ? [...colors, key] : colors.filter((c) => c !== key));
+    onNavigate?.();
+  };
+
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
-      <span className="flex-none fs-15 font-semibold text-foreground lg:fs-16">צבע</span>
-      <DragRow className="-mx-5 flex flex-auto gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
-        <button type="button" aria-pressed={selected.length === 0} onClick={onClear} className={cn(chipClass, selected.length === 0 ? chipOn : chipOff)}>
-          הכל
+    <div className="flex flex-col gap-4 text-right">
+      <Group title="סגנון">
+        <div className="flex flex-col" onClick={onNavigate}>
+          <StyleRow page={null} active={!page} count={withColors(items, colors).length} label="כל הסגנונות" />
+          {STYLE_PAGES.map((p) => (
+            <StyleRow key={p.slug} page={p} active={page?.slug === p.slug} count={withColors(itemsForStyle(items, p), colors).length} label={p.name} />
+          ))}
+        </div>
+      </Group>
+
+      {options.length > 1 && (
+        <Group title="צבע">
+          <div className="grid grid-cols-4 gap-x-2 gap-y-3.5">
+            {options.map(({ family, count }) => (
+              <Swatch
+                key={family.key}
+                checked={colors.includes(family.key)}
+                onChange={(on) => toggle(family.key, on)}
+                label={family.label}
+                count={count}
+                style={{ background: family.fill }}
+                checkTone={family.key === "white" || family.key === "cream" ? "dark" : "light"}
+              />
+            ))}
+          </div>
+        </Group>
+      )}
+
+      {colors.length > 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            onColors([]);
+            onNavigate?.();
+          }}
+          className="inline-flex cursor-pointer items-center gap-2 self-start fs-15 font-medium text-foreground"
+        >
+          <Icon name="Times" size={14} />
+          ניקוי הסינון
         </button>
-        {options.map(({ family, count }) => {
-          const on = selected.includes(family.key);
-          return (
-            <button key={family.key} type="button" aria-pressed={on} onClick={() => onToggle(family.key)} className={cn(chipClass, on ? chipOn : chipOff)}>
-              <span aria-hidden="true" className="block size-4 flex-none rounded-full border border-foreground/25" style={{ background: family.fill }} />
-              {family.label}
-              <span className="fs-13 opacity-70" dir="ltr">
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </DragRow>
+      )}
     </div>
   );
 }
 
-/** The hub (page === null) shows four style tiles over every wallpaper. A style page shows only its own. */
-export function StyleArchive({ items, page }: { items: StyleItem[]; page: StylePage | null }) {
-  const [colors, setColors] = useState<string[]>([]);
+/**
+ * The style pages, laid out like the shop archive: heading, filters beside the grid (in a sheet on mobile) and the
+ * wallpapers. The hub (page === null) adds four style tiles above the grid and shows every wallpaper.
+ */
+export function StyleArchive({ items, page, color }: { items: StyleItem[]; page: StylePage | null; color?: string }) {
+  const navigate = useNavigate();
+  const colors = splitList(color).filter((c) => items.some((i) => i.colors.includes(c)));
   const inPage = page ? itemsForStyle(items, page) : items;
-  const shown = colors.length ? inPage.filter((i) => colors.some((c) => i.colors.includes(c))) : inPage;
+  const shown = withColors(inPage, colors);
   const heading = page ? { title: page.title, intro: page.intro } : STYLE_HUB;
-  const toggle = (key: string) => setColors((cur) => (cur.includes(key) ? cur.filter((c) => c !== key) : [...cur, key]));
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  // The colours live in the URL (?color=grey), like the shop's filters, so each view can be linked to.
+  const setColors = (next: string[]) => {
+    const search = next.length ? { color: next.join(",") } : {};
+    if (page) navigate({ to: "/טפט-לפי-סגנון/$style", params: { style: page.slug }, search, resetScroll: false });
+    else navigate({ to: "/טפט-לפי-סגנון", search, resetScroll: false });
+  };
+  // Colours that exist on the page only: a link to another style keeps none of them.
+  const filtersProps = { items, page, colors, onColors: setColors };
 
   return (
     <>
@@ -156,24 +209,56 @@ export function StyleArchive({ items, page }: { items: StyleItem[]; page: StyleP
         </section>
       )}
 
-      <section className="pt-8 pb-16 lg:pt-12 lg:pb-26">
-        <Container>
-          <div className="flex flex-col gap-4 lg:gap-5">
-            {page && <StyleNav current={page} />}
-            <ColorRow items={inPage} selected={colors} onToggle={toggle} onClear={() => setColors([])} />
-          </div>
-          <p className="mt-6 fs-16 font-medium text-foreground" aria-live="polite">
-            {shown.length} {page ? "טפטים" : "טפטים בכל הסגנונות"}
-          </p>
-          {shown.length ? (
-            <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-4 lg:gap-6">
-              {shown.map((item) => (
-                <StyleCard key={item.handle} item={item} />
-              ))}
+      <section className="pt-6 pb-16 lg:pt-10 lg:pb-26">
+        <Container className="lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:items-start lg:gap-10">
+          {/* Desktop: the filters stay beside the grid while it scrolls. */}
+          <aside aria-label="סינון" className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-7.5rem)] lg:overflow-y-auto lg:rounded-lg lg:border lg:border-border lg:bg-card lg:p-6 lg:[scrollbar-width:thin]">
+            <StyleFilters {...filtersProps} />
+          </aside>
+
+          <div>
+            <div className="flex items-center justify-between gap-4">
+              <p className="fs-16 font-medium text-foreground" aria-live="polite">
+                {shown.length === 1 ? "טפט אחד" : `${shown.length} טפטים`}
+              </p>
+
+              {/* Mobile: the same filters in a sheet. */}
+              <Dialog open={sheetOpen} onOpenChange={setSheetOpen}>
+                <DialogTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="gap-2 lg:hidden">
+                    <Icon name="Filter" size={15} />
+                    <span>סינון{colors.length ? ` (${colors.length})` : ""}</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent aria-describedby={undefined} className="m-0 me-auto flex min-h-dvh w-full max-w-90 flex-col px-6 pt-5 pb-6">
+                  <div className="flex items-center justify-between border-b border-border pb-4">
+                    <DialogTitle className="fs-22 font-bold text-foreground">סינון</DialogTitle>
+                    <DialogClose aria-label="סגירה" className="inline-flex cursor-pointer items-center text-foreground">
+                      <Icon name="Times" size={24} />
+                    </DialogClose>
+                  </div>
+                  <div className="flex-auto overflow-y-auto py-5">
+                    <StyleFilters {...filtersProps} onNavigate={() => setSheetOpen(false)} />
+                  </div>
+                  <DialogClose asChild>
+                    <Button type="button" className="w-full py-4">
+                      הצגת {shown.length} טפטים
+                    </Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
             </div>
-          ) : (
-            <p className="mt-8 fs-18 text-foreground">לא נמצאו טפטים בצבע הזה. נסו צבע אחר.</p>
-          )}
+
+            {shown.length ? (
+              <div className="mt-4 grid grid-cols-2 gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-6">
+                {shown.map((item) => (
+                  <StyleCard key={item.handle} item={item} />
+                ))}
+              </div>
+            ) : (
+              <p className="mt-8 fs-18 text-foreground">לא נמצאו טפטים בסינון הזה. נסו להסיר חלק מהסינונים.</p>
+            )}
+          </div>
         </Container>
       </section>
     </>
