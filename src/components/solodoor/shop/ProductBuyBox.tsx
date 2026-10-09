@@ -223,7 +223,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       )}
 
       <div className="flex flex-col gap-2.5">
-        <span className={sectionTitle}>{qtyLabel}</span>
+        <span className="fs-16 font-bold text-foreground lg:fs-17">{qtyLabel}</span>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Stepper value={qty} min={min} step={step} onChange={setQty} label={qtyLabel} />
           {(perSide || (isWallpaper && application)) && (
@@ -384,18 +384,23 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
           </Button>
         </div>
         {sampleAddon && (
-          <button
-            type="button"
-            onClick={() =>
-              cart.add(
-                [{ id: `sample:${product.handle}`, title: `דוגמית: ${productTitle}`, note: sampleAddon.price ? undefined : "חינם", image: catalogImage(data.images.find((i) => i.kind === "swatch")?.image_path), price: sampleAddon.price, qty: 1, single: true }],
-                { open: true },
-              )
-            }
-            className="cursor-pointer self-start border-b border-primary pb-0.5 fs-16 font-medium text-foreground"
-          >
-            לא בטוחים בגוון? הזמינו דוגמית לבית{sampleAddon.price ? ` (${formatPrice(sampleAddon.price)})` : ", חינם"}
-          </button>
+          <div className="mt-1 flex flex-col gap-3 rounded-md border border-border bg-muted p-4 lg:p-5">
+            <span className="fs-22 leading-[1.2] font-bold text-foreground lg:fs-24">לא בטוחים בגוון?</span>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                cart.add(
+                  [{ id: `sample:${product.handle}`, title: `דוגמית: ${productTitle}`, note: sampleAddon.price ? undefined : "חינם", image: catalogImage(data.images.find((i) => i.kind === "swatch")?.image_path), price: sampleAddon.price, qty: 1, single: true }],
+                  { open: true },
+                )
+              }
+              className="w-full bg-card py-3.5 fs-16"
+            >
+              <span>הזמינו דוגמית לבית{sampleAddon.price ? ` (${formatPrice(sampleAddon.price)})` : ", חינם"}</span>
+              <Icon name="ArrowLeft" size={16} />
+            </Button>
+          </div>
         )}
       </div>
     </div>
