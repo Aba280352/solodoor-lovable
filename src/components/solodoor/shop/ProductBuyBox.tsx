@@ -189,7 +189,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
                 aria-pressed={v.variant_key === variant?.variant_key}
                 className={cn(
                   "relative size-16 cursor-pointer overflow-hidden rounded-md border bg-muted transition-colors duration-160 ease-standard",
-                  v.variant_key === variant?.variant_key ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
+                  v.variant_key === variant?.variant_key ? "border-primary" : "border-input hover:border-foreground",
                 )}
               >
                 <img src={catalogImage(v.image_path) ?? ""} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
@@ -300,7 +300,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               aria-pressed={strips === null}
               className={cn(
                 "col-span-full flex min-h-12 cursor-pointer items-center justify-center rounded-md border bg-card px-2 text-center fs-15 leading-[1.3] font-medium text-foreground transition-colors duration-160 ease-standard",
-                strips === null ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
+                strips === null ? "border-primary" : "border-input hover:border-foreground",
               )}
             >
               בלי פסים
@@ -315,7 +315,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
                   onClick={() => setStrips(option.slug)}
                   className={cn(
                     "flex cursor-pointer flex-col overflow-hidden rounded-md border bg-card text-center transition-colors duration-160 ease-standard",
-                    strips === option.slug ? "border-foreground shadow-swatch" : "border-input hover:border-foreground",
+                    strips === option.slug ? "border-primary" : "border-input hover:border-foreground",
                   )}
                 >
                   <span className="relative block aspect-[4/5] w-full overflow-hidden bg-muted">
