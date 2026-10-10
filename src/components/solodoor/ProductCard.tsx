@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { Icon } from "./Icon";
 import { CoverImage, MediaPlaceholder, Pill } from "./primitives";
@@ -19,13 +19,17 @@ export function ProductMedia({ product }: { product: Product }) {
 }
 
 /** A link to the product page of a card; the whole shop when the card has no page of its own. */
-export function ProductLink({ product, children, onClick }: { product: Product; children: ReactNode; onClick?: () => void }) {
+export function ProductLink({
+  product,
+  children,
+  ...rest
+}: { product: Product; children: ReactNode } & Omit<ComponentProps<"a">, "href">) {
   return product.link ? (
-    <Link to="/product/$slug" params={{ slug: product.link.slug }} search={product.link.search} onClick={onClick}>
+    <Link to="/product/$slug" params={{ slug: product.link.slug }} search={product.link.search} {...rest}>
       {children}
     </Link>
   ) : (
-    <Link to="/חנות" onClick={onClick}>
+    <Link to="/חנות" {...rest}>
       {children}
     </Link>
   );
