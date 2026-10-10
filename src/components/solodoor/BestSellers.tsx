@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -6,14 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "./Icon";
 import { ProductCard, ProductZoomDialog } from "./ProductCard";
 import { Container, Pill } from "./primitives";
-import { bestSellers, type Product } from "./data";
+import type { Product } from "./data";
+import { bestSellerTabs } from "./shop/featured";
+import { useShop } from "./shop/useShop";
 import { useQuiz } from "./quiz-context";
 
 export function BestSellers() {
-  const [tab, setTab] = useState(bestSellers[0].tab);
+  const { shop } = useShop();
+  const bestSellers = useMemo(() => (shop ? bestSellerTabs(shop) : []), [shop]);
+  const [tab, setTab] = useState<string>();
   const [zoomed, setZoomed] = useState<Product | null>(null);
   const { openQuiz } = useQuiz();
   const active = bestSellers.find((group) => group.tab === tab) ?? bestSellers[0];
+  if (!active) return null;
 
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">

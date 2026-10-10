@@ -157,82 +157,9 @@ export interface Product {
   price: string;
   /** null = no photo supplied yet; the card shows a labelled placeholder. */
   img: string | null;
+  /** The product page the card opens; the shop when missing. */
+  link?: { slug: string; search: { tab?: string; variant?: string } };
 }
-
-export const bestSellers: { tab: string; items: Product[] }[] = [
-  {
-    tab: "טפטים עמידים לדלת",
-    items: [
-      { name: "שחור מט אלגנטי", price: "₪249", img: img("style-black") },
-      { name: "אלון טבעי", price: "₪269", img: img("style-wood") },
-      { name: "בטון בהיר", price: "₪249", img: img("stone-light-concrete") },
-      { name: "אבן בהירה חמה", price: "₪259", img: img("style-stone") },
-    ],
-  },
-  {
-    tab: "טפטים מעוצבים לדלת",
-    items: [
-      { name: "מונקו שמנת", price: "₪289", img: img("use-door-designed") },
-      { name: "אבן דקורטיבית", price: "₪279", img: img("stone-cloudy-grey") },
-      { name: "לבן פסים", price: "₪259", img: img("plain-white-stripes") },
-      { name: "דגם מעוצב חדש", price: "₪299", img: null },
-    ],
-  },
-  {
-    tab: "טפט לקיר",
-    items: [
-      { name: "קיר אבן בהירה", price: "₪199", img: img("use-wall") },
-      { name: "טיח מעונן", price: "₪189", img: img("stone-light-plaster") },
-      { name: "קיר בטון אפור", price: "₪199", img: null },
-      { name: "קיר עץ אנכי", price: "₪219", img: null },
-    ],
-  },
-  {
-    tab: "טפט לארון חשמל",
-    items: [
-      { name: "ארון אבן בהירה", price: "₪149", img: img("use-electric") },
-      { name: "ארון לבן חם", price: "₪139", img: null },
-      { name: "ארון שחור מט", price: "₪149", img: null },
-      { name: "ארון דמוי עץ", price: "₪159", img: null },
-    ],
-  },
-  {
-    tab: "טפט למקרר",
-    items: [
-      { name: "מקרר אבן בהירה", price: "₪229", img: img("use-fridge") },
-      { name: "מקרר גרפיט מט", price: "₪239", img: img("ba-fridge-after") },
-      { name: "מקרר לבן וניל", price: "₪219", img: null },
-      { name: "מקרר דמוי נירוסטה", price: "₪249", img: null },
-    ],
-  },
-  {
-    tab: "טפט למטבח",
-    items: [
-      { name: "מטבח אבן בהירה", price: "₪319", img: img("use-kitchen") },
-      { name: "מטבח אלון", price: "₪329", img: img("wood-antique") },
-      { name: "מטבח לבן פודרה", price: "₪299", img: null },
-      { name: "מטבח שחור מט", price: "₪329", img: null },
-    ],
-  },
-  {
-    tab: "טפט לשיש",
-    items: [
-      { name: "שיש אבן בהירה", price: "₪269", img: img("use-counter") },
-      { name: "שיש לבן עדין", price: "₪279", img: img("stone-cloudy-grey") },
-      { name: "שיש שחור עם גידים", price: "₪289", img: null },
-      { name: "שיש בז׳ טבעי", price: "₪269", img: null },
-    ],
-  },
-  {
-    tab: "שטיחי PVC",
-    items: [
-      { name: "שטיח PVC מעוצב", price: "₪199", img: img("cat-pvc-rug") },
-      { name: "שטיח PVC אדרה", price: "₪219", img: img("var-rug-fishbone") },
-      { name: "שטיח PVC גאומטרי", price: "₪209", img: null },
-      { name: "שטיח PVC טבעי", price: "₪199", img: null },
-    ],
-  },
-];
 
 /** `color` is the reviewer's Google avatar colour — data, not a brand token. */
 export const reviews = [
@@ -310,12 +237,12 @@ export const articles = [
 /* ───────────── Guidance quiz ───────────── */
 
 export const quizAreas = [
-  { label: "דלתות", key: "door", img: img("use-door-durable"), price: "₪259" },
-  { label: "מטבח", key: "kitchen", img: img("use-kitchen"), price: "₪319" },
-  { label: "מקרר", key: "fridge", img: img("use-fridge"), price: "₪229" },
-  { label: "ארון חשמל", key: "electric", img: img("use-electric"), price: "₪149" },
-  { label: "קיר", key: "wall", img: img("use-wall"), price: "₪199" },
-  { label: "שיש", key: "counter", img: img("use-counter"), price: "₪269" },
+  { label: "דלתות", key: "door", img: img("use-door-durable") },
+  { label: "מטבח", key: "kitchen", img: img("use-kitchen") },
+  { label: "מקרר", key: "fridge", img: img("use-fridge") },
+  { label: "ארון חשמל", key: "electric", img: img("use-electric") },
+  { label: "קיר", key: "wall", img: img("use-wall") },
+  { label: "שיש", key: "counter", img: img("use-counter") },
 ] as const;
 
 export const quizStyles = ["חלק ונקי", "מראה עץ", "אבן / שיש / בטון", "מעוצב ודקורטיבי"] as const;
@@ -323,56 +250,22 @@ export const quizStyles = ["חלק ונקי", "מראה עץ", "אבן / שיש 
 export type QuizArea = (typeof quizAreas)[number]["label"];
 export type QuizStyle = (typeof quizStyles)[number];
 
-export interface QuizModel {
-  name: string;
-  price: string;
-  img: string | null;
-}
-
-/** The three models offered for an area + style pair (step 3 of the quiz). */
-export function pickQuizModels(areaLabel: QuizArea | undefined, style: QuizStyle | undefined): QuizModel[] {
-  const area = quizAreas.find((a) => a.label === areaLabel) ?? quizAreas[0];
-  const variant = (color: string) => img(`var-${area.key}-${color}`);
-  const byStyle: Record<QuizStyle, [string, string | null][]> = {
-    "חלק ונקי": [
-      ["לבן חם", area.img],
-      ["דמוי נירוסטה", variant("steel")],
-      ["לבן פודרה", null],
-    ],
-    "מראה עץ": [
-      ["אלון טבעי", null],
-      ["אגוז כהה", null],
-      ["עץ מעושן", null],
-    ],
-    "אבן / שיש / בטון": [
-      ["טיח אפור פחם", variant("charcoal")],
-      ["אבן בהירה", area.img],
-      ["בטון אפור", null],
-    ],
-    "מעוצב ודקורטיבי": [
-      ["ירוק פיסטוק", variant("green")],
-      ["כחול מעושן", variant("blue")],
-      ["דגם דקורטיבי", null],
-    ],
-  };
-  return byStyle[style ?? "חלק ונקי"].map(([name, src]) => ({
-    name: `${name} · ${area.label}`,
-    img: src,
-    price: area.price,
-  }));
-}
-
 /* ───────────── Footer ───────────── */
 
 export const FOOTER_BANNER = img("footer-door");
 export const PAYMENTS_SRC = img("payments");
 export const TEXTURE_SRC = img("texture-seamless");
 
+/** The social pages of the business, the same ones the old site links to. */
+export const INSTAGRAM_URL = "https://www.instagram.com/sollodoor/";
+export const FACEBOOK_URL = "https://www.facebook.com/solodoors/";
+export const YOUTUBE_URL = "https://youtube.com/@Solodoor1";
+
 export const footerSocial: { label: string; icon: IconName; href?: string }[] = [
-  { label: "אינסטגרם", icon: "ImageGallery" },
+  { label: "אינסטגרם", icon: "ImageGallery", href: INSTAGRAM_URL },
   { label: "וואטסאפ", icon: "ChatDots", href: whatsappHref() },
-  { label: "פייסבוק", icon: "CommentDots" },
-  { label: "יוטיוב", icon: "Headphones" },
+  { label: "פייסבוק", icon: "CommentDots", href: FACEBOOK_URL },
+  { label: "יוטיוב", icon: "Headphones", href: YOUTUBE_URL },
 ];
 
 export const footerContact: { icon: IconName; value: string; dir: "ltr" | "rtl" }[] = [

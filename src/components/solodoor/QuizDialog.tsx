@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { CoverImage, MediaPlaceholder } from "./primitives";
-import { pickQuizModels, quizAreas, quizStyles, type QuizArea, type QuizStyle } from "./data";
+import { quizAreas, quizStyles, type QuizArea, type QuizStyle } from "./data";
+import { quizModels } from "./shop/featured";
+import { useShop } from "./shop/useShop";
 import { useQuiz } from "./quiz-context";
 
 /** 1 area -> 2 style -> 3 matching models -> 4 contact form (reached only on request). */
@@ -37,6 +39,7 @@ function Field({ label, className, children }: { label: string; className?: stri
 
 export function QuizDialog() {
   const { open, setOpen } = useQuiz();
+  const { shop } = useShop(open);
   const [step, setStep] = useState<Step>(1);
   const [done, setDone] = useState(false);
   const [area, setArea] = useState<QuizArea>();
@@ -172,28 +175,29 @@ export function QuizDialog() {
               {step === 3 && (
                 <>
                   <div className="mt-9 grid w-full grid-cols-1 gap-4 sm:grid-cols-3 lg:gap-6">
-                    {pickQuizModels(area, style).map((model) => (
-                      <a
-                        key={model.name}
-                        href="#"
-                        className="block overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground"
-                      >
-                        <div className="relative h-52 overflow-hidden bg-muted lg:h-75">
-                          {model.img ? (
-                            <CoverImage src={model.img} alt={model.name} />
-                          ) : (
-                            <MediaPlaceholder label={model.name} />
-                          )}
-                        </div>
-                        <div className="flex flex-col items-center gap-2.5 px-5.5 pt-5 pb-6 text-center">
-                          <span className="fs-18 font-semibold text-foreground">{model.name}</span>
-                          <span className="fs-22 font-bold text-foreground">{model.price}</span>
-                          <span className="mt-1.5 w-full rounded-md bg-primary px-2.5 py-[0.8125rem] fs-16 font-medium text-primary-foreground">
-                            לפרטים נוספים
-                          </span>
-                        </div>
-                      </a>
-                    ))}
+                    {!shop && <p className="col-span-full text-center fs-16 text-foreground">טוענים דגמים...</p>}
+                    {shop &&
+                      quizModels(shop, quizAreas.find((q) => q.label === area)?.key ?? "door", style).map((model) => (
+                        <Link
+                          key={model.name}
+                          to="/product/$slug"
+                          params={{ slug: model.link?.slug ?? "" }}
+                          search={model.link?.search ?? {}}
+                          onClick={() => setOpen(false)}
+                          className="block overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground"
+                        >
+                          <div className="relative h-52 overflow-hidden bg-muted lg:h-75">
+                            {model.img ? <CoverImage src={model.img} alt={model.name} /> : <MediaPlaceholder label={model.name} />}
+                          </div>
+                          <div className="flex flex-col items-center gap-2.5 px-5.5 pt-5 pb-6 text-center">
+                            <span className="fs-18 font-semibold text-foreground">{model.name}</span>
+                            <span className="fs-22 font-bold text-foreground">{model.price}</span>
+                            <span className="mt-1.5 w-full rounded-md bg-primary px-2.5 py-[0.8125rem] fs-16 font-medium text-primary-foreground">
+                              לפרטים נוספים
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
                   </div>
                   <div className="mt-8 flex flex-col items-center gap-2.5">
                     <button

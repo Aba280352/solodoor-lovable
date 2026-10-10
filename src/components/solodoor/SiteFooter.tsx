@@ -10,6 +10,7 @@ import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./sho
 import { shopSearchFor } from "./shop/links";
 import {
   FOOTER_BANNER,
+  INSTAGRAM_URL,
   LOGO_SRC,
   PAYMENTS_SRC,
   footerColumns,
@@ -28,6 +29,9 @@ const FOOTER_PATHS: Record<string, "/" | "/ציפוי-דלתות" | "/ציפוי
   מאמרים: "/מאמרים",
   "שאלות נפוצות": "/שאלות-נפוצות",
 };
+
+/** Links that leave the site. */
+const FOOTER_EXTERNAL: Record<string, string> = { "גלריה": INSTAGRAM_URL };
 
 function FooterLink({ label, category }: { label: string; category: boolean }) {
   const inner = (
@@ -71,6 +75,14 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
       <Link to="/חנות" search={shopSearchFor(label)} className={footerLinkClass}>
         {inner}
       </Link>
+    );
+  }
+  const external = FOOTER_EXTERNAL[label];
+  if (external) {
+    return (
+      <a href={external} target="_blank" rel="noopener noreferrer" className={footerLinkClass}>
+        {inner}
+      </a>
     );
   }
   const to = FOOTER_PATHS[label];

@@ -1,10 +1,11 @@
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { QuantityCalculator } from "./QuantityCalculator";
-import { DIY_BG, DIY_VIDEO, diySteps, diyTools } from "./data";
+import { DIY_BG, DIY_VIDEO, YOUTUBE_URL, diySteps, diyTools } from "./data";
 
 export function Diy() {
   return (
@@ -28,10 +29,10 @@ export function Diy() {
             </p>
             <div className="mt-8 hidden items-center gap-3.5 lg:flex">
               <Button asChild size="xl" className="gap-3 py-5">
-                <a href="#">
+                <Link to="/חנות">
                   <span>לבחירת הטפט שלכם</span>
                   <Icon name="ArrowLeft" size={18} />
-                </a>
+                </Link>
               </Button>
               <QuantityCalculator />
             </div>
@@ -63,7 +64,9 @@ export function Diy() {
           <div className="relative order-2 aspect-[878/490] overflow-hidden rounded-xl bg-muted">
             <img src={DIY_VIDEO} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
             <a
-              href="#"
+              href={YOUTUBE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="absolute end-3 bottom-3 inline-flex items-center gap-3 rounded-full bg-background py-2 ps-2 pe-5.5 fs-16 font-medium text-foreground transition-transform duration-[480ms] ease-standard hover:scale-105 lg:end-5.5 lg:bottom-5.5 lg:fs-18"
             >
               <span className="inline-flex size-10 items-center justify-center rounded-full border-[1.5px] border-foreground">
@@ -95,10 +98,10 @@ export function Diy() {
         </div>
         <QuantityCalculator className="order-4 w-full lg:hidden" />
         <Button asChild size="xl" className="order-6 mt-2 w-full gap-3 py-5 lg:hidden">
-          <a href="#">
+          <Link to="/חנות">
             <span>לבחירת הטפט שלכם</span>
             <Icon name="ArrowLeft" size={18} />
-          </a>
+          </Link>
         </Button>
       </div>
     </section>

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 
 import { Icon } from "./Icon";
@@ -162,10 +164,10 @@ export function Process() {
             </button>
           </div>
           <Button asChild className="order-1 px-6 py-4.5 lg:px-17">
-            <a href="#">
-              <span>לעמוד התהליך המלא</span>
+            <Link to="/שאלות-נפוצות">
+              <span>לשאלות ותשובות על התהליך</span>
               <Icon name="ArrowLeft" size={16} />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>

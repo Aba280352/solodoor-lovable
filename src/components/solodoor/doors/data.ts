@@ -135,16 +135,3 @@ export const doorsBeforeAfter = [
   after: img(`door-ba-${i + 1}-after`),
 }));
 
-/* ───────────── Shop ───────────── */
-
-/** Placeholder products and prices until the shop database exists. */
-export const doorProducts: Product[] = [
-  { name: "דלת אבן בהירה", price: "₪319", img: img("use-door-durable") },
-  { name: "דלת טיח אפור פחם", price: "₪329", img: img("var-door-charcoal") },
-  { name: "דלת ירוק פיסטוק", price: "₪319", img: img("var-door-green") },
-  { name: "דלת כחול מעושן", price: "₪319", img: img("var-door-blue") },
-  { name: "דלת דמוי נירוסטה", price: "₪339", img: img("var-door-steel") },
-  { name: "דלת פרחונית", price: "₪329", img: img("var-door-floral") },
-  { name: "דלת אלון טבעי", price: "₪329", img: null },
-  { name: "דלת שחור מט", price: "₪329", img: null },
-];

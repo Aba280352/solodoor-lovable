@@ -90,20 +90,6 @@ export const kitchenValues = [
 /** The kitchen catalogue PDF, carried over from the old site. */
 export const KITCHEN_CATALOG_PDF = `${import.meta.env.BASE_URL}catalog/kitchen-catalog.pdf`;
 
-/**
- * PLACEHOLDERS. Names, prices and the missing photos are stand-ins until the
- * products come from the shop database.
- */
-export const kitchenProducts: Product[] = [
-  { name: "מטבח אבן בהירה", price: "₪319", img: img("use-kitchen") },
-  { name: "מטבח טיח אפור פחם", price: "₪329", img: img("var-kitchen-charcoal") },
-  { name: "מטבח ירוק פיסטוק", price: "₪319", img: img("var-kitchen-green") },
-  { name: "מטבח כחול מעושן", price: "₪319", img: img("var-kitchen-blue") },
-  { name: "מטבח דמוי נירוסטה", price: "₪339", img: img("var-kitchen-steel") },
-  { name: "מטבח אלון טבעי", price: "₪329", img: null },
-  { name: "מטבח לבן פודרה", price: "₪299", img: null },
-  { name: "מטבח שחור מט", price: "₪329", img: null },
-];
 
 /* ───────────── Before / after ───────────── */
 

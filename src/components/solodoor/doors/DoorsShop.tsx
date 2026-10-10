@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,8 @@ import { Icon } from "../Icon";
 import { ProductCard, ProductZoomDialog } from "../ProductCard";
 import type { Product } from "../data";
 import { Container, Pill } from "../primitives";
-import { doorProducts } from "./data";
+import { surfaceProducts } from "../shop/featured";
+import { useShop } from "../shop/useShop";
 
 /**
  * Door coatings to buy on the site, in a grid that runs the full width of the
@@ -15,6 +16,8 @@ import { doorProducts } from "./data";
  */
 export function DoorsShop() {
   const [zoomed, setZoomed] = useState<Product | null>(null);
+  const { shop } = useShop();
+  const doorProducts = useMemo(() => (shop ? surfaceProducts(shop, "door") : []), [shop]);
 
   return (
     <section id="shop" data-reveal className="scroll-mt-16 pt-14 pb-16 lg:scroll-mt-20 lg:pt-24 lg:pb-26">

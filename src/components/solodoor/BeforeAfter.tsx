@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
-import { beforeAfterFigures, beforeAfterPairs } from "./data";
+import { INSTAGRAM_URL, beforeAfterFigures, beforeAfterPairs } from "./data";
 
 export interface BeforeAfterPair {
   name: string;
@@ -267,7 +267,7 @@ export function BeforeAfter() {
 
         <div className="mt-12 flex flex-col items-center gap-4">
           <Button asChild className="w-full px-11 py-4.5 lg:w-auto">
-            <a href="#">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
               <span>לצפייה בפרויקטים נוספים</span>
               <Icon name="ArrowLeft" size={16} />
             </a>

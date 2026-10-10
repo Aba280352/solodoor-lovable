@@ -1,6 +1,10 @@
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+
+import type { ReactNode } from "react";
 
 import { Icon } from "./Icon";
 import { CoverImage, MediaPlaceholder, Pill } from "./primitives";
@@ -11,6 +15,19 @@ export function ProductMedia({ product }: { product: Product }) {
     <CoverImage src={product.img} alt={product.name} />
   ) : (
     <MediaPlaceholder label={product.name} />
+  );
+}
+
+/** A link to the product page of a card; the whole shop when the card has no page of its own. */
+export function ProductLink({ product, children, onClick }: { product: Product; children: ReactNode; onClick?: () => void }) {
+  return product.link ? (
+    <Link to="/product/$slug" params={{ slug: product.link.slug }} search={product.link.search} onClick={onClick}>
+      {children}
+    </Link>
+  ) : (
+    <Link to="/חנות" onClick={onClick}>
+      {children}
+    </Link>
   );
 }
 
@@ -28,9 +45,6 @@ export function ProductCard({ product, onZoom, mediaClassName }: ProductCardProp
     <div className="overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground">
       <div className={cn("relative h-44 overflow-hidden bg-muted lg:h-75", mediaClassName)}>
         <ProductMedia product={product} />
-        <span className="absolute top-3.5 right-3.5 flex size-9 items-center justify-center rounded-full bg-background text-foreground">
-          <Icon name="Heart" size={16} />
-        </span>
         {onZoom && (
           <button
             type="button"
@@ -46,8 +60,8 @@ export function ProductCard({ product, onZoom, mediaClassName }: ProductCardProp
         <span className="fs-16 font-semibold text-foreground lg:fs-18">{product.name}</span>
         <span className="fs-22 font-bold text-foreground">{product.price}</span>
         <div className="mt-1.5 w-full">
-          <Button type="button" size="card" className="w-full border border-primary leading-[normal]">
-            לפרטים נוספים
+          <Button asChild size="card" className="w-full border border-primary leading-[normal]">
+            <ProductLink product={product}>לפרטים נוספים</ProductLink>
           </Button>
         </div>
       </div>
@@ -89,10 +103,12 @@ export function ProductZoomDialog({ product, label, onClose }: ProductZoomDialog
               </DialogTitle>
               <span className="fs-24 font-bold text-foreground lg:fs-30">{product.price}</span>
               <DialogDescription className="max-w-[40ch] fs-18 leading-[1.85] font-light text-foreground">
-                ציפוי בהתקנה מקצועית, עם הגנה מפני שריטות ודעיכה בצבע. הדגם מותאם למידות שלכם ומותקן בפריסה רחבה.
+                ציפוי עמיד להדבקה עצמית, עם הגנה מפני שריטות ודעיכה בצבע. בעמוד המוצר בוחרים מידות והתקנה.
               </DialogDescription>
               <Button asChild className="mt-2 px-11 py-4">
-                <a href="#">לפרטים נוספים</a>
+                <ProductLink product={product} onClick={onClose}>
+                  לפרטים נוספים
+                </ProductLink>
               </Button>
             </div>
           </>

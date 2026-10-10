@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -7,15 +7,19 @@ import { Icon } from "../Icon";
 import { ProductCard, ProductZoomDialog } from "../ProductCard";
 import type { Product } from "../data";
 import { Container, Pill } from "../primitives";
-import { KITCHEN_CATALOG_PDF, kitchenProducts } from "./data";
+import { surfaceProducts } from "../shop/featured";
+import { useShop } from "../shop/useShop";
+import { KITCHEN_CATALOG_PDF } from "./data";
 
 /**
  * "קטלוג הציפויים של סולודור למטבח": the catalogue pitch, then sample kitchen
  * coatings in a grid that runs the full width of the screen.
- * The products are placeholders until the shop database exists.
+ * The products are the real kitchen wallpapers of the shop.
  */
 export function KitchenCatalog() {
   const [zoomed, setZoomed] = useState<Product | null>(null);
+  const { shop } = useShop();
+  const kitchenProducts = useMemo(() => (shop ? surfaceProducts(shop, "kitchen") : []), [shop]);
 
   return (
     <section id="catalog" data-reveal className="scroll-mt-16 pt-14 pb-16 lg:scroll-mt-20 lg:pt-24 lg:pb-26">

@@ -10,24 +10,17 @@ import { cn } from "@/lib/utils";
 import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
 import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
-import { catalogImage, fetchShop, formatPrice, variantColors, type ShopData } from "./shop/catalog";
+import { catalogImage, formatPrice, variantColors, type ShopData } from "./shop/catalog";
 import { joinList } from "./shop/filters";
 import { MenuLink } from "./shop/MenuLink";
 import { intentOf, normalize as normalizeText, searchItems } from "./shop/search";
 import { priceLabel } from "./shop/ShopCard";
+import { loadShop } from "./shop/useShop";
 
 const iconTrigger = "inline-flex cursor-pointer items-center text-foreground";
 
 /** The catalogue groups of the two menus: what is offered before typing, and a second kind of result while typing. */
 const searchable = [...useMenu, ...styleMenu];
-
-/** The shop data is loaded once, the first time the search opens. */
-let shopPromise: Promise<ShopData> | null = null;
-const loadShop = () =>
-  (shopPromise ??= fetchShop().catch((e) => {
-    shopPromise = null;
-    throw e;
-  }));
 
 const MAX_PRODUCTS = 8;
 
