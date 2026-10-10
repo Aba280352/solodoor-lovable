@@ -293,7 +293,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
           <span className={sectionTitle}>
             עיצוב פסים לדלת <span className="font-normal">(לא חובה, המחיר לצד אחד של דלת)</span>
           </span>
-          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <button
               type="button"
               onClick={() => setStrips(null)}
