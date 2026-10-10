@@ -12,7 +12,7 @@ strips-06,3 פסים מדורגים,door_strips,300,{door},"עיצוב פסים 
 strips-07,4 פסים לרוחב,door_strips,200,{door},"עיצוב פסים לדלת: 4 פסים לרוחב. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.",addons/strips-07.webp,true,7,
 strips-08,פסים אלכסוניים,door_strips,200,{door},"עיצוב פסים לדלת: פסים אלכסוניים. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.",addons/strips-08.webp,true,14,
 strips-09,פס אחד לאורך,door_strips,100,{door},"עיצוב פסים לדלת: פס אחד לאורך. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.",addons/strips-09.webp,true,8,
-strips-10,פס אחד מדורג,door_strips,100,{door},"עיצוב פסים לדלת: פס אחד מדורג. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.",,true,9,
+strips-10,פס אחד מדורג,door_strips,100,{door},"עיצוב פסים לדלת: פס אחד מדורג. המחיר לצד אחד של דלת, בהתקנה על ידי סולודור.",addons/strips-10.webp,true,9,
 door-number-0,מספר לדלת 0,door_number,19.9,{door},הספרה 0 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-0.webp,true,15,
 door-number-1,מספר לדלת 1,door_number,19.9,{door},הספרה 1 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-1.webp,true,16,
 door-number-2,מספר לדלת 2,door_number,19.9,{door},הספרה 2 לדלת. מרכיבים את מספר הדירה מספרות בודדות.,addons/door-number-2.webp,true,17,

@@ -13,7 +13,7 @@ interface ShopCardProps {
 }
 
 /** What the card says under the name, e.g. "₪119 למטר". */
-function priceLabel(item: ShopItem, application?: Application, rugFromPrice?: number | null) {
+export function priceLabel(item: ShopItem, application?: Application, rugFromPrice?: number | null) {
   if (item.product_type === "pvc_rug") return `החל מ-${formatPrice(rugFromPrice ?? item.base_price)}`;
   if (item.product_type === "designed_door") return `${formatPrice(item.base_price)} לצד`;
   if (application) return `${formatPrice(application.unit_price)} ${application.sell_unit === "side" ? "לצד" : "למטר"}`;

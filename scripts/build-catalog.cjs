@@ -623,14 +623,14 @@ writeCsv(
 
 /**
  * Door strip designs, with the client's own price list (October 2026). The key is the number of the picture in the
- * strips folder. The design "one stepped strip" has no picture yet. Strips are offered only with installation.
+ * strips folder. Strips are offered only with installation.
  */
 const STRIP_DESIGNS = {
   "strips-01": { title: "2 פסים לרוחב", price: 100, sort: 5, picture: true },
   "strips-04": { title: "3 פסים לרוחב", price: 150, sort: 6, picture: true },
   "strips-07": { title: "4 פסים לרוחב", price: 200, sort: 7, picture: true },
   "strips-09": { title: "פס אחד לאורך", price: 100, sort: 8, picture: true },
-  "strips-10": { title: "פס אחד מדורג", price: 100, sort: 9, picture: false },
+  "strips-10": { title: "פס אחד מדורג", price: 100, sort: 9, picture: true },
   "strips-02": { title: "2 פסים לאורך", price: 200, sort: 10, picture: true },
   "strips-03": { title: "2 פסים מדורגים", price: 200, sort: 11, picture: true },
   "strips-05": { title: "3 פסים לאורך", price: 300, sort: 12, picture: true },
