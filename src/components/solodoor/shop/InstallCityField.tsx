@@ -71,8 +71,11 @@ export function InstallCityField({ value, onChange, rows, status, touched, onTou
         onChange={(e) => {
           onChange(e.target.value);
           setActive(-1);
+          // Typing again after picking a place (the field still has focus) opens the list again.
+          setFocused(true);
         }}
         onFocus={() => setFocused(true)}
+        onClick={() => setFocused(true)}
         onBlur={() => {
           setFocused(false);
           onTouched();
