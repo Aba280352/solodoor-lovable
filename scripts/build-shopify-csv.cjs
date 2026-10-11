@@ -71,10 +71,10 @@ const img = (p) => (p ? IMAGES + p : "");
 const bySort = (a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0);
 
 /**
- * One product as rows. `variants`: { option, sku, price, image, shipping }. `images`: { src, alt }.
+ * One product as rows. `variants`: { option, option2, sku, price, image, shipping }. `images`: { src, alt }.
  * The first row carries the product fields; variants and images share the following rows.
  */
-function productRows({ handle, title, body, type, tags, optionName, variants, images }) {
+function productRows({ handle, title, body, type, tags, optionName, option2Name, variants, images }) {
   const rows = [];
   const n = Math.max(variants.length, images.length);
   for (let i = 0; i < n; i++) {
@@ -89,7 +89,9 @@ function productRows({ handle, title, body, type, tags, optionName, variants, im
     }
     if (v) {
       Object.assign(row, {
-        "Option1 Name": i === 0 ? optionName : "", "Option1 Value": v.option, "Variant SKU": v.sku, "Variant Grams": "0",
+        "Option1 Name": i === 0 ? optionName : "", "Option1 Value": v.option,
+        "Option2 Name": i === 0 && option2Name ? option2Name : "", "Option2 Value": v.option2 || "",
+        "Variant SKU": v.sku, "Variant Grams": "0",
         "Variant Inventory Policy": "continue", "Variant Fulfillment Service": "manual", "Variant Price": String(v.price),
         "Variant Requires Shipping": v.shipping === false ? "FALSE" : "TRUE", "Variant Taxable": "TRUE",
         "Variant Image": v.image || "", "Variant Weight Unit": "kg",
@@ -179,16 +181,22 @@ if (installation) {
   });
 }
 
+// A sample is a piece of one wallpaper, so it is sold per wallpaper and shows that wallpaper's swatch.
 // The first sample of an order is free; every further one costs 5. The site puts each in the right variant.
+const SAMPLE_KINDS = [
+  { key: "first", label: "דוגמית ראשונה", price: 0 },
+  { key: "extra", label: "דוגמית נוספת", price: 5 },
+];
 const sample = addon("sample");
-if (sample) {
+const sampled = products.filter((p) => p.product_type === "wallpaper" && p.sample_available === "true").sort(bySort);
+const swatchOf = (handle) => productImages.filter((i) => i.product_handle === handle && i.kind === "swatch").sort(bySort)[0];
+if (sample && sampled.length) {
   addonRows({
-    handle: "addon-sample", title: "דוגמית טפט", body: html(sample.description), type: "דוגמית", tags: ["תוספת", "דוגמית"], optionName: "סוג",
-    variants: [
-      { option: "דוגמית ראשונה", sku: "addon__sample-first", price: 0, image: "" },
-      { option: "דוגמית נוספת", sku: "addon__sample-extra", price: 5, image: "" },
-    ],
-    images: [],
+    handle: "wallpaper-sample", title: "דוגמית טפט", body: html(sample.description), type: "דוגמית", tags: ["תוספת", "דוגמית"], optionName: "טפט", option2Name: "סוג",
+    variants: sampled.flatMap((p) =>
+      SAMPLE_KINDS.map((kind) => ({ option: p.title, option2: kind.label, sku: `sample-${kind.key}__${p.handle}`, price: kind.price, image: img(swatchOf(p.handle)?.image_path) })),
+    ),
+    images: unique(sampled.map((p) => ({ src: img(swatchOf(p.handle)?.image_path), alt: `דוגמית של טפט ${p.title}` }))),
   });
 }
 
