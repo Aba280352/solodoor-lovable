@@ -42,8 +42,11 @@ function resolve(lines: CartLine[]): { sku: string; qty: number; title: string }
 
 export class CheckoutError extends Error {}
 
-/** The address of the Shopify checkout holding exactly this cart. Throws when a line has no Shopify variant. */
-export async function checkoutUrl(lines: CartLine[]): Promise<string> {
+/**
+ * The address of the Shopify checkout holding exactly this cart. Throws when a line has no Shopify variant.
+ * `termsVersion` is the date of the terms the customer ticked; it is kept on the order as proof of consent.
+ */
+export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Promise<string> {
   if (!lines.length) throw new CheckoutError("הסל ריק");
   // Loaded only when the customer goes to pay, so the list is not part of every page.
   const variants = (await import("./shopify-variants.json")).default as Record<string, number>;
@@ -55,5 +58,6 @@ export async function checkoutUrl(lines: CartLine[]): Promise<string> {
     else quantities.set(id, (quantities.get(id) ?? 0) + qty);
   }
   if (missing.length) throw new CheckoutError(`אין אפשרות לשלם על: ${missing.join(", ")}`);
-  return `${SHOP_URL}/cart/${[...quantities].map(([id, qty]) => `${id}:${qty}`).join(",")}`;
+  const url = `${SHOP_URL}/cart/${[...quantities].map(([id, qty]) => `${id}:${qty}`).join(",")}`;
+  return termsVersion ? `${url}?${new URLSearchParams({ "attributes[אישור תקנון]": `אושר, נוסח ${termsVersion}` })}` : url;
 }

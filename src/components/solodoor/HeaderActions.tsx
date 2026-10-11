@@ -17,6 +17,8 @@ import { MenuLink } from "./shop/MenuLink";
 import { intentOf, normalize as normalizeText, searchItems } from "./shop/search";
 import { priceLabel } from "./shop/ShopCard";
 import { whatsappHref } from "./whatsapp";
+import { LEGAL_UPDATED } from "./legal/legal-content";
+import { TermsDialog } from "./legal/TermsDialog";
 import { loadShop } from "./shop/useShop";
 
 const iconTrigger = "inline-flex cursor-pointer items-center text-foreground";
@@ -198,12 +200,18 @@ export function CartButton() {
   const count = cartCount(lines);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+  // Ticked anew for every order: paying is allowed only after agreeing to the terms.
+  const [agreed, setAgreed] = useState(false);
 
   async function pay() {
+    if (!agreed) {
+      setPayError("כדי להמשיך לתשלום יש לאשר את תקנון האתר.");
+      return;
+    }
     setPaying(true);
     setPayError(null);
     try {
-      window.location.href = await checkoutUrl(lines);
+      window.location.href = await checkoutUrl(lines, LEGAL_UPDATED);
     } catch (error) {
       setPayError(error instanceof CheckoutError ? error.message : "לא הצלחנו לפתוח את הקופה. נסו שוב בעוד רגע.");
       setPaying(false);
@@ -306,15 +314,39 @@ export function CartButton() {
                 <span className="fs-26 leading-none font-bold text-foreground">{formatPrice(cartTotal(lines))}</span>
               </div>
               <span className="fs-14 leading-[1.5] text-foreground">המשלוח מחושב בקופה. התשלום בעמוד מאובטח.</span>
+              <label className="flex cursor-pointer items-start gap-2.5 fs-15 leading-[1.5] text-foreground">
+                <input
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={(e) => {
+                    setAgreed(e.target.checked);
+                    if (e.target.checked) setPayError(null);
+                  }}
+                  className="mt-0.5 size-5 flex-none cursor-pointer accent-primary"
+                />
+                <span>
+                  קראתי ואני מאשר/ת את{" "}
+                  <TermsDialog>
+                    <button type="button" className="cursor-pointer border-b border-primary font-medium text-foreground">
+                      תקנון האתר
+                    </button>
+                  </TermsDialog>
+                </span>
+              </label>
               <Button type="button" onClick={pay} disabled={paying} className="w-full py-4">
                 {paying ? "פותחים את הקופה..." : "לתשלום"}
               </Button>
               {payError && (
                 <span role="alert" className="fs-14 leading-[1.5] text-foreground">
-                  {payError}{" "}
-                  <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="border-b border-primary">
-                    אפשר להזמין גם בווצאפ
-                  </a>
+                  {payError}
+                  {agreed && (
+                    <>
+                      {" "}
+                      <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="border-b border-primary">
+                        אפשר להזמין גם בווצאפ
+                      </a>
+                    </>
+                  )}
                 </span>
               )}
               <DialogClose asChild>

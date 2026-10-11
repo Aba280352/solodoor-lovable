@@ -4,7 +4,8 @@ import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { CONTACT, LEGAL_DOCS, LEGAL_UPDATED, type LegalBlock, type LegalDoc } from "./legal-content";
 
-function Block({ block }: { block: LegalBlock }) {
+/** One block of a legal text: a paragraph, a list or a table. Shared with the terms pop-up. */
+export function LegalBlockView({ block }: { block: LegalBlock }) {
   if (block.type === "p") {
     return <p className="fs-17 leading-[1.9] text-pretty text-foreground lg:fs-18">{block.text}</p>;
   }
@@ -111,7 +112,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
                 </h2>
                 <div className="mt-4 flex flex-col gap-4">
                   {section.blocks.map((block, j) => (
-                    <Block key={j} block={block} />
+                    <LegalBlockView key={j} block={block} />
                   ))}
                 </div>
               </section>
