@@ -53,20 +53,31 @@ export const STYLE_HUB = {
     "כל סגנונות הטפטים של סולודור במקום אחד: עץ, חלקים ונקיים, ודמויי אבן ובטון. מעבירים עכבר על טפט ורואים איך הגליל נראה.",
 };
 
-/** The picks of the "מומלצים" archive, in the order they are shown. Change this list to change the archive. */
+/**
+ * The recommended wallpapers, in the order they are shown: the client's picks, then every wood except the black and the grey one.
+ * The "מומלצים" archive shows exactly these, and the home, door and kitchen pages offer them first.
+ */
 export const RECOMMENDED_HANDLES = [
-  "matte-black",
-  "matte-white",
+  "sand-stone",
+  "white-texture",
+  "light-grey-plaster",
+  "charcoal-plaster",
+  "cloudy-white-plaster",
+  "cloudy-grey-plaster",
+  "cloudy-concrete-plaster",
+  "white-stripes",
+  "pearl-cream-texture",
+  "dark-beige-texture",
+  "black-stripes",
   "oak-wood",
   "walnut-wood",
-  "grey",
-  "dark-grey",
-  "concrete",
-  "veined-marble",
-  "warm-light-stone",
-  "black-wood",
-  "cloudy-grey-plaster",
-  "nescafe",
+  "sahara-wood",
+  "butcher-wood",
+  "beech-wood",
+  "cherry-wood",
+  "mahogany-wood",
+  "antique-wood",
+  "wood-planks",
 ];
 
 export const stylePage = (slug: string) => STYLE_PAGES.find((p) => p.slug === slug);
