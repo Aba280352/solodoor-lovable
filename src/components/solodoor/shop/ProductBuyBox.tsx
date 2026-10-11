@@ -412,7 +412,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               <Icon name="ArrowLeft" size={16} />
             </Button>
             <span className="fs-14 leading-[1.5] text-foreground">
-              דוגמית אחת חינם, בלי דמי משלוח. מדוגמית שנייה, כל דוגמית עולה {formatPrice(SAMPLE_EXTRA_PRICE)} ובנוסף 25 ₪ דמי משלוח להזמנה (שתי דוגמיות: 30 ₪).
+              דוגמית ראשונה בחינם, אתם משלמים רק על המשלוח. כל דוגמית נוספת ב{formatPrice(SAMPLE_EXTRA_PRICE)} בלבד (לא כולל משלוח).
             </span>
           </div>
         )}
