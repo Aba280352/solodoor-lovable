@@ -16,6 +16,7 @@ export const Route = createFileRoute("/חנות")({
     style: text(search.style),
     color: text(search.color),
     all: search.all === "y" ? "y" : undefined,
+    rec: search.rec === "y" ? "y" : undefined,
   }),
   loader: () => fetchShop(),
   head: ({ loaderData, match }) => {

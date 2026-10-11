@@ -1,6 +1,7 @@
 /** The shop's filter model: what is in the URL, and how it narrows the product list. */
 import { STYLE_FAMILIES, variantColors, type Application, type ShopData, type ShopItem, type ShopVariant } from "./catalog";
 import { COLOR_FAMILIES } from "./colors";
+import { RECOMMENDED_HANDLES } from "./styles";
 
 /** Search params of /חנות. Lists are comma separated in the URL (?cat=door,kitchen). */
 export interface ShopSearch {
@@ -9,7 +10,12 @@ export interface ShopSearch {
   color?: string;
   /** "y" when the visitor narrows the whole shop by ticking categories, as opposed to opening one archive. */
   all?: string;
+  /** "y" narrows the door wallpapers to the recommended ones. */
+  rec?: string;
 }
+
+/** The key of the durable door wallpaper category, the one the recommended models belong to. */
+export const DOOR_CATEGORY = "door";
 
 /** A category tick-box: either a product type, or a surface a wallpaper is used on. */
 export interface Category {
@@ -44,6 +50,8 @@ export interface ActiveFilters {
   uses: string[];
   styles: string[];
   colors: string[];
+  /** Only the recommended wallpapers, which are offered inside the door category. */
+  recommended: boolean;
   /** One category opened from a menu or a link: its page offers only filters that make sense inside it. */
   archive: boolean;
   /** Only a style (and maybe colours) is chosen, no category: the shop then shows plain wallpaper swatches. */
@@ -65,6 +73,7 @@ export function activeFilters(search: ShopSearch, data: ShopData): ActiveFilters
     uses,
     styles,
     colors,
+    recommended: search.rec === "y" && uses.includes(DOOR_CATEGORY),
     archive: cats.length === 1 && search.all !== "y",
     styleOnly: cats.length === 0 && styles.length > 0,
     wallpapersInScope: cats.length === 0 || uses.length > 0,
@@ -72,18 +81,22 @@ export function activeFilters(search: ShopSearch, data: ShopData): ActiveFilters
 }
 
 export function filterItems(data: ShopData, filters: ActiveFilters): ShopItem[] {
-  const { cats, types, uses, styles, colors } = filters;
+  const { cats, types, uses, styles, colors, recommended } = filters;
   const styleLabels: (string | undefined)[] = styles.map((s) => STYLE_FAMILIES.find((f) => f.key === s)?.label);
-  return data.items.filter((item) => {
+  const items = data.items.filter((item) => {
     if (cats.length) {
       const inType = types.includes(item.product_type);
       const inUse = item.product_type === "wallpaper" && uses.some((u) => item.images[u]);
       if (!inType && !inUse) return false;
     }
+    // Recommended: only the picked wallpapers (designed doors and rugs ticked next to it are not wallpapers and stay).
+    if (recommended && item.product_type === "wallpaper" && !RECOMMENDED_HANDLES.includes(item.handle)) return false;
     if (styles.length && (item.product_type !== "wallpaper" || !styleLabels.includes(item.style_family ?? undefined))) return false;
     if (colors.length && !colors.some((c) => item.colors.includes(c))) return false;
     return true;
   });
+  // The recommended wallpapers come in the order the client picked them.
+  return recommended ? items.sort((a, b) => RECOMMENDED_HANDLES.indexOf(a.handle) - RECOMMENDED_HANDLES.indexOf(b.handle)) : items;
 }
 
 /** One card of the shop grid. */
@@ -132,7 +145,7 @@ export function colorOptions(data: ShopData, filters: ActiveFilters): ColorOptio
 export function shopHeading(filters: ActiveFilters, data: ShopData) {
   const { cats, uses, types, styles } = filters;
   const style = styles.length === 1 ? STYLE_FAMILIES.find((s) => s.key === styles[0]) : undefined;
-  const suffix = style ? `, ${style.label}` : "";
+  const suffix = style ? `, ${style.label}` : filters.recommended ? ", המומלצים" : "";
   if (cats.length === 1 && uses.length === 1) {
     const application = data.applications.find((a) => a.slug === uses[0]);
     return {

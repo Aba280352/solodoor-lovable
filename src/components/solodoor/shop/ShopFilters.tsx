@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { STYLE_FAMILIES, type ShopData } from "./catalog";
 import { COLOR_FAMILIES } from "./colors";
-import { categoriesFor, colorOptions, joinList, shopCards, type ActiveFilters, type ShopSearch } from "./filters";
+import { DOOR_CATEGORY, categoriesFor, colorOptions, joinList, shopCards, splitList, type ActiveFilters, type ShopSearch } from "./filters";
 
 interface ShopFiltersProps {
   data: ShopData;
@@ -119,8 +119,11 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
       color: joinList(filters.colors),
       // Ticking categories in the whole shop keeps the full sidebar; an archive stays an archive.
       all: !filters.archive && cat ? "y" : undefined,
+      rec: filters.recommended ? "y" : undefined,
       ...next,
     };
+    // The recommended models belong to the door category: without it the filter goes too.
+    if (!splitList(search.cat).includes(DOOR_CATEGORY)) search.rec = undefined;
     const clean = Object.fromEntries(Object.entries(search).filter(([, v]) => v !== undefined && v !== "")) as ShopSearch;
     navigate({ to: "/חנות", search: clean, resetScroll: false });
     onNavigate?.();
@@ -130,7 +133,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
   // How many products a category holds on its own, under the current style and colour filters.
   const countFor = (change: Partial<ActiveFilters>) => shopCards(data, { ...filters, ...change }).length;
   // Inside an archive its own category is not a filter that can be cleared.
-  const hasFilters = (!filters.archive && filters.cats.length > 0) || filters.styles.length > 0 || filters.colors.length > 0;
+  const hasFilters = (!filters.archive && filters.cats.length > 0) || filters.styles.length > 0 || filters.colors.length > 0 || filters.recommended;
 
   return (
     <div className="flex flex-col gap-4 text-right">
@@ -141,14 +144,28 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
             const cats = toggle(filters.cats, c.key, !checked);
             const isType = c.kind === "type";
             return (
-              <Checkbox
-                key={c.key}
-                checked={checked}
-                onChange={() => go({ cat: joinList(cats) })}
-                label={c.label}
-                // Products of this category alone, with the style and colour filters applied.
-                count={countFor({ cats: [c.key], types: isType ? [c.key] : [], uses: isType ? [] : [c.key], wallpapersInScope: !isType })}
-              />
+              <Fragment key={c.key}>
+                <Checkbox
+                  checked={checked}
+                  onChange={() => go({ cat: joinList(cats) })}
+                  label={c.label}
+                  // Products of this category alone, with the style and colour filters applied.
+                  count={countFor({ cats: [c.key], types: isType ? [c.key] : [], uses: isType ? [] : [c.key], wallpapersInScope: !isType, recommended: false })}
+                />
+                {/* The recommended models are all durable door wallpapers, so the filter sits under that category. */}
+                {c.key === DOOR_CATEGORY && (
+                  <div className="ps-8">
+                    <Checkbox
+                      checked={filters.recommended}
+                      onChange={(on) =>
+                        go({ cat: joinList(on && !checked ? [...filters.cats, DOOR_CATEGORY] : filters.cats), rec: on ? "y" : undefined })
+                      }
+                      label="מומלצים"
+                      count={countFor({ cats: [DOOR_CATEGORY], types: [], uses: [DOOR_CATEGORY], wallpapersInScope: true, recommended: true })}
+                    />
+                  </div>
+                )}
+              </Fragment>
             );
           })}
         </div>
@@ -194,7 +211,7 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
       {hasFilters && (
         <button
           type="button"
-          onClick={() => go({ cat: filters.archive ? joinList(filters.cats) : undefined, style: undefined, color: undefined })}
+          onClick={() => go({ cat: filters.archive ? joinList(filters.cats) : undefined, style: undefined, color: undefined, rec: undefined })}
           className="inline-flex cursor-pointer items-center gap-2 self-start fs-15 font-medium text-foreground"
         >
           <Icon name="Times" size={14} />
