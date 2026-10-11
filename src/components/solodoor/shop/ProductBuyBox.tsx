@@ -278,7 +278,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text="מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה."
+            text="מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה. ההתקנה בין נהריה למודיעין ויבנה (הגליל המערבי, חיפה והקריות, השרון, גוש דן, מישור החוף והשפלה), עד 14 ימי עסקים."
             price={`+${formatPrice(installAddon.price)}`}
           />
           {!installation && allStrips.length > 0 && (
