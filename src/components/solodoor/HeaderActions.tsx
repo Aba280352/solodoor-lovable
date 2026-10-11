@@ -238,9 +238,9 @@ export function CartButton() {
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="m-0 ms-auto flex min-h-dvh w-full max-w-100 flex-col px-6 pt-5 pb-6"
+        className="m-0 ms-auto flex h-dvh max-h-dvh w-full max-w-100 flex-col overflow-hidden px-6 pt-5 pb-6"
       >
-        <div className="flex items-center justify-between border-b border-border pb-4">
+        <div className="flex flex-none items-center justify-between border-b border-border pb-4">
           <DialogTitle className="fs-24 font-bold text-foreground">סל הקניות</DialogTitle>
           <DialogClose aria-label="סגירה" className={iconTrigger}>
             <Icon name="Times" size={24} />
@@ -264,7 +264,8 @@ export function CartButton() {
           </div>
         ) : (
           <>
-            <ul className="flex flex-auto flex-col">
+            {/* The products scroll inside the drawer; the total and the pay button stay in view below them. */}
+            <ul className="flex min-h-0 flex-auto flex-col overflow-y-auto overscroll-contain">
               {lines.map((line) => (
                 <li key={line.id} className="flex gap-3.5 border-b border-border py-4 text-right">
                   <span className="relative size-18 flex-none overflow-hidden rounded-md border border-border bg-muted">
@@ -316,7 +317,7 @@ export function CartButton() {
                 </li>
               ))}
             </ul>
-            <div className="flex flex-col gap-3 pt-5">
+            <div className="flex flex-none flex-col gap-3 border-t border-border pt-4">
               <div className="flex items-baseline justify-between">
                 <span className="fs-18 font-semibold text-foreground">סה"כ</span>
                 <span className="fs-26 leading-none font-bold text-foreground">{formatPrice(cartTotal(lines))}</span>
