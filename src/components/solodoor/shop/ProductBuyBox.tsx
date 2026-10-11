@@ -287,7 +287,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             <ul className="mt-2 flex flex-col gap-1">
               {INSTALL_AREAS.map((area) => (
                 <li key={area.name}>
-                  <span className="font-bold">{area.name}:</span> <span className="font-normal text-foreground/70">{area.places}</span>
+                  <span className="font-bold">{area.name}:</span> <span className="font-light">{area.places}</span>
                 </li>
               ))}
             </ul>
@@ -412,7 +412,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               <Icon name="ArrowLeft" size={16} />
             </Button>
             <span className="fs-14 leading-[1.5] text-foreground">
-              דוגמית ראשונה חינם, כולל משלוח. כל דוגמית נוספת {formatPrice(SAMPLE_EXTRA_PRICE)}, ומשלוח לדוגמיות 25 ₪.
+              דוגמית אחת חינם, בלי דמי משלוח. מדוגמית שנייה, כל דוגמית עולה {formatPrice(SAMPLE_EXTRA_PRICE)} ובנוסף 25 ₪ דמי משלוח להזמנה (שתי דוגמיות: 30 ₪).
             </span>
           </div>
         )}
