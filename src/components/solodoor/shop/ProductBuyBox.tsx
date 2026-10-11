@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { cart, type CartLine } from "./cart";
+import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
@@ -278,7 +278,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text="מתקין של סולודור מגיע אליכם. תוספת קבועה להזמנה."
+            text="מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה."
             price={`+${formatPrice(installAddon.price)}`}
           />
           {!installation && allStrips.length > 0 && (
@@ -400,6 +400,9 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               <span>הזמינו דוגמית לבית{sampleAddon.price ? ` (${formatPrice(sampleAddon.price)})` : ", חינם"}</span>
               <Icon name="ArrowLeft" size={16} />
             </Button>
+            <span className="fs-14 leading-[1.5] text-foreground">
+              דוגמית ראשונה חינם, כולל משלוח. כל דוגמית נוספת {formatPrice(SAMPLE_EXTRA_PRICE)}, ומשלוח לדוגמיות 25 ₪.
+            </span>
           </div>
         )}
       </div>

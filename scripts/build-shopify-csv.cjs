@@ -103,6 +103,13 @@ function productRows({ handle, title, body, type, tags, optionName, option2Name,
   return rows;
 }
 
+/**
+ * With installation the installer brings the material, so nothing is shipped: every item that can be installed
+ * also exists as a variant that needs no shipping. The site adds that one when installation is in the cart.
+ */
+const INSTALLED = " · בהתקנה";
+const installed = (variants) => variants.map((v) => ({ ...v, option: v.option + INSTALLED, sku: v.sku + "__install", shipping: false }));
+
 /** Photos without repeats, keeping the first place a photo appears in. */
 const unique = (images) => images.filter((im, i) => im.src && images.findIndex((x) => x.src === im.src) === i);
 
@@ -125,12 +132,14 @@ for (const p of products.sort(bySort)) {
       price: pa.price_override || a.unit_price,
       image: img(pa.image_path),
     }));
+    if (p.installation_available === "true") variants.push(...installed(variants.filter((v) => v.sku.endsWith("__door"))));
     const images = unique([...gallery, ...apps.map(({ pa }) => ({ src: img(pa.image_path), alt: pa.image_alt }))]);
     rows.push(...productRows({ handle: p.handle, title: `טפט ${p.title}`, body: html(p.long_description || p.short_description), type: "טפט", tags: ["טפט", ...tags], optionName: "משטח", variants, images }));
     summary.wallpaper++; summary.variants += variants.length;
   } else if (p.product_type === "designed_door") {
     const list = productVariants.filter((v) => v.product_handle === p.handle).sort(bySort);
     const variants = list.map((v) => ({ option: v.title, sku: `${p.handle}__${v.variant_key}`, price: v.price || p.base_price, image: img(v.image_path) }));
+    if (p.installation_available === "true") variants.push(...installed(variants));
     const images = unique([...list.map((v) => ({ src: img(v.image_path), alt: `טפט מעוצב לדלת, ${v.title}` })), ...gallery]);
     rows.push(...productRows({ handle: p.handle, title: `טפט מעוצב לדלת, דגם ${p.title}`, body: html(p.long_description || p.short_description), type: "טפט מעוצב לדלת", tags: ["טפט מעוצב לדלת", ...tags], optionName: "גוון", variants, images }));
     summary.designed_door++; summary.variants += variants.length;
@@ -165,9 +174,10 @@ if (strips.length) {
 
 const digits = addons.filter((a) => a.addon_type === "door_number").sort((a, b) => a.slug.localeCompare(b.slug));
 if (digits.length) {
+  const digitVariants = digits.map((d) => ({ option: d.slug.replace("door-number-", ""), sku: `addon__${d.slug}`, price: d.price, image: img(d.image_path) }));
   addonRows({
     handle: "addon-door-number", title: "ספרת מתכת לדלת", body: html("ספרות מתכת לדלת. מרכיבים את מספר הדירה מספרות בודדות, והמחיר לספרה אחת."), type: "תוספת לדלת", tags: ["תוספת", "מספר לדלת"], optionName: "ספרה",
-    variants: digits.map((d) => ({ option: d.slug.replace("door-number-", ""), sku: `addon__${d.slug}`, price: d.price, image: img(d.image_path) })),
+    variants: [...digitVariants, ...installed(digitVariants)],
     images: unique(digits.map((d) => ({ src: img(d.image_path), alt: d.title }))),
   });
 }

@@ -1,5 +1,5 @@
 /**
- * The shopping cart, kept in the browser until checkout is connected.
+ * The shopping cart, kept in the browser until the customer goes to the Shopify checkout (see checkout.ts).
  * A tiny external store: any component can read it with `useCart()`.
  */
 import { useSyncExternalStore } from "react";
@@ -28,10 +28,23 @@ let state: CartState = EMPTY;
 let hydrated = false;
 const listeners = new Set<() => void>();
 
+/** The first sample of an order is free, shipping included; every further sample costs this much. */
+export const SAMPLE_EXTRA_PRICE = 5;
+
+/** Samples are priced by their place in the cart, so removing the free one makes the next one free. */
+function withSamplePrices(lines: CartLine[]): CartLine[] {
+  let samples = 0;
+  return lines.map((line) => {
+    if (!line.id.startsWith("sample:")) return line;
+    const first = samples++ === 0;
+    return { ...line, price: first ? 0 : SAMPLE_EXTRA_PRICE, note: first ? "חינם" : undefined };
+  });
+}
+
 function set(next: CartState) {
-  state = next;
+  state = { ...next, lines: withSamplePrices(next.lines) };
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next.lines));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.lines));
   } catch {
     // Storage can be unavailable (private mode); the cart then lives for this visit only.
   }
@@ -47,7 +60,7 @@ function subscribe(listener: () => void) {
       try {
         const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]") as CartLine[];
         if (Array.isArray(saved) && saved.length) {
-          state = { ...state, lines: saved };
+          state = { ...state, lines: withSamplePrices(saved) };
           listeners.forEach((l) => l());
         }
       } catch {

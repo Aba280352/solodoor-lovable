@@ -10,11 +10,13 @@ import { cn } from "@/lib/utils";
 import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
 import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
+import { CheckoutError, checkoutUrl } from "./shop/checkout";
 import { catalogImage, formatPrice, variantColors, type ShopData } from "./shop/catalog";
 import { joinList } from "./shop/filters";
 import { MenuLink } from "./shop/MenuLink";
 import { intentOf, normalize as normalizeText, searchItems } from "./shop/search";
 import { priceLabel } from "./shop/ShopCard";
+import { whatsappHref } from "./whatsapp";
 import { loadShop } from "./shop/useShop";
 
 const iconTrigger = "inline-flex cursor-pointer items-center text-foreground";
@@ -190,10 +192,23 @@ function GroupList({ groups }: { groups: typeof searchable }) {
   );
 }
 
-/** Cart drawer, opening from the left edge. Checkout is not connected yet, so it ends at the total. */
+/** Cart drawer, opening from the left edge. The pay button hands the cart to the Shopify checkout. */
 export function CartButton() {
   const { lines, open } = useCart();
   const count = cartCount(lines);
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
+
+  async function pay() {
+    setPaying(true);
+    setPayError(null);
+    try {
+      window.location.href = await checkoutUrl(lines);
+    } catch (error) {
+      setPayError(error instanceof CheckoutError ? error.message : "לא הצלחנו לפתוח את הקופה. נסו שוב בעוד רגע.");
+      setPaying(false);
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={cart.setOpen}>
@@ -290,10 +305,18 @@ export function CartButton() {
                 <span className="fs-18 font-semibold text-foreground">סה"כ</span>
                 <span className="fs-26 leading-none font-bold text-foreground">{formatPrice(cartTotal(lines))}</span>
               </div>
-              <span className="fs-14 leading-[1.5] text-foreground">לא כולל משלוח. התשלום המאובטח יחובר בקרוב.</span>
-              <Button type="button" disabled className="w-full py-4">
-                לתשלום
+              <span className="fs-14 leading-[1.5] text-foreground">המשלוח מחושב בקופה. התשלום בעמוד מאובטח.</span>
+              <Button type="button" onClick={pay} disabled={paying} className="w-full py-4">
+                {paying ? "פותחים את הקופה..." : "לתשלום"}
               </Button>
+              {payError && (
+                <span role="alert" className="fs-14 leading-[1.5] text-foreground">
+                  {payError}{" "}
+                  <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="border-b border-primary">
+                    אפשר להזמין גם בווצאפ
+                  </a>
+                </span>
+              )}
               <DialogClose asChild>
                 <Button asChild variant="outline" className="w-full py-3.5 fs-16">
                   <Link to="/חנות">להמשך קנייה</Link>
