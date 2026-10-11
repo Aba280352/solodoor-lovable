@@ -154,8 +154,9 @@ export function Process() {
       </div>
 
       <Container>
-        <div className="mt-10 flex items-center justify-between gap-6 lg:mt-14">
-          <div className="order-3 flex items-center gap-2.5">
+        <div className="mt-10 flex flex-col items-center gap-5 lg:mt-14 lg:flex-row lg:justify-between lg:gap-6">
+          {/* On a phone the arrows sit centred above the button; on desktop they stay at the far side of the row. */}
+          <div className="order-1 flex items-center gap-2.5 lg:order-3">
             <button type="button" onClick={() => scrollSteps(1)} aria-label="שלב קודם" className={arrowClass}>
               <Icon name="AngleRight" size={18} />
             </button>
@@ -163,7 +164,7 @@ export function Process() {
               <Icon name="AngleLeft" size={18} />
             </button>
           </div>
-          <Button asChild className="order-1 px-6 py-4.5 lg:px-17">
+          <Button asChild className="order-2 px-6 py-4.5 lg:order-1 lg:px-17">
             <Link to="/שאלות-נפוצות">
               <span>לשאלות ותשובות על התהליך</span>
               <Icon name="ArrowLeft" size={16} />
