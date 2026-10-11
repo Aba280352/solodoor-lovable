@@ -225,7 +225,7 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
               {/* Mobile: the same filters in a sheet. */}
               <Dialog open={sheetOpen} onOpenChange={setSheetOpen}>
                 <DialogTrigger asChild>
-                  <Button type="button" variant="outline" size="sm" className="gap-2 lg:hidden">
+                  <Button type="button" variant="secondary" size="sm" className="gap-2 lg:hidden">
                     <Icon name="Filter" size={15} />
                     <span>סינון{colors.length ? ` (${colors.length})` : ""}</span>
                   </Button>
