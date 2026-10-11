@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
-import { INSTAGRAM_URL, beforeAfterFigures, beforeAfterPairs } from "./data";
+import { beforeAfterFigures, beforeAfterPairs } from "./data";
 
 export interface BeforeAfterPair {
   name: string;
@@ -267,10 +269,10 @@ export function BeforeAfter() {
 
         <div className="mt-12 flex flex-col items-center gap-4">
           <Button asChild className="w-full px-11 py-4.5 lg:w-auto">
-            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
-              <span>לצפייה בפרויקטים נוספים</span>
+            <Link to="/טפט-לפי-סגנון/$style" params={{ style: "מומלצים" }}>
+              <span>לצפייה בטפטים המומלצים שלנו</span>
               <Icon name="ArrowLeft" size={16} />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>
