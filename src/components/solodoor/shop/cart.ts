@@ -16,6 +16,8 @@ export interface CartLine {
   single?: boolean;
   /** The installation line: the city the installer comes to, checked against the installation areas. */
   city?: string;
+  /** The city was picked from the localities and is inside an installation area. */
+  cityOk?: boolean;
 }
 
 interface CartState {
@@ -91,6 +93,8 @@ export const cart = {
       const i = lines.findIndex((l) => l.id === line.id);
       if (i === -1) lines.push(line);
       else if (!line.single) lines[i] = { ...lines[i], qty: lines[i].qty + line.qty };
+      // The installation exists once, but a new order of it may name another city.
+      else if (line.city) lines[i] = { ...lines[i], city: line.city, cityOk: line.cityOk, note: line.note };
     }
     set({ lines, open: options.open ?? state.open });
   },

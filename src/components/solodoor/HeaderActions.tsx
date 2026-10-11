@@ -11,7 +11,7 @@ import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
 import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
 import { CheckoutError, checkoutUrl } from "./shop/checkout";
-import { INSTALL_CITY_BAD, INSTALL_CITY_EMPTY, checkInstallCity } from "./shop/install-areas";
+import { INSTALL_CITY_EMPTY } from "./shop/install-areas";
 import { catalogImage, formatPrice, variantColors, type ShopData } from "./shop/catalog";
 import { joinList } from "./shop/filters";
 import { MenuLink } from "./shop/MenuLink";
@@ -204,9 +204,8 @@ export function CartButton() {
   // Ticked anew for every order: paying is allowed only after agreeing to the terms.
   const [agreed, setAgreed] = useState(false);
   // Installation exists only in the service areas: the city chosen with it must be inside one, or the order does not go to pay.
-  const installCity = lines.find((line) => line.id === "installation")?.city ?? "";
-  const installing = lines.some((line) => line.id === "installation");
-  const cityOk = !installing || checkInstallCity(installCity) === "ok";
+  const installLine = lines.find((line) => line.id === "installation");
+  const cityOk = !installLine || installLine.cityOk === true;
 
   async function pay() {
     if (!agreed) {
@@ -214,7 +213,7 @@ export function CartButton() {
       return;
     }
     if (!cityOk) {
-      setPayError(checkInstallCity(installCity) === "bad" ? INSTALL_CITY_BAD : INSTALL_CITY_EMPTY);
+      setPayError(INSTALL_CITY_EMPTY);
       return;
     }
     setPaying(true);

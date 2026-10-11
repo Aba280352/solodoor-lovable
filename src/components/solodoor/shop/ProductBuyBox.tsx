@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
-import { INSTALL_CITY_BAD, INSTALL_CITY_EMPTY, INSTALL_CITY_OPTIONS, INSTALL_DAYS, checkInstallCity } from "./install-areas";
+import { INSTALL_DAYS, checkInstallCity } from "./install-areas";
+import { InstallCityField } from "./InstallCityField";
+import { useLocalities } from "./localities";
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
@@ -158,13 +160,14 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       result.push({ id: tool.slug, title: tool.title, image: catalogImage(tool.image_path), price: tool.price, qty: 1 });
     }
     if (installation && installAddon) {
-      result.push({ id: installAddon.slug, title: installAddon.title, note: `התקנה ב${installCity.trim()}`, image: null, price: installAddon.price, qty: 1, single: true, city: installCity.trim() });
+      result.push({ id: installAddon.slug, title: installAddon.title, note: `התקנה ב${installCity.trim()}`, image: null, price: installAddon.price, qty: 1, single: true, city: installCity.trim(), cityOk: true });
     }
     return result;
   }
 
   // Installation only inside the service areas: the order does not go on without a city that is in one.
-  const cityStatus = checkInstallCity(installCity);
+  const localities = useLocalities(installation);
+  const cityStatus = checkInstallCity(localities, installCity);
   const installBlocked = installation && !!installAddon && cityStatus !== "ok";
 
   function addToCart(open: boolean) {
@@ -293,41 +296,14 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             price={`+${formatPrice(installAddon.price)}`}
           />
           {installation && (
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="install-city" className="fs-15 font-semibold text-foreground">
-                באיזו עיר או יישוב תתבצע ההתקנה?
-              </label>
-              <Input
-                id="install-city"
-                list="install-cities"
-                autoComplete="off"
-                value={installCity}
-                onChange={(e) => setInstallCity(e.target.value)}
-                onBlur={() => setCityTouched(true)}
-                aria-invalid={cityTouched && cityStatus !== "ok"}
-                aria-describedby="install-city-note"
-                placeholder="לדוגמה: תל אביב"
-                className={cn("bg-card fs-16", cityTouched && cityStatus === "bad" && "border-destructive")}
-              />
-              <datalist id="install-cities">
-                {INSTALL_CITY_OPTIONS.map((city) => (
-                  <option key={city} value={city} />
-                ))}
-              </datalist>
-              {cityStatus === "bad" ? (
-                <span id="install-city-note" role="alert" className="fs-14 leading-[1.5] font-medium text-destructive">
-                  {INSTALL_CITY_BAD}
-                </span>
-              ) : cityTouched && cityStatus === "empty" ? (
-                <span id="install-city-note" role="alert" className="fs-14 leading-[1.5] font-medium text-destructive">
-                  {INSTALL_CITY_EMPTY}
-                </span>
-              ) : (
-                <span id="install-city-note" className="fs-14 leading-[1.5] text-foreground">
-                  ההתקנה זמינה מנהריה ועד מודיעין ויבנה.
-                </span>
-              )}
-            </div>
+            <InstallCityField
+              value={installCity}
+              onChange={setInstallCity}
+              rows={localities}
+              status={cityStatus}
+              touched={cityTouched}
+              onTouched={() => setCityTouched(true)}
+            />
           )}
           {!installation && allStrips.length > 0 && (
             <span className="fs-14 leading-[1.5] text-foreground">בהתקנה על ידי סולודור אפשר להוסיף לדלת עיצוב פסים.</span>
