@@ -287,7 +287,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             <ul className="mt-2 flex flex-col gap-1">
               {INSTALL_AREAS.map((area) => (
                 <li key={area.name}>
-                  <span className="font-semibold">{area.name}:</span> {area.places}
+                  <span className="font-bold">{area.name}:</span> <span className="font-normal text-foreground/70">{area.places}</span>
                 </li>
               ))}
             </ul>
