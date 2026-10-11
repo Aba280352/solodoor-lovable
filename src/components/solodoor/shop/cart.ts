@@ -14,6 +14,8 @@ export interface CartLine {
   qty: number;
   /** Lines such as the installation service exist once per order. */
   single?: boolean;
+  /** The installation line: the city the installer comes to, checked against the installation areas. */
+  city?: string;
 }
 
 interface CartState {

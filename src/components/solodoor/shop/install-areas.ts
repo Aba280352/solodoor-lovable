@@ -1,15 +1,122 @@
-/** Where Solodoor installs doors, and how long it takes. Nowhere else: an order outside these areas cannot be installed. */
-export const INSTALL_AREAS: { name: string; places: string }[] = [
-  { name: "הגליל המערבי", places: "נהריה, עכו והסביבה" },
-  { name: "אזור חיפה והקריות", places: "חיפה, הקריות, נשר וטירת כרמל" },
-  { name: "מישור החוף הצפוני", places: "עתלית, זכרון יעקב, חדרה ואור עקיבא" },
-  { name: "השרון", places: "נתניה, כפר סבא, רעננה, הרצליה והסביבה" },
-  { name: "גוש דן והמרכז", places: "תל אביב, רמת גן, גבעתיים, פתח תקווה, בני ברק" },
-  { name: "השפלה", places: "ראשון לציון, רחובות, נס ציונה, יבנה והסביבה" },
-  { name: "אזור מודיעין", places: "מודיעין, מכבים־רעות, שוהם והסביבה" },
+/**
+ * Where Solodoor installs doors, and how long it takes. Nowhere else: an order outside these areas cannot be installed.
+ * `cities` is what the installation field accepts (the places of each area, with their usual spellings).
+ */
+export interface InstallArea {
+  name: string;
+  /** The places as the terms print them. */
+  places: string;
+  /** Every city and town of the area. Other spellings are in INSTALL_ALIASES. */
+  cities: string[];
+}
+
+export const INSTALL_AREAS: InstallArea[] = [
+  {
+    name: "הגליל המערבי",
+    places: "נהריה, עכו והסביבה",
+    cities: ["נהריה", "עכו", "מעלות תרשיחא", "שלומי", "אבו סנאן", "ג'דיידה מכר", "כפר יאסיף", "יאנוח ג'ת", "בן עמי", "אילון", "לוחמי הגטאות", "כברי", "נתיב השיירה", "גשר הזיו", "רגבה", "שבי ציון", "מזרעה", "בצת", "אחיהוד"],
+  },
+  {
+    name: "אזור חיפה והקריות",
+    places: "חיפה, הקריות, נשר וטירת כרמל",
+    cities: ["חיפה", "קריית אתא", "קריית ביאליק", "קריית מוצקין", "קריית ים", "קריית חיים", "נשר", "טירת כרמל", "רמת יוחנן", "כפר המכבי", "עספיא", "דאלית אל כרמל"],
+  },
+  {
+    name: "מישור החוף הצפוני",
+    places: "עתלית, זכרון יעקב, חדרה ואור עקיבא",
+    cities: ["עתלית", "זכרון יעקב", "חדרה", "אור עקיבא", "קיסריה", "בנימינה", "גבעת עדה", "פרדס חנה כרכור", "גן שמואל", "מעגן מיכאל", "שדות ים", "מגדים", "נווה ים", "עין כרמל", "דור", "בת שלמה", "חוף הכרמל", "כפר גלים", "מכמורת", "קיבוץ חפר", "עין שמר", "גן שמואל"],
+  },
+  {
+    name: "השרון",
+    places: "נתניה, כפר סבא, רעננה, הרצליה והסביבה",
+    cities: ["נתניה", "כפר סבא", "רעננה", "הרצליה", "הוד השרון", "רמת השרון", "כוכב יאיר", "צור יגאל", "קדימה צורן", "אבן יהודה", "כפר יונה", "תל מונד", "פרדסיה", "חבצלת השרון", "בית יצחק שער חפר", "גבעת חיים", "כפר שמריהו", "שרונה", "אליכין", "בארותיים", "בני ציון", "גן חיים", "כפר מעש", "עין ורד", "צופית", "ירחיב", "משמרת", "ארסוף"],
+  },
+  {
+    name: "גוש דן והמרכז",
+    places: "תל אביב, רמת גן, גבעתיים, פתח תקווה, בני ברק",
+    cities: ["תל אביב", "יפו", "רמת גן", "גבעתיים", "פתח תקווה", "בני ברק", "בת ים", "חולון", "אור יהודה", "גבעת שמואל", "קריית אונו", "יהוד", "אזור", "בית דגן", "סביון", "גני תקווה", "אלעד", "ראש העין", "מגשימים", "רמת אפעל", "מזור", "רינתיה", "שערי תקווה", "עין שריד"],
+  },
+  {
+    name: "השפלה",
+    places: "ראשון לציון, רחובות, נס ציונה, יבנה והסביבה",
+    cities: ["ראשון לציון", "רחובות", "נס ציונה", "יבנה", "לוד", "רמלה", "באר יעקב", "קריית עקרון", "מזכרת בתיה", "גן יבנה", "בית חנן", "ניר צבי", "כפר חב״ד", "נטעים", "גבתון", "עיינות", "בני דרור", "בית עובד", "משמר השבעה", "שדה יעקב", "בית אלעזרי", "חמד", "ניצן", "נען", "כפר אביב", "קדרון"],
+  },
+  {
+    name: "אזור מודיעין",
+    places: "מודיעין, מכבים־רעות, שוהם והסביבה",
+    cities: ["מודיעין", "מכבים רעות", "שוהם", "חשמונאים", "לפיד", "כפר רות", "בית חשמונאי", "שילת", "מתתיהו", "נחשונים", "גימזו", "בן שמן", "עלי זהב", "בית נחמיה", "ניל\"י", "חדיד", "מבוא מודיעין", "פדיה"],
+  },
 ];
 
 export const INSTALL_DAYS = 14;
 
-/** One line per area, as in the terms and the shipping tab. */
-export const installAreasText = INSTALL_AREAS.map((area) => `${area.name}: ${area.places}`).join(". ");
+/** Other ways to write a place that people really use. */
+const INSTALL_ALIASES: Record<string, string> = {
+  "תל אביב יפו": "תל אביב",
+  "תל אביב-יפו": "תל אביב",
+  "ת״א": "תל אביב",
+  "תא": "תל אביב",
+  "פתח-תקווה": "פתח תקווה",
+  "פ״ת": "פתח תקווה",
+  "פת": "פתח תקווה",
+  "ראשל״צ": "ראשון לציון",
+  "ראשלצ": "ראשון לציון",
+  "ראשון": "ראשון לציון",
+  "מודיעין מכבים רעות": "מודיעין",
+  "מודיעין-מכבים-רעות": "מודיעין",
+  "מודיעין עילית": "",
+  "קרית אתא": "קריית אתא",
+  "קרית ביאליק": "קריית ביאליק",
+  "קרית מוצקין": "קריית מוצקין",
+  "קרית ים": "קריית ים",
+  "קרית חיים": "קריית חיים",
+  "קרית אונו": "קריית אונו",
+  "קרית עקרון": "קריית עקרון",
+  "זיכרון יעקב": "זכרון יעקב",
+  "זכרון": "זכרון יעקב",
+  "מעלות": "מעלות תרשיחא",
+  "מעלות-תרשיחא": "מעלות תרשיחא",
+  "פרדס חנה": "פרדס חנה כרכור",
+  "כרכור": "פרדס חנה כרכור",
+  "נס-ציונה": "נס ציונה",
+  "הוד-השרון": "הוד השרון",
+  "רמת-גן": "רמת גן",
+  "בני-ברק": "בני ברק",
+  "בת-ים": "בת ים",
+  "כפר-סבא": "כפר סבא",
+  "ראש-העין": "ראש העין",
+  "אור-עקיבא": "אור עקיבא",
+  "אור-יהודה": "אור יהודה",
+  "גבעת-שמואל": "גבעת שמואל",
+  "טירת-כרמל": "טירת כרמל",
+  "קדימה": "קדימה צורן",
+  "צורן": "קדימה צורן",
+};
+
+/** Spelling that does not matter: quotes, hyphens, extra spaces and the final letter forms. */
+const normalize = (text: string) =>
+  text
+    .replace(/[֑-ׇ"'`׳״־\-–_.,()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const KNOWN: Map<string, true> = new Map();
+for (const area of INSTALL_AREAS) for (const city of area.cities) KNOWN.set(normalize(city), true);
+const ALIASES: Map<string, string> = new Map(Object.entries(INSTALL_ALIASES).map(([from, to]) => [normalize(from), to]));
+
+/** All the places offered while typing. */
+export const INSTALL_CITY_OPTIONS = [...new Set(INSTALL_AREAS.flatMap((area) => area.cities))];
+
+export type InstallCityStatus = "empty" | "ok" | "bad";
+
+/** Whether the typed place is inside the installation areas. */
+export function checkInstallCity(text: string): InstallCityStatus {
+  const key = normalize(text);
+  if (!key) return "empty";
+  const target = ALIASES.get(key);
+  if (target === "") return "bad";
+  return KNOWN.has(target ? normalize(target) : key) ? "ok" : "bad";
+}
+
+export const INSTALL_CITY_BAD = "צוות סולודור לא מתקין באזור זה, אבל ניתן להזמין את הטפט ללא התקנה.";
+export const INSTALL_CITY_EMPTY = "יש לבחור עיר או יישוב להתקנה, או להסיר את ההתקנה מההזמנה.";

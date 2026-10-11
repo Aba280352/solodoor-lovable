@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
-import { INSTALL_AREAS, INSTALL_DAYS } from "./install-areas";
+import { INSTALL_CITY_BAD, INSTALL_CITY_EMPTY, INSTALL_CITY_OPTIONS, INSTALL_DAYS, checkInstallCity } from "./install-areas";
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
@@ -88,6 +88,8 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const [doorNumber, setDoorNumber] = useState("");
   const [tools, setTools] = useState<string[]>([]);
   const [installation, setInstallation] = useState(false);
+  const [installCity, setInstallCity] = useState("");
+  const [cityTouched, setCityTouched] = useState(false);
   const [added, setAdded] = useState(false);
 
   const size = rugSizes.find((s) => s.size_key === sizeKey) ?? null;
@@ -156,12 +158,20 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       result.push({ id: tool.slug, title: tool.title, image: catalogImage(tool.image_path), price: tool.price, qty: 1 });
     }
     if (installation && installAddon) {
-      result.push({ id: installAddon.slug, title: installAddon.title, note: "תוספת להזמנה", image: null, price: installAddon.price, qty: 1, single: true });
+      result.push({ id: installAddon.slug, title: installAddon.title, note: `התקנה ב${installCity.trim()}`, image: null, price: installAddon.price, qty: 1, single: true, city: installCity.trim() });
     }
     return result;
   }
 
+  // Installation only inside the service areas: the order does not go on without a city that is in one.
+  const cityStatus = checkInstallCity(installCity);
+  const installBlocked = installation && !!installAddon && cityStatus !== "ok";
+
   function addToCart(open: boolean) {
+    if (installBlocked) {
+      setCityTouched(true);
+      return;
+    }
     cart.add(lines(), { open });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2400);
@@ -282,16 +292,43 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה, והתקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
             price={`+${formatPrice(installAddon.price)}`}
           />
-          <details className="rounded-md border border-input bg-card px-3.5 py-2.5 fs-14 leading-[1.5] text-foreground">
-            <summary className="cursor-pointer font-semibold">ההתקנה זמינה באזורים אלה בלבד</summary>
-            <ul className="mt-2 flex flex-col gap-1">
-              {INSTALL_AREAS.map((area) => (
-                <li key={area.name}>
-                  <span className="font-semibold">{area.name}:</span> {area.places}
-                </li>
-              ))}
-            </ul>
-          </details>
+          {installation && (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="install-city" className="fs-15 font-semibold text-foreground">
+                באיזו עיר או יישוב תתבצע ההתקנה?
+              </label>
+              <Input
+                id="install-city"
+                list="install-cities"
+                autoComplete="off"
+                value={installCity}
+                onChange={(e) => setInstallCity(e.target.value)}
+                onBlur={() => setCityTouched(true)}
+                aria-invalid={cityTouched && cityStatus !== "ok"}
+                aria-describedby="install-city-note"
+                placeholder="לדוגמה: תל אביב"
+                className={cn("bg-card fs-16", cityTouched && cityStatus === "bad" && "border-destructive")}
+              />
+              <datalist id="install-cities">
+                {INSTALL_CITY_OPTIONS.map((city) => (
+                  <option key={city} value={city} />
+                ))}
+              </datalist>
+              {cityStatus === "bad" ? (
+                <span id="install-city-note" role="alert" className="fs-14 leading-[1.5] font-medium text-destructive">
+                  {INSTALL_CITY_BAD}
+                </span>
+              ) : cityTouched && cityStatus === "empty" ? (
+                <span id="install-city-note" role="alert" className="fs-14 leading-[1.5] font-medium text-destructive">
+                  {INSTALL_CITY_EMPTY}
+                </span>
+              ) : (
+                <span id="install-city-note" className="fs-14 leading-[1.5] text-foreground">
+                  ההתקנה זמינה מנהריה ועד מודיעין ויבנה.
+                </span>
+              )}
+            </div>
+          )}
           {!installation && allStrips.length > 0 && (
             <span className="fs-14 leading-[1.5] text-foreground">בהתקנה על ידי סולודור אפשר להוסיף לדלת עיצוב פסים.</span>
           )}
