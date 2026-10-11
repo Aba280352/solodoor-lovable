@@ -154,16 +154,14 @@ export function ShopFilters({ data, filters, onNavigate }: ShopFiltersProps) {
                 />
                 {/* The recommended models are all durable door wallpapers, so the filter sits under that category. */}
                 {c.key === DOOR_CATEGORY && (
-                  <div className="ps-8">
-                    <Checkbox
-                      checked={filters.recommended}
-                      onChange={(on) =>
-                        go({ cat: joinList(on && !checked ? [...filters.cats, DOOR_CATEGORY] : filters.cats), rec: on ? "y" : undefined })
-                      }
-                      label="מומלצים"
-                      count={countFor({ cats: [DOOR_CATEGORY], types: [], uses: [DOOR_CATEGORY], wallpapersInScope: true, recommended: true })}
-                    />
-                  </div>
+                  <Checkbox
+                    checked={filters.recommended}
+                    onChange={(on) =>
+                      go({ cat: joinList(on && !checked ? [...filters.cats, DOOR_CATEGORY] : filters.cats), rec: on ? "y" : undefined })
+                    }
+                    label="מומלצים"
+                    count={countFor({ cats: [DOOR_CATEGORY], types: [], uses: [DOOR_CATEGORY], wallpapersInScope: true, recommended: true })}
+                  />
                 )}
               </Fragment>
             );
