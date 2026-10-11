@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
+import { INSTALL_AREAS, INSTALL_DAYS } from "./install-areas";
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
@@ -278,9 +279,19 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text="מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה. ההתקנה בין נהריה למודיעין ויבנה (הגליל המערבי, חיפה והקריות, השרון, גוש דן, מישור החוף והשפלה), עד 14 ימי עסקים."
+            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה, והתקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
             price={`+${formatPrice(installAddon.price)}`}
           />
+          <details className="rounded-md border border-input bg-card px-3.5 py-2.5 fs-14 leading-[1.5] text-foreground">
+            <summary className="cursor-pointer font-semibold">ההתקנה זמינה באזורים אלה בלבד</summary>
+            <ul className="mt-2 flex flex-col gap-1">
+              {INSTALL_AREAS.map((area) => (
+                <li key={area.name}>
+                  <span className="font-semibold">{area.name}:</span> {area.places}
+                </li>
+              ))}
+            </ul>
+          </details>
           {!installation && allStrips.length > 0 && (
             <span className="fs-14 leading-[1.5] text-foreground">בהתקנה על ידי סולודור אפשר להוסיף לדלת עיצוב פסים.</span>
           )}

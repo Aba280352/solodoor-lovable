@@ -11,6 +11,7 @@ import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
 import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
 import { CheckoutError, checkoutUrl } from "./shop/checkout";
+import { INSTALL_AREAS } from "./shop/install-areas";
 import { catalogImage, formatPrice, variantColors, type ShopData } from "./shop/catalog";
 import { joinList } from "./shop/filters";
 import { MenuLink } from "./shop/MenuLink";
@@ -202,16 +203,23 @@ export function CartButton() {
   const [payError, setPayError] = useState<string | null>(null);
   // Ticked anew for every order: paying is allowed only after agreeing to the terms.
   const [agreed, setAgreed] = useState(false);
+  // Installation exists only in the service areas, so an order with installation also confirms the address is in one.
+  const [inArea, setInArea] = useState(false);
+  const installing = lines.some((line) => line.id === "installation");
 
   async function pay() {
     if (!agreed) {
       setPayError("כדי להמשיך לתשלום יש לאשר את תקנון האתר.");
       return;
     }
+    if (installing && !inArea) {
+      setPayError("כדי להזמין התקנה יש לאשר שכתובת ההתקנה נמצאת באחד מאזורי ההתקנה.");
+      return;
+    }
     setPaying(true);
     setPayError(null);
     try {
-      window.location.href = await checkoutUrl(lines, LEGAL_UPDATED);
+      window.location.href = await checkoutUrl(lines, LEGAL_UPDATED, inArea);
     } catch (error) {
       setPayError(error instanceof CheckoutError ? error.message : "לא הצלחנו לפתוח את הקופה. נסו שוב בעוד רגע.");
       setPaying(false);
@@ -333,6 +341,32 @@ export function CartButton() {
                   </TermsDialog>
                 </span>
               </label>
+              {installing && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="flex cursor-pointer items-start gap-2.5 fs-15 leading-[1.5] text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={inArea}
+                      onChange={(e) => {
+                        setInArea(e.target.checked);
+                        if (e.target.checked) setPayError(null);
+                      }}
+                      className="mt-0.5 size-5 flex-none cursor-pointer accent-primary"
+                    />
+                    <span>כתובת ההתקנה נמצאת באחד מאזורי ההתקנה</span>
+                  </label>
+                  <details className="ps-7.5 fs-14 leading-[1.5] text-foreground">
+                    <summary className="cursor-pointer font-medium">לאילו אזורים אנחנו מגיעים?</summary>
+                    <ul className="mt-1.5 flex flex-col gap-1">
+                      {INSTALL_AREAS.map((area) => (
+                        <li key={area.name}>
+                          <span className="font-semibold">{area.name}:</span> {area.places}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                </div>
+              )}
               <Button type="button" onClick={pay} disabled={paying} className="w-full py-4">
                 {paying ? "פותחים את הקופה..." : "לתשלום"}
               </Button>

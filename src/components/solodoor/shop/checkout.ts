@@ -46,7 +46,7 @@ export class CheckoutError extends Error {}
  * The address of the Shopify checkout holding exactly this cart. Throws when a line has no Shopify variant.
  * `termsVersion` is the date of the terms the customer ticked; it is kept on the order as proof of consent.
  */
-export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Promise<string> {
+export async function checkoutUrl(lines: CartLine[], termsVersion?: string, installAreaConfirmed = false): Promise<string> {
   if (!lines.length) throw new CheckoutError("הסל ריק");
   // Loaded only when the customer goes to pay, so the list is not part of every page.
   const variants = (await import("./shopify-variants.json")).default as Record<string, number>;
@@ -59,5 +59,10 @@ export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Pro
   }
   if (missing.length) throw new CheckoutError(`אין אפשרות לשלם על: ${missing.join(", ")}`);
   const url = `${SHOP_URL}/cart/${[...quantities].map(([id, qty]) => `${id}:${qty}`).join(",")}`;
-  return termsVersion ? `${url}?${new URLSearchParams({ "attributes[אישור תקנון]": `אושר, נוסח ${termsVersion}` })}` : url;
+  const attributes = new URLSearchParams();
+  if (termsVersion) attributes.set("attributes[אישור תקנון]", `אושר, נוסח ${termsVersion}`);
+  // Installation is only possible inside the service areas; the customer confirms the address is in one.
+  if (installAreaConfirmed && lines.some((line) => line.id === INSTALLATION_ID)) attributes.set("attributes[כתובת התקנה באזור שירות]", "אושר");
+  const query = attributes.toString();
+  return query ? `${url}?${query}` : url;
 }
