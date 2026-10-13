@@ -30,6 +30,8 @@ export function useSmoothWheel() {
     const onWheel = (e: WheelEvent) => {
       if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       if (document.body.hasAttribute("data-scroll-locked")) return;
+      // "Stop animations" in the accessibility menu also means plain, unanimated scrolling.
+      if (document.documentElement.hasAttribute("data-a11y-motion")) return;
       let node = e.target as HTMLElement | null;
       while (node && node !== document.body) {
         const style = getComputedStyle(node);

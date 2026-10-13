@@ -8,9 +8,11 @@ import { PromoStrip } from "./PromoStrip";
 import { QuizDialog } from "./QuizDialog";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { WhatsAppFloat } from "./WhatsAppFloat";
+import { AccessibilityWidget } from "./accessibility/AccessibilityWidget";
 import { QuizProvider } from "./quiz-context";
 
-/** Everything every page shares: promo strip, header, footer, the quiz and the motion hooks. */
+/** Everything every page shares: promo strip, header, footer, the quiz, the floating buttons and the motion hooks. */
 export function PageShell({ children }: { children: ReactNode }) {
   const pageRef = useRef<HTMLDivElement>(null);
   useViewportScale();
@@ -26,6 +28,8 @@ export function PageShell({ children }: { children: ReactNode }) {
         <SiteFooter />
       </div>
       <QuizDialog />
+      <WhatsAppFloat />
+      <AccessibilityWidget />
     </QuizProvider>
   );
 }
