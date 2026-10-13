@@ -346,7 +346,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               value={doorNumber}
               onChange={(e) => setDoorNumber(e.target.value.replace(/\D/g, ""))}
               placeholder="לדוגמה 12"
-              className="w-36 bg-card text-center fs-18 placeholder:opacity-45"
+              className="w-36 bg-card text-center fs-18 placeholder:opacity-45 focus:placeholder:opacity-0"
             />
             <div className="flex items-center gap-1.5" aria-hidden="true">
               {digits.map((digit, i) => {
