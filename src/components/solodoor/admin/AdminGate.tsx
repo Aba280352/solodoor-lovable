@@ -90,7 +90,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
                   to={item.to}
                   activeOptions={{ exact: item.to === "/admin" }}
                   className="rounded-md px-3 py-1.5 fs-15 font-semibold text-foreground hover:bg-muted"
-                  activeProps={{ className: "rounded-md bg-foreground px-3 py-1.5 fs-15 font-semibold text-background" }}
+                  activeProps={{ className: "rounded-md bg-primary px-3 py-1.5 fs-15 font-semibold text-primary-foreground" }}
                 >
                   {item.label}
                 </Link>
