@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
-import { ROLL_WIDTH_CM, WASTE_RATE } from "./data";
+import { HEIGHT_FACTOR, ROLL_WIDTH_CM, WASTE_RATE } from "./data";
 import { whatsappHref } from "./whatsapp";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -63,7 +63,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
 
   const ready = w > 0 && h > 0;
   const strips = ready ? Math.ceil(w / ROLL_WIDTH_CM) * units : 0;
-  const netMeters = (strips * h) / 100;
+  const netMeters = (strips * h * HEIGHT_FACTOR) / 100;
   const orderMeters = ready ? roundUpHalf(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
 
   const bind = (set: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => set(e.target.value);

@@ -30,7 +30,7 @@ function Stepper({ value, min, step, onChange, label }: { value: number; min: nu
       <button type="button" className={button} aria-label="פחות" disabled={value <= min} onClick={() => onChange(Math.max(min, value - step))}>
         <Icon name="Minus" size={14} />
       </button>
-      <span dir="ltr" className="w-10 text-center fs-18 font-semibold text-foreground" aria-live="polite">
+      <span dir="ltr" className="min-w-12 px-1 text-center fs-18 font-semibold text-foreground" aria-live="polite">
         {value}
       </span>
       <button type="button" className={button} aria-label="עוד" onClick={() => onChange(value + step)}>
@@ -244,7 +244,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             <span className="max-w-[34ch] fs-15 leading-[1.5] text-foreground">
               {perSide
                 ? `יחידה אחת מכסה צד אחד של דלת, ${DOOR_SIZE_TEXT}.`
-                : `רוחב הגליל ${application?.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר.`}
+                : `רוחב הגליל ${application?.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר, ואפשר גם בחצאי מטר.`}
             </span>
           )}
         </div>

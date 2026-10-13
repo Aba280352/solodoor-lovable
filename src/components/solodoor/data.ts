@@ -297,5 +297,8 @@ export const footerLegal: { label: string; to: "/accessibility" | "/privacy-poli
  */
 export const ROLL_WIDTH_CM = 122;
 
+/** The height is always counted ten percent taller, so a wall that is not straight is still covered. */
+export const HEIGHT_FACTOR = 1.1;
+
 /** Extra material added for cuts and mistakes when the user keeps the option on. */
 export const WASTE_RATE = 0.1;
