@@ -69,7 +69,7 @@ const PRICE_PER_METER_DOOR = 125;
 const PRICE_DOOR_SIDE = 250;
 const PRICE_DESIGNED_DOOR_SIDE = 305;
 // Decided with the client in chat.
-const PRICE_INSTALLATION = 490; // per order, doors only (see applies_to below)
+const PRICE_INSTALLATION = 490; // per single standard door, both sides; doors only (see applies_to below)
 const PRICE_DOOR_NUMBER = 19.9; // per digit
 // A designed door with strips costs 305 a side against 250 for a plain one.
 const PRICE_STRIPS = PRICE_DESIGNED_DOOR_SIDE - PRICE_DOOR_SIDE;
@@ -630,7 +630,7 @@ const STRIP_DESIGNS = {
   "strips-04": { title: "3 פסים לרוחב", price: 150, sort: 6, picture: true },
   "strips-07": { title: "4 פסים לרוחב", price: 200, sort: 7, picture: true },
   "strips-09": { title: "פס אחד לאורך", price: 100, sort: 8, picture: true },
-  "strips-10": { title: "3 פסים מדורגים לרוחב", price: 100, sort: 9, picture: true },
+  "strips-10": { title: "3 פסים מדורגים לרוחב", price: 150, sort: 9, picture: true },
   "strips-02": { title: "2 פסים לאורך", price: 200, sort: 10, picture: true },
   "strips-03": { title: "2 פסים מדורגים", price: 200, sort: 11, picture: true },
   "strips-05": { title: "3 פסים לאורך", price: 300, sort: 12, picture: true },
@@ -668,7 +668,7 @@ const addons = [
     // The photos do not exist yet; they will be made from the client's reference.
     image_path: `addons/door-number-${digit}.webp`,
   })),
-  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["door", "designed_door"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. תוספת קבועה להזמנה, מעבר למחיר החומר." },
+  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["door", "designed_door"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. המחיר לדלת בודדת סטנדרטית, לשני הצדדים, מעבר למחיר החומר." },
   { slug: "sample", title: "דוגמית לבית", addon_type: "sample", price: PRICE_SAMPLE, applies_to: ["all"], description: "דוגמית של הגוון נשלחת אליכם הביתה, כדי לראות את הצבע והטקסטורה לפני שמזמינים." },
 ].map((a, i) => ({ image_path: "", ...a, is_active: true, sort_order: i + 1, shopify_variant_id: "" }));
 

@@ -282,7 +282,7 @@ export function CartButton() {
                           <button
                             type="button"
                             aria-label="פחות"
-                            disabled={line.qty <= 1}
+                            disabled={line.qty <= (line.min ?? 1)}
                             onClick={() => cart.setQty(line.id, line.qty - 1)}
                             className="flex size-8 cursor-pointer items-center justify-center text-foreground disabled:cursor-default disabled:opacity-35"
                           >

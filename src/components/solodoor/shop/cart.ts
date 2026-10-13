@@ -12,6 +12,8 @@ export interface CartLine {
   image: string | null;
   price: number;
   qty: number;
+  /** The smallest quantity of the line (wallpaper by the metre starts at two metres); one when absent. */
+  min?: number;
   /** Lines such as the installation service exist once per order. */
   single?: boolean;
   /** The installation line: the city the installer comes to, checked against the installation areas. */
@@ -99,7 +101,8 @@ export const cart = {
     set({ lines, open: options.open ?? state.open });
   },
   setQty(id: string, qty: number) {
-    set({ ...state, lines: state.lines.map((l) => (l.id === id ? { ...l, qty: Math.max(1, qty) } : l)) });
+    // Metres come in tenths, so the sum is rounded: 2.3 + 1 stays 3.3.
+    set({ ...state, lines: state.lines.map((l) => (l.id === id ? { ...l, qty: Math.max(l.min ?? 1, Math.round(qty * 10) / 10) } : l)) });
   },
   remove(id: string) {
     set({ ...state, lines: state.lines.filter((l) => l.id !== id) });

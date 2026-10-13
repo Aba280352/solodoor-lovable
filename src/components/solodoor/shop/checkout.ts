@@ -24,7 +24,7 @@ function baseSku(line: CartLine): string {
 /** What the installer brings along when installation is ordered: door coverings and door digits. */
 const comesWithInstaller = (sku: string) => sku.endsWith("__door") || sku.startsWith("door-") || sku.startsWith("addon__door-number-");
 
-/** Each line as { sku, qty }. A half metre of wallpaper is its own item in the shop (the SKU of the surface plus "__half"). */
+/** Each line as { sku, qty }. Ten centimetres of wallpaper are their own item in the shop (the SKU of the surface plus "__tenth"). */
 function resolve(lines: CartLine[]): { sku: string; qty: number; title: string }[] {
   // With installation nothing is posted: the installed variants need no shipping, so the checkout charges none.
   const installed = lines.some((line) => line.id === INSTALLATION_ID);
@@ -37,12 +37,13 @@ function resolve(lines: CartLine[]): { sku: string; qty: number; title: string }
     }
     const sku = baseSku(line);
     const shopSku = installed && comesWithInstaller(sku) ? `${sku}__install` : sku;
-    // Metres are sold in halves: 5.5 metres go to the shop as 5 metres and one half metre.
-    const whole = Math.floor(line.qty);
-    const half = line.qty - whole > 0 ? 1 : 0;
+    // Metres are sold to the ten centimetres: 2.3 metres go to the shop as 2 metres and 3 items of ten centimetres.
+    const tenthsTotal = Math.round(line.qty * 10);
+    const whole = Math.floor(tenthsTotal / 10);
+    const tenths = tenthsTotal % 10;
     return [
       ...(whole > 0 ? [{ sku: shopSku, qty: whole, title: line.title }] : []),
-      ...(half ? [{ sku: `${shopSku}__half`, qty: 1, title: line.title }] : []),
+      ...(tenths ? [{ sku: `${shopSku}__tenth`, qty: tenths, title: line.title }] : []),
     ];
   });
 }

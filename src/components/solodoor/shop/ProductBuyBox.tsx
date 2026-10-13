@@ -9,6 +9,10 @@ import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
 import { INSTALL_DAYS, checkInstallCity } from "./install-areas";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
+import { TermsDialog } from "../legal/TermsDialog";
+
+/** Metres are sold to the nearest ten centimetres. */
+const METRE_PRECISION = 0.1;
 import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
@@ -22,18 +26,48 @@ interface ProductBuyBoxProps {
   onVariant: (variant: ProductVariant) => void;
 }
 
-function Stepper({ value, min, step, onChange, label }: { value: number; min: number; step: number; onChange: (v: number) => void; label: string }) {
+/**
+ * Quantity with plus and minus. With `precision` (metres) the number can also be typed freely, 2.3 or 2.7,
+ * and is settled to that precision and to the minimum when the field is left.
+ */
+function Stepper({ value, min, step, precision, onChange, label }: { value: number; min: number; step: number; precision?: number; onChange: (v: number) => void; label: string }) {
+  const [draft, setDraft] = useState<string | null>(null);
   const button =
     "flex size-11 flex-none cursor-pointer items-center justify-center text-foreground disabled:cursor-default disabled:opacity-35";
+  const snap = (n: number) => {
+    const parts = precision ? Math.round(1 / precision) : 1;
+    return Math.max(min, Math.round(n * parts) / parts);
+  };
+  const commit = () => {
+    if (draft === null) return;
+    const typed = parseFloat(draft.replace(",", "."));
+    onChange(Number.isFinite(typed) ? snap(typed) : value);
+    setDraft(null);
+  };
   return (
     <div className="inline-flex items-center rounded-md border border-input bg-card" role="group" aria-label={label}>
-      <button type="button" className={button} aria-label="פחות" disabled={value <= min} onClick={() => onChange(Math.max(min, value - step))}>
+      <button type="button" className={button} aria-label="פחות" disabled={value <= min} onClick={() => onChange(snap(value - step))}>
         <Icon name="Minus" size={14} />
       </button>
-      <span dir="ltr" className="min-w-12 px-1 text-center fs-18 font-semibold text-foreground" aria-live="polite">
-        {value}
-      </span>
-      <button type="button" className={button} aria-label="עוד" onClick={() => onChange(value + step)}>
+      {precision ? (
+        <input
+          dir="ltr"
+          inputMode="decimal"
+          aria-label={label}
+          value={draft ?? String(value)}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+          }}
+          className="w-14 bg-transparent text-center fs-18 font-semibold text-foreground focus:outline-none"
+        />
+      ) : (
+        <span dir="ltr" className="min-w-12 px-1 text-center fs-18 font-semibold text-foreground" aria-live="polite">
+          {value}
+        </span>
+      )}
+      <button type="button" className={button} aria-label="עוד" onClick={() => onChange(snap(value + step))}>
         <Icon name="Plus" size={14} />
       </button>
     </div>
@@ -102,6 +136,8 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       ? (pa?.price_override ?? application?.unit_price ?? product.base_price)
       : (variant?.price ?? product.base_price);
   const perSide = !isRug && (product.product_type === "designed_door" || application?.sell_unit === "side");
+  // Wallpaper by the metre is cut to any length: the customer may ask for 2.3 or 2.7 metres.
+  const perMeter = !isRug && !perSide;
   const unitLabel = isRug ? "לשטיח" : perSide ? "לצד אחד של דלת" : "למטר";
   const qtyLabel = isRug ? "כמות" : perSide ? "כמה צדדים?" : "כמה מטרים?";
 
@@ -145,6 +181,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         image,
         price: unitPrice,
         qty,
+        min: perMeter ? min : undefined,
       },
     ];
     if (stripAddon) {
@@ -239,12 +276,12 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       <div className="flex flex-col gap-2.5">
         <span className="fs-16 font-bold text-foreground lg:fs-17">{qtyLabel}</span>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Stepper value={qty} min={min} step={step} onChange={setQty} label={qtyLabel} />
+          <Stepper value={qty} min={min} step={step} precision={perMeter ? METRE_PRECISION : undefined} onChange={setQty} label={qtyLabel} />
           {(perSide || (isWallpaper && application)) && (
             <span className="max-w-[34ch] fs-15 leading-[1.5] text-foreground">
               {perSide
                 ? `יחידה אחת מכסה צד אחד של דלת, ${DOOR_SIZE_TEXT}.`
-                : `רוחב הגליל ${application?.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר, ואפשר גם בחצאי מטר.`}
+                : `רוחב הגליל ${application?.roll_width_cm} ס"מ. מינימום הזמנה ${min} מטר. אפשר להקליד כל כמות, למשל 2.3 או 2.7 מטר.`}
             </span>
           )}
         </div>
@@ -292,9 +329,14 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. תוספת קבועה להזמנה, והתקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
+            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. המחיר לדלת בודדת סטנדרטית, לשני הצדדים. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
             price={`+${formatPrice(installAddon.price)}`}
           />
+          <TermsDialog section="installation">
+            <button type="button" className="cursor-pointer self-start border-b border-primary fs-14 leading-[1.5] font-medium text-foreground">
+              לתנאי ההתקנה המלאים בתקנון
+            </button>
+          </TermsDialog>
           {installation && (
             <InstallCityField
               value={installCity}

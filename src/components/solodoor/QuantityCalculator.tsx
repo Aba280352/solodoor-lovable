@@ -31,8 +31,8 @@ const toNumber = (value: string) => {
   return Number.isFinite(n) && n > 0 ? n : 0;
 };
 
-/** Rounds up to the nearest half metre, which is how the material is cut. */
-const roundUpHalf = (n: number) => Math.ceil(n * 2) / 2;
+/** Rounds up to the next ten centimetres, the smallest length that can be ordered. */
+const roundUpTenth = (n: number) => Math.ceil(n * 10 - 1e-9) / 10;
 
 const formatMeters = (n: number, digits = 1) => n.toLocaleString("he-IL", { maximumFractionDigits: digits });
 
@@ -64,7 +64,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
   const ready = w > 0 && h > 0;
   const strips = ready ? Math.ceil(w / ROLL_WIDTH_CM) * units : 0;
   const netMeters = (strips * h * HEIGHT_FACTOR) / 100;
-  const orderMeters = ready ? roundUpHalf(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
+  const orderMeters = ready ? roundUpTenth(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
 
   const bind = (set: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => set(e.target.value);
 
