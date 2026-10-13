@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
 import { styleMenu, useMenu } from "./data";
-import { cart, cartCount, cartTotal, useCart } from "./shop/cart";
+import { cart, cartCount, cartTotal, isInstallLine, isLockedLine, useCart } from "./shop/cart";
 import { CheckoutError, checkoutUrl } from "./shop/checkout";
 import { INSTALL_CITY_EMPTY } from "./shop/install-areas";
 import { catalogImage, formatPrice, variantColors, type ShopData } from "./shop/catalog";
@@ -204,8 +204,7 @@ export function CartButton() {
   // Ticked anew for every order: paying is allowed only after agreeing to the terms.
   const [agreed, setAgreed] = useState(false);
   // Installation exists only in the service areas: the city chosen with it must be inside one, or the order does not go to pay.
-  const installLine = lines.find((line) => line.id === "installation");
-  const cityOk = !installLine || installLine.cityOk === true;
+  const cityOk = lines.filter(isInstallLine).every((line) => line.cityOk === true);
 
   async function pay() {
     if (!agreed) {
@@ -274,9 +273,15 @@ export function CartButton() {
                   <span className="flex min-w-0 flex-auto flex-col gap-1">
                     <span className="fs-16 leading-[1.3] font-semibold text-foreground">{line.title}</span>
                     {line.note && <span className="fs-14 leading-[1.4] text-foreground">{line.note}</span>}
+                    {line.install && line.city && <span className="fs-14 leading-[1.4] text-foreground">התקנה ב{line.city}</span>}
                     <span className="mt-auto flex items-center justify-between gap-3 pt-1">
                       {line.single ? (
                         <span />
+                      ) : isLockedLine(line, lines) ? (
+                        // Counted together in the product page: the sides and their installation change there, not here.
+                        <span className="fs-15 text-foreground">
+                          כמות: <span dir="ltr">{line.qty}</span>
+                        </span>
                       ) : (
                         <span className="inline-flex items-center rounded-md border border-input">
                           <button

@@ -69,7 +69,7 @@ const PRICE_PER_METER_DOOR = 125;
 const PRICE_DOOR_SIDE = 250;
 const PRICE_DESIGNED_DOOR_SIDE = 305;
 // Decided with the client in chat.
-const PRICE_INSTALLATION = 490; // per single standard door, both sides; doors only (see applies_to below)
+const PRICE_INSTALLATION = 490; // per single standard door, both sides (one side and designed doors: install-pricing.ts); doors only (see applies_to below)
 const PRICE_DOOR_NUMBER = 19.9; // per digit
 // A designed door with strips costs 305 a side against 250 for a plain one.
 const PRICE_STRIPS = PRICE_DESIGNED_DOOR_SIDE - PRICE_DOOR_SIDE;
@@ -668,7 +668,7 @@ const addons = [
     // The photos do not exist yet; they will be made from the client's reference.
     image_path: `addons/door-number-${digit}.webp`,
   })),
-  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["door", "designed_door"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. המחיר לדלת בודדת סטנדרטית, לשני הצדדים, מעבר למחיר החומר." },
+  { slug: "installation", title: "התקנה מקצועית", addon_type: "service", price: PRICE_INSTALLATION, applies_to: ["door", "designed_door"], description: "מתקין של סולודור מגיע אליכם ומדביק את הטפט. המחיר לדלת בודדת סטנדרטית, לפי מספר הצדדים, מעבר למחיר החומר." },
   { slug: "sample", title: "דוגמית לבית", addon_type: "sample", price: PRICE_SAMPLE, applies_to: ["all"], description: "דוגמית של הגוון נשלחת אליכם הביתה, כדי לראות את הצבע והטקסטורה לפני שמזמינים." },
 ].map((a, i) => ({ image_path: "", ...a, is_active: true, sort_order: i + 1, shopify_variant_id: "" }));
 

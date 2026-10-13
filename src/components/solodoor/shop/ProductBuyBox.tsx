@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
 import { INSTALL_DAYS, checkInstallCity } from "./install-areas";
+import { INSTALL_DESIGNED_BOTH_SIDES_EXTRA, INSTALL_ONE_SIDE_PRICE, INSTALL_SKU, splitSides } from "./install-pricing";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
 import { TermsDialog } from "../legal/TermsDialog";
@@ -30,13 +31,13 @@ interface ProductBuyBoxProps {
  * Quantity with plus and minus. With `precision` (metres) the number can also be typed freely, 2.3 or 2.7,
  * and is settled to that precision and to the minimum when the field is left.
  */
-function Stepper({ value, min, step, precision, onChange, label }: { value: number; min: number; step: number; precision?: number; onChange: (v: number) => void; label: string }) {
+function Stepper({ value, min, max, step, precision, onChange, label }: { value: number; min: number; max?: number; step: number; precision?: number; onChange: (v: number) => void; label: string }) {
   const [draft, setDraft] = useState<string | null>(null);
   const button =
     "flex size-11 flex-none cursor-pointer items-center justify-center text-foreground disabled:cursor-default disabled:opacity-35";
   const snap = (n: number) => {
     const parts = precision ? Math.round(1 / precision) : 1;
-    return Math.max(min, Math.round(n * parts) / parts);
+    return Math.min(max ?? Infinity, Math.max(min, Math.round(n * parts) / parts));
   };
   const commit = () => {
     if (draft === null) return;
@@ -67,7 +68,7 @@ function Stepper({ value, min, step, precision, onChange, label }: { value: numb
           {value}
         </span>
       )}
-      <button type="button" className={button} aria-label="עוד" onClick={() => onChange(snap(value + step))}>
+      <button type="button" className={button} aria-label="עוד" disabled={max !== undefined && value >= max} onClick={() => onChange(snap(value + step))}>
         <Icon name="Plus" size={14} />
       </button>
     </div>
@@ -124,6 +125,8 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const [doorNumber, setDoorNumber] = useState("");
   const [tools, setTools] = useState<string[]>([]);
   const [installation, setInstallation] = useState(false);
+  // How many doors get both sides covered; null follows the quantity (as many pairs as it holds).
+  const [doubleChoice, setDoubleChoice] = useState<number | null>(null);
   const [installCity, setInstallCity] = useState("");
   const [cityTouched, setCityTouched] = useState(false);
   const [added, setAdded] = useState(false);
@@ -148,6 +151,11 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const installAddon = product.installation_available
     ? addons.find((a) => a.addon_type === "service" && (a.applies_to.includes("all") || a.applies_to.includes(surfaceKey)))
     : undefined;
+  // Installation is priced per door: both sides of one door, or one side only. A designed door costs more on both sides.
+  const isDesigned = product.product_type === "designed_door";
+  const doublePrice = (installAddon?.price ?? 0) + (isDesigned ? INSTALL_DESIGNED_BOTH_SIDES_EXTRA : 0);
+  const split = splitSides(qty, doubleChoice ?? Infinity);
+  const installTotal = split.doubles * doublePrice + split.singles * INSTALL_ONE_SIDE_PRICE;
   // Strips on a door are put on by the installer, so nobody gluing it themselves would order them:
   // the choice appears only once professional installation is ticked.
   const allStrips = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
@@ -165,15 +173,16 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
     (stripAddon ? stripAddon.price * qty : 0) +
     (numberAddons.length ? digits.length * digitPrice : 0) +
     toolAddons.filter((t) => tools.includes(t.slug)).reduce((sum, t) => sum + t.price, 0) +
-    (installation && installAddon ? installAddon.price : 0);
+    (installation && installAddon ? installTotal : 0);
   const total = unitPrice * qty + extras;
 
   const productTitle = isWallpaper ? `טפט ${product.title}` : product.title;
 
   function lines(): CartLine[] {
+    const mainId = [product.handle, application?.slug, variant?.variant_key, size?.size_key].filter(Boolean).join(":");
     const result: CartLine[] = [
       {
-        id: [product.handle, application?.slug, variant?.variant_key, size?.size_key].filter(Boolean).join(":"),
+        id: mainId,
         title: productTitle,
         note: [application && `ל${application.label}`, variant?.title, size && `${size.width_cm}×${size.length_cm} ס"מ`, unitLabel]
           .filter(Boolean)
@@ -184,6 +193,16 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         min: perMeter ? min : undefined,
       },
     ];
+    if (installation && installAddon) {
+      // The installation belongs to this covering: one line per kind of door, the quantity is the number of doors.
+      const place = { note: productTitle, image: null, parent: mainId, city: installCity.trim(), cityOk: true };
+      if (split.doubles) {
+        result.push({ id: `${mainId}:install-double`, title: "התקנה: דלת עם שני צדדים", price: doublePrice, qty: split.doubles, install: "double", sku: isDesigned ? INSTALL_SKU.designedDouble : INSTALL_SKU.double, ...place });
+      }
+      if (split.singles) {
+        result.push({ id: `${mainId}:install-single`, title: "התקנה: דלת עם צד אחד", price: INSTALL_ONE_SIDE_PRICE, qty: split.singles, install: "single", sku: INSTALL_SKU.single, ...place });
+      }
+    }
     if (stripAddon) {
       result.push({ id: `${product.handle}:${stripAddon.slug}`, title: `עיצוב פסים: ${stripAddon.title}`, note: productTitle, image: catalogImage(stripAddon.image_path), price: stripAddon.price, qty });
     }
@@ -195,9 +214,6 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
     }
     for (const tool of toolAddons.filter((t) => tools.includes(t.slug))) {
       result.push({ id: tool.slug, title: tool.title, image: catalogImage(tool.image_path), price: tool.price, qty: 1 });
-    }
-    if (installation && installAddon) {
-      result.push({ id: installAddon.slug, title: installAddon.title, note: `התקנה ב${installCity.trim()}`, image: null, price: installAddon.price, qty: 1, single: true, city: installCity.trim(), cityOk: true });
     }
     return result;
   }
@@ -276,7 +292,18 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       <div className="flex flex-col gap-2.5">
         <span className="fs-16 font-bold text-foreground lg:fs-17">{qtyLabel}</span>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Stepper value={qty} min={min} step={step} precision={perMeter ? METRE_PRECISION : undefined} onChange={setQty} label={qtyLabel} />
+          <Stepper
+            value={qty}
+            min={min}
+            step={step}
+            precision={perMeter ? METRE_PRECISION : undefined}
+            onChange={(value) => {
+              setQty(value);
+              // Another number of sides is spread over the doors anew.
+              setDoubleChoice(null);
+            }}
+            label={qtyLabel}
+          />
           {(perSide || (isWallpaper && application)) && (
             <span className="max-w-[34ch] fs-15 leading-[1.5] text-foreground">
               {perSide
@@ -329,9 +356,39 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. המחיר לדלת בודדת סטנדרטית, לשני הצדדים. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
-            price={`+${formatPrice(installAddon.price)}`}
+            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. ${formatPrice(doublePrice)} לדלת סטנדרטית משני הצדדים, ${formatPrice(INSTALL_ONE_SIDE_PRICE)} לדלת מצד אחד. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
+            price={`+${formatPrice(installTotal)}`}
           />
+          {installation && (
+            <div className="flex flex-col gap-4 rounded-md border border-border bg-muted p-4">
+              <div className="flex flex-col gap-1">
+                <span className="fs-16 leading-[1.35] font-semibold text-foreground">איך תרצו לחלק את ההתקנה?</span>
+                <span className="fs-14 leading-[1.5] text-foreground">בחרו כמה דלתות יצופו משני הצדדים. יתר הצדדים יותקנו על דלתות נפרדות.</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="flex min-w-0 flex-col">
+                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">דלתות עם שני צדדים</span>
+                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(doublePrice)} להתקנת דלת</span>
+                </span>
+                <Stepper value={split.doubles} min={0} max={split.most} step={1} onChange={setDoubleChoice} label="דלתות עם שני צדדים" />
+              </div>
+              <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
+                <span className="flex min-w-0 flex-col">
+                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">דלתות עם צד אחד</span>
+                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(INSTALL_ONE_SIDE_PRICE)} להתקנת דלת</span>
+                </span>
+                <span dir="ltr" className="w-34 flex-none text-center fs-18 font-semibold text-foreground" aria-live="polite">
+                  {split.singles}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between gap-3 border-t border-border pt-4">
+                <span className="fs-16 font-semibold text-foreground">סה״כ התקנה</span>
+                <span className="fs-22 leading-none font-bold text-foreground" aria-live="polite">
+                  {formatPrice(installTotal)}
+                </span>
+              </div>
+            </div>
+          )}
           <TermsDialog section="installation">
             <button type="button" className="cursor-pointer self-start border-b border-primary fs-14 leading-[1.5] font-medium text-foreground">
               לתנאי ההתקנה המלאים בתקנון

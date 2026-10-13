@@ -5,18 +5,18 @@
  * (https://<shop>/cart/<variant>:<qty>,<variant>:<qty>). Shipping, tax and payment are Shopify's from there on.
  * The SKU to variant list is `shopify-variants.json`, written by scripts/pull-shopify-variants.cjs.
  */
-import type { CartLine } from "./cart";
+import { isInstallLine, type CartLine } from "./cart";
 
 /** The Shopify store that takes the payment. */
 const SHOP_URL = "https://1ass3z-be.myshopify.com";
 
-const INSTALLATION_ID = "installation";
 const isSample = (line: CartLine) => line.id.startsWith("sample:");
 
 /** The SKU of a line as it is delivered by post. Samples are priced by their place in the order, see `resolve`. */
 function baseSku(line: CartLine): string {
+  if (line.sku) return line.sku; // the installation of a door, by its kind
   const [first, ...rest] = line.id.split(":");
-  if (!rest.length) return `addon__${first}`; // installation, a door digit, a tool
+  if (!rest.length) return `addon__${first}`; // a door digit, a tool
   if (rest[0].startsWith("strips-")) return `addon__${rest[0]}`;
   return [first, ...rest].join("__"); // wallpaper + surface, designed door + colour, rug + size
 }
@@ -27,7 +27,7 @@ const comesWithInstaller = (sku: string) => sku.endsWith("__door") || sku.starts
 /** Each line as { sku, qty }. Ten centimetres of wallpaper are their own item in the shop (the SKU of the surface plus "__tenth"). */
 function resolve(lines: CartLine[]): { sku: string; qty: number; title: string }[] {
   // With installation nothing is posted: the installed variants need no shipping, so the checkout charges none.
-  const installed = lines.some((line) => line.id === INSTALLATION_ID);
+  const installed = lines.some(isInstallLine);
   let samples = 0;
   return lines.flatMap((line) => {
     if (isSample(line)) {
@@ -70,8 +70,19 @@ export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Pro
   const attributes = new URLSearchParams();
   if (termsVersion) attributes.set("attributes[אישור תקנון]", `אושר, נוסח ${termsVersion}`);
   // Installation is only possible inside the service areas; the city typed with it is kept on the order.
-  const installCity = lines.find((line) => line.id === INSTALLATION_ID)?.city;
+  const installs = lines.filter(isInstallLine);
+  const installCity = installs.find((line) => line.city)?.city;
   if (installCity) attributes.set("attributes[עיר ההתקנה]", installCity);
+  // How the installation was counted: the doors by kind, the sides they hold and what it costs.
+  const doors = (kind: CartLine["install"]) => installs.filter((line) => line.install === kind).reduce((sum, line) => sum + line.qty, 0);
+  const doubles = doors("double");
+  const singles = doors("single");
+  if (doubles + singles > 0) {
+    attributes.set("attributes[התקנה, סך הצדדים]", String(doubles * 2 + singles));
+    attributes.set("attributes[התקנה, דלתות עם שני צדדים]", String(doubles));
+    attributes.set("attributes[התקנה, דלתות עם צד אחד]", String(singles));
+    attributes.set("attributes[התקנה, מחיר כולל]", `${installs.reduce((sum, line) => sum + line.price * line.qty, 0)} ש"ח`);
+  }
   const query = attributes.toString();
   return query ? `${url}?${query}` : url;
 }

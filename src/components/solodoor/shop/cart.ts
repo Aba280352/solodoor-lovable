@@ -14,8 +14,14 @@ export interface CartLine {
   qty: number;
   /** The smallest quantity of the line (wallpaper by the metre starts at two metres); one when absent. */
   min?: number;
-  /** Lines such as the installation service exist once per order. */
+  /** Lines such as a sample exist once per order. */
   single?: boolean;
+  /** The Shopify SKU of the line, when it does not follow from the id (see checkout.ts). */
+  sku?: string;
+  /** The id of the line this one belongs to (the installation of a door covering). It leaves the cart with that line. */
+  parent?: string;
+  /** An installation line: the quantity is the number of doors covered on both sides, or on one side only. */
+  install?: "double" | "single";
   /** The installation line: the city the installer comes to, checked against the installation areas. */
   city?: string;
   /** The city was picked from the localities and is inside an installation area. */
@@ -88,16 +94,25 @@ export function useCart() {
 export const cartTotal = (lines: CartLine[]) => lines.reduce((sum, line) => sum + line.price * line.qty, 0);
 export const cartCount = (lines: CartLine[]) => lines.reduce((sum, line) => sum + line.qty, 0);
 
+/** The installation lines of a cart. "installation" is the single line of carts saved before installation was counted per door. */
+export const isInstallLine = (line: CartLine) => !!line.install || line.id === "installation";
+
+/** A line whose quantity is fixed in the cart: an installation, and the door covering it was counted from. */
+export const isLockedLine = (line: CartLine, lines: CartLine[]) => !!line.install || lines.some((l) => l.parent === line.id);
+
 export const cart = {
   add(added: CartLine[], options: { open?: boolean } = {}) {
-    const lines = [...state.lines];
+    let lines = [...state.lines];
     for (const line of added) {
       const i = lines.findIndex((l) => l.id === line.id);
       if (i === -1) lines.push(line);
       else if (!line.single) lines[i] = { ...lines[i], qty: lines[i].qty + line.qty };
-      // The installation exists once, but a new order of it may name another city.
+      // A line that exists once may still name another city.
       else if (line.city) lines[i] = { ...lines[i], city: line.city, cityOk: line.cityOk, note: line.note };
     }
+    // The installer comes once, to one place: the city given last counts for every installation in the cart.
+    const placed = added.find((line) => line.install && line.city);
+    if (placed) lines = lines.map((l) => (l.install ? { ...l, city: placed.city, cityOk: placed.cityOk } : l));
     set({ lines, open: options.open ?? state.open });
   },
   setQty(id: string, qty: number) {
@@ -105,7 +120,8 @@ export const cart = {
     set({ ...state, lines: state.lines.map((l) => (l.id === id ? { ...l, qty: Math.max(l.min ?? 1, Math.round(qty * 10) / 10) } : l)) });
   },
   remove(id: string) {
-    set({ ...state, lines: state.lines.filter((l) => l.id !== id) });
+    // A door covering takes its installation along.
+    set({ ...state, lines: state.lines.filter((l) => l.id !== id && l.parent !== id) });
   },
   setOpen(open: boolean) {
     set({ ...state, open });
