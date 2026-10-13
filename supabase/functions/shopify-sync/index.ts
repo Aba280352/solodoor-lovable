@@ -252,7 +252,7 @@ Deno.serve(async (req) => {
 
     // The cover photo. The imported products already carry their photos, so only a photo uploaded in the
     // admin (stored as a full URL), or a product with no photo at all, is sent; its URL is kept as the alt text.
-    const uploaded = !!cover && /^https?:///.test(cover);
+    const uploaded = !!cover && /^https?:\/\//.test(cover);
     if (coverUrl && (uploaded || shop.media.nodes.length === 0) && !shop.media.nodes.some((m) => m.alt === coverUrl)) {
       const r = await shopify<{ productCreateMedia: { media: { id: string }[]; mediaUserErrors: { message: string }[] } }>(
         token,
