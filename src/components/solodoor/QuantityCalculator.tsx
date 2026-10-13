@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type ReactNode } from "react";
+import { useState, type ChangeEvent, type FocusEvent, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,8 @@ export function QuantityCalculator({ className }: { className?: string }) {
   const orderMeters = ready ? roundUpTenth(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
 
   const bind = (set: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => set(e.target.value);
+  // The prefilled size is selected on entry, so typing a measurement replaces it instead of adding digits to it.
+  const selectAll = (e: FocusEvent<HTMLInputElement>) => e.target.select();
 
   // Switching the unit keeps the measured size: 90 cm becomes 0.9 m and back.
   const changeUnit = (next: Unit) => {
@@ -129,14 +131,14 @@ export function QuantityCalculator({ className }: { className?: string }) {
 
         <div className="mt-4 grid grid-cols-2 gap-4">
           <Field label={`רוחב (${unitLabel})`}>
-            <Input inputMode="decimal" dir="ltr" value={width} onChange={bind(setWidth)} placeholder={unit === "m" ? "0.9" : "90"} className="fs-18" />
+            <Input inputMode="decimal" dir="ltr" value={width} onChange={bind(setWidth)} onFocus={selectAll} placeholder={unit === "m" ? "0.9" : "90"} className="fs-18" />
           </Field>
-          <Field label={`גובה (${unitLabel})`}>
-            <Input inputMode="decimal" dir="ltr" value={height} onChange={bind(setHeight)} placeholder={unit === "m" ? "2.1" : "210"} className="fs-18" />
+          <Field label={`גובה / אורך (${unitLabel})`}>
+            <Input inputMode="decimal" dir="ltr" value={height} onChange={bind(setHeight)} onFocus={selectAll} placeholder={unit === "m" ? "2.1" : "210"} className="fs-18" />
           </Field>
           <div className="col-span-full">
             <Field label="כמות (דלתות / משטחים זהים)">
-              <Input inputMode="numeric" dir="ltr" value={qty} onChange={bind(setQty)} className="fs-18" />
+              <Input inputMode="numeric" dir="ltr" value={qty} onChange={bind(setQty)} onFocus={selectAll} className="fs-18" />
             </Field>
           </div>
         </div>

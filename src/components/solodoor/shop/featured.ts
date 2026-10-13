@@ -73,22 +73,29 @@ const QUIZ_SURFACE: Record<string, string> = {
   counter: "countertop",
 };
 
-const COLORFUL = ["blue", "green", "purple", "multi", "brown"];
+/**
+ * The wallpapers shown first for each style of step 2, by handle. Chosen by hand so the three
+ * answers differ from one another (sand next to white stripes, not two whites) and so that
+ * "designed" never lands on plain wood. Whatever is missing for a surface is filled from the style.
+ */
+const QUIZ_PICKS: Record<string, string[]> = {
+  "חלק ונקי": ["sand", "white-stripes", "light-grey"],
+  "מראה עץ": ["oak-wood", "walnut-wood", "sahara-wood"],
+  "אבן / שיש / בטון": ["sand-stone", "light-grey-plaster", "charcoal-plaster"],
+  "מעוצב ודקורטיבי": ["veined-marble", "black-stripes", "deep-blue"],
+};
 
 /** Three models for an area and a style (step 3 of the quiz), taken from the shop. */
 export function quizModels(shop: ShopData, areaKey: string, style: string | undefined): Product[] {
   const slug = QUIZ_SURFACE[areaKey] ?? "door";
   const application = shop.applications.find((a) => a.slug === slug);
   const all = wallpapersFor(shop, slug);
-  let chosen: ShopItem[];
-  let designed: ShopItem[] = [];
-  if (style === "מעוצב ודקורטיבי") {
-    // On a door the designed doors fit; on other surfaces the coloured wallpapers do.
-    designed = slug === "door" ? shop.items.filter((i) => i.product_type === "designed_door" && i.cover).slice(0, 3) : [];
-    chosen = all.filter((i) => i.colors.some((c) => COLORFUL.includes(c)));
-  } else {
-    chosen = all.filter((i) => i.style_family === style);
-  }
-  const picked = [...designed, ...chosen, ...all.filter((i) => !chosen.includes(i))].slice(0, 3);
+  // On a door "designed" means the designed door wallpapers themselves.
+  const designed =
+    style === "מעוצב ודקורטיבי" && slug === "door" ? shop.items.filter((i) => i.product_type === "designed_door" && i.cover) : [];
+  const picks = (QUIZ_PICKS[style ?? ""] ?? []).flatMap((handle) => all.filter((i) => i.handle === handle));
+  const ofStyle = all.filter((i) => i.style_family === style && !picks.includes(i));
+  const rest = all.filter((i) => !picks.includes(i) && !ofStyle.includes(i));
+  const picked: ShopItem[] = [...designed, ...picks, ...ofStyle, ...rest].slice(0, 3);
   return picked.map((item) => productCard(shop, item, item.product_type === "wallpaper" ? application : undefined));
 }

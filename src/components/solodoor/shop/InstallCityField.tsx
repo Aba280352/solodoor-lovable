@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, type Ref } from "react";
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -21,13 +21,15 @@ interface InstallCityFieldProps {
   /** The visitor left the field or tried to continue: an empty field is then an error too. */
   touched: boolean;
   onTouched: () => void;
+  /** The text field itself, so the page can bring it into view when the city is missing. */
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 /**
  * The place of the installation: a text field that offers the matching localities of Israel while typing.
- * A locality outside the installation areas shows the red note; one inside shows nothing.
+ * A locality outside the installation areas shows the red note; one inside shows a green go-ahead.
  */
-export function InstallCityField({ value, onChange, rows, status, touched, onTouched }: InstallCityFieldProps) {
+export function InstallCityField({ value, onChange, rows, status, touched, onTouched, inputRef }: InstallCityFieldProps) {
   const listId = useId();
   const noteId = useId();
   const [focused, setFocused] = useState(false);
@@ -58,6 +60,7 @@ export function InstallCityField({ value, onChange, rows, status, touched, onTou
         באיזו עיר או יישוב תתבצע ההתקנה?
       </label>
       <Input
+        ref={inputRef}
         id={`${listId}-input`}
         role="combobox"
         aria-expanded={open}
@@ -123,13 +126,15 @@ export function InstallCityField({ value, onChange, rows, status, touched, onTou
           ))}
         </ul>
       )}
-      <span
-        id={noteId}
-        role={message ? "alert" : undefined}
-        className={cn("fs-14 leading-[1.5]", message ? "font-medium text-destructive" : "text-foreground")}
-      >
-        {message ?? "ההתקנה זמינה מנהריה ועד מודיעין ויבנה."}
-      </span>
+      {(message || status === "ok") && (
+        <span
+          id={noteId}
+          role={message ? "alert" : "status"}
+          className={cn("fs-15 leading-[1.5] font-bold", message ? "text-destructive" : "text-secondary")}
+        >
+          {message ?? `מצוין, צוות סולודור מתקין ב${value.trim()}. אפשר להמשיך.`}
+        </span>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
-import { INSTALL_DAYS, checkInstallCity } from "./install-areas";
+import { INSTALL_CITY_BAD, INSTALL_CITY_EMPTY, INSTALL_DAYS, checkInstallCity } from "./install-areas";
 import { INSTALL_DESIGNED_BOTH_SIDES_EXTRA, INSTALL_ONE_SIDE_PRICE, INSTALL_SKU, splitSides } from "./install-pricing";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
@@ -129,6 +129,9 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const [doubleChoice, setDoubleChoice] = useState<number | null>(null);
   const [installCity, setInstallCity] = useState("");
   const [cityTouched, setCityTouched] = useState(false);
+  // "Add to cart" was pressed while the city was missing: the reason is then also written under the button.
+  const [cityStopped, setCityStopped] = useState(false);
+  const cityInput = useRef<HTMLInputElement>(null);
   const [added, setAdded] = useState(false);
 
   const size = rugSizes.find((s) => s.size_key === sizeKey) ?? null;
@@ -223,9 +226,16 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const cityStatus = checkInstallCity(localities, installCity);
   const installBlocked = installation && !!installAddon && cityStatus !== "ok";
 
+  // The reason the order cannot go on, shown under the buttons as well as at the field.
+  const cityStop = installBlocked && cityStopped ? (cityStatus === "bad" ? INSTALL_CITY_BAD : INSTALL_CITY_EMPTY) : null;
+
   function addToCart(open: boolean) {
     if (installBlocked) {
       setCityTouched(true);
+      setCityStopped(true);
+      // The city field may be far above the button: bring it back into view and put the cursor in it.
+      cityInput.current?.focus({ preventScroll: true });
+      cityInput.current?.scrollIntoView({ block: "center" });
       return;
     }
     cart.add(lines(), { open });
@@ -335,8 +345,8 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               maxLength={4}
               value={doorNumber}
               onChange={(e) => setDoorNumber(e.target.value.replace(/\D/g, ""))}
-              placeholder="12"
-              className="w-28 bg-card text-center fs-18"
+              placeholder="לדוגמה 12"
+              className="w-36 bg-card text-center fs-18 placeholder:opacity-45"
             />
             <div className="flex items-center gap-1.5" aria-hidden="true">
               {digits.map((digit, i) => {
@@ -359,7 +369,8 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. ${formatPrice(doublePrice)} לדלת סטנדרטית משני הצדדים, ${formatPrice(INSTALL_ONE_SIDE_PRICE)} לדלת מצד אחד. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
             price={`+${formatPrice(installTotal)}`}
           />
-          {installation && (
+          {/* With one or two sides there is nothing to split: one door, one side or both. */}
+          {installation && qty >= 3 && (
             <div className="flex flex-col gap-4 rounded-md border border-border bg-muted p-4">
               <div className="flex flex-col gap-1">
                 <span className="fs-16 leading-[1.35] font-semibold text-foreground">איך תרצו לחלק את ההתקנה?</span>
@@ -402,6 +413,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               status={cityStatus}
               touched={cityTouched}
               onTouched={() => setCityTouched(true)}
+              inputRef={cityInput}
             />
           )}
           {!installation && allStrips.length > 0 && (
@@ -494,6 +506,11 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
           <span>{added ? "נוסף לסל" : "הוספה לסל"}</span>
           <Icon name={added ? "Check" : "ShoppingCart"} size={18} />
         </Button>
+        {cityStop && (
+          <span role="alert" className="rounded-md border border-destructive bg-destructive/8 px-3.5 py-3 fs-15 leading-[1.5] font-bold text-destructive">
+            {cityStop}
+          </span>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <Button type="button" variant="secondary" onClick={() => addToCart(true)} className="px-3 py-3.5 fs-16">
             <span>רכישה מהירה</span>

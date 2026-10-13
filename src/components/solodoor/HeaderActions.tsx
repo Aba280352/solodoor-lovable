@@ -351,7 +351,7 @@ export function CartButton() {
                 {paying ? "פותחים את הקופה..." : "לתשלום"}
               </Button>
               {payError && (
-                <span role="alert" className="fs-14 leading-[1.5] text-foreground">
+                <span role="alert" className="rounded-md border border-destructive bg-destructive/8 px-3.5 py-3 fs-15 leading-[1.5] font-bold text-destructive">
                   {payError}
                   {agreed && (
                     <>
