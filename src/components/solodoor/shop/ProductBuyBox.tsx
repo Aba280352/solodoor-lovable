@@ -382,7 +382,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
                 </span>
               </div>
               <div className="flex items-baseline justify-between gap-3 border-t border-border pt-4">
-                <span className="fs-16 font-semibold text-foreground">סה״כ התקנה</span>
+                <span className="fs-16 font-semibold text-foreground">סה"כ התקנה</span>
                 <span className="fs-22 leading-none font-bold text-foreground" aria-live="polite">
                   {formatPrice(installTotal)}
                 </span>
