@@ -12,6 +12,13 @@ import { LOGO_SRC } from "../data";
 /** The only account allowed in. The database enforces the same rule in its policies. */
 export const OWNER_EMAIL = "barido101@gmail.com";
 
+/** The areas of the admin, in the order of the header. */
+const NAV = [
+  { to: "/admin", label: "מאמרים" },
+  { to: "/admin/products", label: "מוצרים" },
+  { to: "/admin/prices", label: "מחירים" },
+] as const;
+
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +38,7 @@ function LoginForm() {
     <div className="flex min-h-dvh items-center justify-center bg-muted px-5">
       <form onSubmit={submit} className="w-full max-w-100 rounded-lg border border-border bg-card px-6 py-8 text-right lg:px-8">
         <img src={LOGO_SRC} alt="SOLODOOR" className="h-9" />
-        <h1 className="mt-6 fs-24 font-bold text-foreground">כניסה לניהול המאמרים</h1>
+        <h1 className="mt-6 fs-24 font-bold text-foreground">כניסה לניהול האתר</h1>
         <div className="mt-5 flex flex-col gap-3">
           <Input type="email" autoComplete="username" required placeholder="אימייל" value={email} onChange={(e) => setEmail(e.target.value)} dir="ltr" className="text-left fs-16" />
           <Input type="password" autoComplete="current-password" required placeholder="סיסמה" value={password} onChange={(e) => setPassword(e.target.value)} dir="ltr" className="text-left fs-16" />
@@ -76,7 +83,19 @@ export function AdminGate({ children }: { children: ReactNode }) {
             <Link to="/admin">
               <img src={LOGO_SRC} alt="SOLODOOR" className="h-8" />
             </Link>
-            <span className="fs-15 font-semibold tracking-[0.12em] text-foreground">ניהול מאמרים</span>
+            <nav aria-label="אזורי הניהול" className="flex items-center gap-1">
+              {NAV.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  activeOptions={{ exact: item.to === "/admin" }}
+                  className="rounded-md px-3 py-1.5 fs-15 font-semibold text-foreground hover:bg-muted"
+                  activeProps={{ className: "rounded-md bg-foreground px-3 py-1.5 fs-15 font-semibold text-background" }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           </div>
           <div className="flex items-center gap-4">
             <Link to="/מאמרים" className="hidden fs-15 font-medium text-foreground hover:text-clay lg:inline">

@@ -21,6 +21,8 @@ export interface Product {
   installation_available: boolean;
   /** Colour families (see colors.ts); empty when not set yet. */
   colors: string[];
+  /** Hidden products are kept for the admin; the site's policies never return them. */
+  is_active: boolean;
   sort_order: number;
 }
 
@@ -144,9 +146,12 @@ export interface ShopItem {
   roll: string | null;
 }
 
-/** Where the catalogue images are served from: the site's own /catalog-images folder. */
+/**
+ * Where the catalogue images are served from: the site's own /catalog-images folder. Images uploaded
+ * in the admin are stored as full URLs (the "catalog" storage bucket) and are used as they are.
+ */
 export const catalogImage = (path: string | null | undefined) =>
-  path ? `${import.meta.env.BASE_URL}catalog-images/${path}` : null;
+  path ? (/^https?:\/\//.test(path) ? path : `${import.meta.env.BASE_URL}catalog-images/${path}`) : null;
 
 export const formatPrice = (value: number) => `₪${Number.isInteger(Number(value)) ? Number(value) : Number(value).toFixed(2)}`;
 
