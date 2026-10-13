@@ -17,6 +17,8 @@ const NAV = [
   { to: "/admin", label: "מאמרים" },
   { to: "/admin/products", label: "מוצרים" },
   { to: "/admin/prices", label: "מחירים" },
+  { to: "/admin/faq", label: "שאלות נפוצות" },
+  { to: "/admin/content", label: "לשוניות" },
 ] as const;
 
 function LoginForm() {

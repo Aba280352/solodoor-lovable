@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { catalogImage, fetchShop, formatPrice, type ProductType, type ShopItem } from "../shop/catalog";
-import { PRODUCT_TYPE_LABELS, db, type AdminProduct, type SyncState } from "./db";
+import { PRODUCT_TYPE_LABELS, createProduct, db, type AdminProduct, type SyncState } from "./db";
 import { syncLabel } from "./shopify-sync";
 
 const TABS: { key: ProductType | "all"; label: string }[] = [
@@ -16,6 +17,82 @@ const TABS: { key: ProductType | "all"; label: string }[] = [
   { key: "pvc_rug", label: "שטיחי PVC" },
 ];
 
+/**
+ * A new product: its kind, name and English id. It starts hidden, with empty photos, and opens in the
+ * editor; Shopify learns about it on the first save there.
+ */
+function NewProductForm({ onClose }: { onClose: () => void }) {
+  const navigate = useNavigate();
+  const [type, setType] = useState<ProductType>("wallpaper");
+  const [title, setTitle] = useState("");
+  const [handle, setHandle] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const create = async () => {
+    if (!title.trim()) {
+      setError("צריך שם למוצר.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const created = await createProduct(type, title, handle);
+      navigate({ to: "/admin/products/$handle", params: { handle: created } });
+    } catch (e) {
+      setError((e as Error).message);
+      setBusy(false);
+    }
+  };
+
+  const prefix = type === "designed_door" ? "door-" : type === "pvc_rug" ? "rug-" : "";
+  return (
+    <section className="mt-5 flex flex-col gap-4 rounded-lg border border-secondary bg-card p-5">
+      <h2 className="fs-17 font-bold text-foreground">מוצר חדש</h2>
+      <div className="flex flex-wrap gap-2">
+        {(Object.keys(PRODUCT_TYPE_LABELS) as ProductType[]).map((key) => (
+          <button
+            key={key}
+            type="button"
+            aria-pressed={type === key}
+            onClick={() => setType(key)}
+            className={cn(
+              "cursor-pointer rounded-full border px-4 py-1.5 fs-15 font-medium transition-colors duration-160 ease-standard",
+              type === key ? "border-foreground bg-foreground text-background" : "border-border bg-card text-foreground hover:border-foreground",
+            )}
+          >
+            {PRODUCT_TYPE_LABELS[key]}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <label className="flex flex-col gap-1.5">
+          <span className="fs-15 font-semibold text-foreground">שם המוצר (בעברית)</span>
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={type === "wallpaper" ? "למשל: ירוק זית" : type === "designed_door" ? "למשל: ונציה" : "למשל: שלווה"} className="fs-17 font-semibold" />
+          <span className="fs-13 text-foreground/70">זה גם שם הדף באתר: /product/{title.trim() || "…"}</span>
+        </label>
+        <label className="flex flex-col gap-1.5">
+          <span className="fs-15 font-semibold text-foreground">מזהה באנגלית</span>
+          <Input dir="ltr" value={handle} onChange={(e) => setHandle(e.target.value)} placeholder={type === "wallpaper" ? "olive-green" : type === "designed_door" ? "venice" : "40"} className="text-left fs-15" />
+          <span className="fs-13 text-foreground/70">
+            אותיות קטנות, ספרות ומקפים. משמש ב-Shopify ובתמונות, ואי אפשר לשנות אחר כך{prefix ? `. יתווסף לפניו "${prefix}"` : ""}.
+          </span>
+        </label>
+      </div>
+      {error && <p className="rounded-md border border-destructive bg-destructive/8 px-3.5 py-3 fs-15 font-bold text-destructive">{error}</p>}
+      <p className="fs-13 leading-[1.5] text-foreground/70">המוצר נוצר מוסתר. אחרי שתמלאו תמונות, תיאור ומחיר ותסמנו "מוצג בחנות", השמירה תיצור אותו גם ב-Shopify עם כל הווריאנטים והדוגמית.</p>
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" size="sm" disabled={busy} onClick={create}>
+          {busy ? "רגע…" : "יצירה ומעבר לעריכה"}
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onClose}>
+          ביטול
+        </Button>
+      </div>
+    </section>
+  );
+}
+
 /** Every product, shown or hidden, with its cover photo, price, state and the last Shopify sync. */
 export function ProductList() {
   const [products, setProducts] = useState<AdminProduct[] | null>(null);
@@ -24,6 +101,7 @@ export function ProductList() {
   const [tab, setTab] = useState<ProductType | "all">("all");
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const load = async () => {
     const [{ data, error }, shop, { data: syncRows }] = await Promise.all([
@@ -94,8 +172,16 @@ export function ProductList() {
             </p>
           )}
         </div>
-        <Input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="חיפוש לפי שם או כתובת" className="w-full fs-15 lg:w-72" />
+        <div className="flex gap-3">
+          <Input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="חיפוש לפי שם או כתובת" className="w-full fs-15 lg:w-72" />
+          <Button type="button" className="flex-none px-5 py-3 fs-15" onClick={() => setCreating(true)}>
+            <Icon name="Plus" size={14} />
+            <span>מוצר חדש</span>
+          </Button>
+        </div>
       </div>
+
+      {creating && <NewProductForm onClose={() => setCreating(false)} />}
 
       <div className="mt-5 flex flex-wrap gap-2">
         {TABS.map((t) => (

@@ -108,11 +108,14 @@ export interface InfoTab {
   sort_order: number;
 }
 
+/** A question of the FAQ page that is also shown on product pages: `product_scopes` names the surfaces or product types. */
 export interface FaqItem {
-  scope: string;
-  sort_order: number;
+  id: number;
   question: string;
   answer: string;
+  categories: string[];
+  product_scopes: string[];
+  sort_order: number;
 }
 
 /** One colour photo of a designed door, as the shop grid shows it. */
@@ -278,7 +281,7 @@ export async function fetchProduct(slug: string): Promise<ProductData | null> {
       type === "pvc_rug" ? rows<RugSize>(supabase.from("rug_sizes").select("*").order("sort_order")) : Promise.resolve([]),
       rows<Benefit>(supabase.from("benefits").select("*").contains("product_types", [type]).order("sort_order")),
       rows<InfoTab>(supabase.from("info_tabs").select("*").contains("product_types", [type]).order("sort_order")),
-      rows<FaqItem>(supabase.from("faqs").select("*").order("sort_order")),
+      rows<FaqItem>(supabase.from("faq_items").select("*").neq("product_scopes", "{}").order("sort_order")),
       rows<Product>(
         supabase
           .from("products")

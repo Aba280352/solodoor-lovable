@@ -64,6 +64,56 @@ export async function uploadCatalogImage(file: File, handle: string): Promise<st
   return db.storage.from("catalog").getPublicUrl(name).data.publicUrl;
 }
 
+/** A handle as Shopify and the image folders want it: lower case ascii letters, digits and hyphens. */
+export const cleanHandle = (s: string) =>
+  s
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/**
+ * Creates a product in the database with the rows its editor expects: every surface for a wallpaper,
+ * a first colour for a designed door, nothing extra for a rug. Shopify learns about it on the first save.
+ */
+export async function createProduct(type: Product["product_type"], title: string, handleInput: string): Promise<string> {
+  const base = cleanHandle(handleInput);
+  if (!base) throw new Error("צריך מזהה באנגלית: אותיות קטנות, ספרות ומקפים.");
+  const handle = type === "designed_door" && !base.startsWith("door-") ? `door-${base}` : type === "pvc_rug" && !base.startsWith("rug-") ? `rug-${base}` : base;
+  const { data: taken } = await db.from("products").select("handle").or(`handle.eq.${handle},slug.eq.${title.trim()}`).limit(1);
+  if (taken?.length) throw new Error("כבר יש מוצר עם המזהה או השם האלה.");
+  const { data: last } = await db.from("products").select("sort_order").eq("product_type", type).order("sort_order", { ascending: false }).limit(1);
+  const row = {
+    handle,
+    slug: title.trim(),
+    title: title.trim(),
+    product_type: type,
+    style_family: type === "designed_door" ? "מעוצב ודקורטיבי" : null,
+    base_price: type === "designed_door" ? 305 : 0,
+    price_unit: type === "wallpaper" ? "meter" : type === "designed_door" ? "side" : "size",
+    sample_available: type !== "pvc_rug",
+    installation_available: type !== "pvc_rug",
+    colors: [],
+    is_active: false,
+    sort_order: ((last ?? [])[0]?.sort_order ?? 0) + 1,
+  };
+  const { error } = await db.from("products").insert(row);
+  if (error) throw new Error(error.message);
+  if (type === "wallpaper") {
+    const { data: apps } = await db.from("applications").select("slug");
+    await db.from("product_applications").insert(((apps ?? []) as { slug: string }[]).map((a) => ({ product_handle: handle, application_slug: a.slug, is_active: true })));
+    await db.from("product_images").insert([
+      { product_handle: handle, kind: "swatch", sort_order: 0 },
+      { product_handle: handle, kind: "roll", sort_order: 1 },
+    ]);
+  } else if (type === "designed_door") {
+    await db.from("product_variants").insert({ product_handle: handle, variant_key: "v1", title: title.trim(), price: 305, sort_order: 1, is_active: true });
+  } else {
+    await db.from("product_images").insert({ product_handle: handle, kind: "main", sort_order: 0 });
+  }
+  return handle;
+}
+
 export const PRODUCT_TYPE_LABELS: Record<Product["product_type"], string> = {
   wallpaper: "טפט",
   designed_door: "טפט מעוצב לדלת",

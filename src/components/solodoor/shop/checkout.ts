@@ -5,6 +5,8 @@
  * (https://<shop>/cart/<variant>:<qty>,<variant>:<qty>). Shipping, tax and payment are Shopify's from there on.
  * The SKU to variant list is `shopify-variants.json`, written by scripts/pull-shopify-variants.cjs.
  */
+import { supabase } from "@/integrations/supabase/client";
+
 import { isInstallLine, type CartLine } from "./cart";
 
 /** The Shopify store that takes the payment. */
@@ -56,11 +58,18 @@ export class CheckoutError extends Error {}
  */
 export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Promise<string> {
   if (!lines.length) throw new CheckoutError("הסל ריק");
-  // Loaded only when the customer goes to pay, so the list is not part of every page.
-  const variants = (await import("./shopify-variants.json")).default as Record<string, number>;
+  const items = resolve(lines);
+  // The ids come from the database, where the admin's Shopify sync keeps them; the bundled list stands in
+  // for products synced before that table existed. Both are loaded only when the customer goes to pay.
+  const [bundled, { data: synced }] = await Promise.all([
+    import("./shopify-variants.json").then((m) => m.default as Record<string, number>),
+    supabase.from("shopify_variants").select("sku, variant_id").in("sku", items.map((i) => i.sku)),
+  ]);
+  const variants: Record<string, number> = { ...bundled };
+  for (const row of (synced ?? []) as { sku: string; variant_id: number }[]) variants[row.sku] = Number(row.variant_id);
   const quantities = new Map<number, number>();
   const missing: string[] = [];
-  for (const { sku, qty, title } of resolve(lines)) {
+  for (const { sku, qty, title } of items) {
     const id = variants[sku];
     if (!id) missing.push(title);
     else quantities.set(id, (quantities.get(id) ?? 0) + qty);

@@ -22,6 +22,8 @@ import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char14
 import { Route as Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport } from './routes/שאלות-נפוצות'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
+import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as AdminFaqRouteImport } from './routes/admin.faq'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport } from './routes/טפט-לפי-סגנון.index'
@@ -105,6 +107,16 @@ const AdminIdRoute = AdminIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqRoute = AdminFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPricesRoute = AdminPricesRouteImport.update({
   id: '/prices',
   path: '/prices',
@@ -155,6 +167,8 @@ export interface FileRoutesByFullPath {
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -175,6 +189,8 @@ export interface FileRoutesByTo {
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -197,6 +213,8 @@ export interface FileRoutesById {
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/faq': typeof AdminFaqRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -220,6 +238,8 @@ export interface FileRouteTypes {
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
     | '/admin/$id'
+    | '/admin/content'
+    | '/admin/faq'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -240,6 +260,8 @@ export interface FileRouteTypes {
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
     | '/admin/$id'
+    | '/admin/content'
+    | '/admin/faq'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -261,6 +283,8 @@ export interface FileRouteTypes {
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
     | '/admin/$id'
+    | '/admin/content'
+    | '/admin/faq'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -380,6 +404,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faq': {
+      id: '/admin/faq'
+      path: '/faq'
+      fullPath: '/admin/faq'
+      preLoaderRoute: typeof AdminFaqRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/prices': {
       id: '/admin/prices'
       path: '/prices'
@@ -427,6 +465,8 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminIdRoute: typeof AdminIdRoute
+  AdminContentRoute: typeof AdminContentRoute
+  AdminFaqRoute: typeof AdminFaqRoute
   AdminPricesRoute: typeof AdminPricesRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductsHandleRoute: typeof AdminProductsHandleRoute
@@ -435,6 +475,8 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIdRoute: AdminIdRoute,
+  AdminContentRoute: AdminContentRoute,
+  AdminFaqRoute: AdminFaqRoute,
   AdminPricesRoute: AdminPricesRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductsHandleRoute: AdminProductsHandleRoute,

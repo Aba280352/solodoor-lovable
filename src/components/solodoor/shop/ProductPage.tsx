@@ -37,7 +37,7 @@ export function productHeading(data: ProductData, application: Application | nul
 /** The FAQ set of the current category. */
 export function productFaqs(data: ProductData, application: Application | null): FaqItem[] {
   const scope = application?.slug ?? data.product.product_type;
-  return data.faqs.filter((f) => f.scope === scope);
+  return data.faqs.filter((f) => f.product_scopes.includes(scope));
 }
 
 function galleryImages(data: ProductData, application: Application | null, variant: ProductVariant | null): GalleryImage[] {

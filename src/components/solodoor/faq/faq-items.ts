@@ -5,8 +5,10 @@ export interface FaqEntry {
   id: number;
   question: string;
   answer: string;
-  /** Application slugs, "designed_door" or "pvc_rug". */
+  /** Application slugs, "designed_door" or "pvc_rug": the chips of the FAQ page. Empty for a question written for one product page only. */
   categories: string[];
+  /** The product pages the question is also shown on (same keys). */
+  product_scopes: string[];
   /** Slug of the article that explains it in full. */
   article_slug: string | null;
   sort_order: number;
@@ -34,7 +36,7 @@ export interface FaqSearch {
 }
 
 export async function fetchFaqEntries(): Promise<FaqEntry[]> {
-  const { data, error } = await supabase.from("faq_items").select("*").order("sort_order");
+  const { data, error } = await supabase.from("faq_items").select("*").neq("categories", "{}").order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as FaqEntry[];
 }

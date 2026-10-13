@@ -94,6 +94,8 @@ export function ProductEditor({ handle }: { handle: string }) {
   const [sync, setSync] = useState<SyncResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [newGallery, setNewGallery] = useState<AdminProductImage[]>([]);
+  // Door colours added in this visit: inserted on save, the rest are updated.
+  const [newVariantKeys, setNewVariantKeys] = useState<string[]>([]);
   const galleryInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -176,15 +178,39 @@ export function ProductEditor({ handle }: { handle: string }) {
           .map((i) => db.from("product_images").update({ image_path: i.image_path, alt: i.alt?.trim() || null, sort_order: i.sort_order }).eq("id", i.id)),
       )),
       ...(await Promise.all(
-        variants.map((v) =>
-          db
-            .from("product_variants")
-            .update({ title: v.title.trim(), price: Number(v.price) || 0, color: v.color || null, image_path: v.image_path, sort_order: v.sort_order, is_active: v.is_active })
-            .eq("product_handle", product.handle)
-            .eq("variant_key", v.variant_key),
-        ),
+        variants
+          .filter((v) => !newVariantKeys.includes(v.variant_key))
+          .map((v) =>
+            db
+              .from("product_variants")
+              .update({ title: v.title.trim(), price: Number(v.price) || 0, color: v.color || null, image_path: v.image_path, sort_order: v.sort_order, is_active: v.is_active })
+              .eq("product_handle", product.handle)
+              .eq("variant_key", v.variant_key),
+          ),
       )),
     ];
+    const newVariants = variants.filter((v) => newVariantKeys.includes(v.variant_key));
+    if (newVariants.some((v) => !v.title.trim())) {
+      setBusy(false);
+      setStatus("לכל גוון חדש צריך שם.");
+      return;
+    }
+    if (newVariants.length) {
+      results.push(
+        await db.from("product_variants").insert(
+          newVariants.map((v) => ({
+            product_handle: product.handle,
+            variant_key: v.variant_key,
+            title: v.title.trim(),
+            price: Number(v.price) || 0,
+            color: v.color || null,
+            image_path: v.image_path,
+            sort_order: v.sort_order,
+            is_active: v.is_active,
+          })),
+        ),
+      );
+    }
     const inserts = [...images.filter((i) => i.id < 0), ...newGallery].map(({ id: _id, ...rest }) => rest);
     if (inserts.length) results.push(await db.from("product_images").insert(inserts));
     const failed = results.find((r) => r.error);
@@ -194,6 +220,7 @@ export function ProductEditor({ handle }: { handle: string }) {
       return;
     }
     setNewGallery([]);
+    setNewVariantKeys([]);
     setStatus("נשמר באתר. מעדכן את Shopify…");
     const result = await syncProduct(product.handle);
     setSync(result);
@@ -201,6 +228,22 @@ export function ProductEditor({ handle }: { handle: string }) {
     const fresh = await fetchAdminProduct(product.handle);
     if (fresh) setData(fresh);
     setBusy(false);
+  };
+
+  /** A new colour, numbered after the last one; it reaches Shopify on save. */
+  const addVariant = () => {
+    const next = Math.max(0, ...variants.map((v) => Number(v.variant_key.replace(/\D/g, "")) || 0)) + 1;
+    const key = `v${next}`;
+    setNewVariantKeys([...newVariantKeys, key]);
+    setData({
+      ...data,
+      variants: [...variants, { product_handle: product.handle, variant_key: key, title: "", price: product.base_price, color: null, image_path: null, sort_order: next, is_active: true }],
+    });
+  };
+
+  const removeNewVariant = (key: string) => {
+    setNewVariantKeys(newVariantKeys.filter((k) => k !== key));
+    setData({ ...data, variants: variants.filter((v) => v.variant_key !== key) });
   };
 
   const resync = async () => {
@@ -308,11 +351,11 @@ export function ProductEditor({ handle }: { handle: string }) {
           )}
 
           {isDoor && (
-            <Card title="גוונים" hint="כל גוון הוא תמונה ומחיר לצד אחד של דלת. הוספת גוון חדש דורשת גם וריאנט ב-Shopify, ולכן נעשית דרכי.">
+            <Card title="גוונים" hint="כל גוון הוא תמונה ומחיר לצד אחד של דלת. גוון חדש נוצר ב-Shopify בשמירה.">
               <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
                 {variants.map((v) => (
-                  <div key={v.variant_key} className={cn("flex flex-col gap-3 rounded-md border border-border p-3", !v.is_active && "opacity-60")}>
-                    <ImageSlot path={v.image_path} label={v.title || v.variant_key} busy={busy} onPick={(file) => upload(file, (url) => setVariant(v.variant_key, { image_path: url }))} />
+                  <div key={v.variant_key} className={cn("flex flex-col gap-3 rounded-md border p-3", newVariantKeys.includes(v.variant_key) ? "border-secondary" : "border-border", !v.is_active && "opacity-60")}>
+                    <ImageSlot path={v.image_path} label={v.title || "גוון חדש"} busy={busy} onPick={(file) => upload(file, (url) => setVariant(v.variant_key, { image_path: url }))} />
                     <Field label="שם הגוון">
                       <Input value={v.title} onChange={(e) => setVariant(v.variant_key, { title: e.target.value })} className="fs-15" />
                     </Field>
@@ -343,9 +386,18 @@ export function ProductEditor({ handle }: { handle: string }) {
                       <input type="checkbox" checked={v.is_active} onChange={(e) => setVariant(v.variant_key, { is_active: e.target.checked })} className="size-4 accent-[var(--color-secondary)]" />
                       <span className="fs-14 font-medium text-foreground">מוצג</span>
                     </label>
+                    {newVariantKeys.includes(v.variant_key) && (
+                      <button type="button" onClick={() => removeNewVariant(v.variant_key)} className="self-start fs-13 font-medium text-clay">
+                        ביטול הגוון החדש
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
+              <Button type="button" variant="outline" size="sm" disabled={busy} className="self-start" onClick={addVariant}>
+                <Icon name="Plus" size={13} />
+                <span>הוספת גוון</span>
+              </Button>
             </Card>
           )}
 
