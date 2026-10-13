@@ -47,9 +47,8 @@ const units_: { value: Unit; label: string }[] = [
  * roll width, so the order length is strips × height × quantity (+ waste).
  */
 export function QuantityCalculator({ className }: { className?: string }) {
-  // A standard door to start with, so the answer shows at once; the fields are real values, not hints.
-  const [width, setWidth] = useState("90");
-  const [height, setHeight] = useState("210");
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
   const [qty, setQty] = useState("1");
   const [waste, setWaste] = useState(true);
   const [unit, setUnit] = useState<Unit>("cm");
@@ -67,20 +66,6 @@ export function QuantityCalculator({ className }: { className?: string }) {
   const orderMeters = ready ? roundUpHalf(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
 
   const bind = (set: (v: string) => void) => (e: ChangeEvent<HTMLInputElement>) => set(e.target.value);
-
-  // Switching the unit keeps the measured size: 90 cm becomes 0.9 m and back.
-  const changeUnit = (next: Unit) => {
-    if (next === unit) return;
-    const convert = (value: string) => {
-      const n = toNumber(value);
-      if (!n) return value;
-      const converted = next === "m" ? n / 100 : n * 100;
-      return String(Math.round(converted * 1000) / 1000);
-    };
-    setWidth(convert);
-    setHeight(convert);
-    setUnit(next);
-  };
 
   return (
     <Dialog>
@@ -115,7 +100,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
                 key={u.value}
                 type="button"
                 aria-pressed={unit === u.value}
-                onClick={() => changeUnit(u.value)}
+                onClick={() => setUnit(u.value)}
                 className={cn(
                   "cursor-pointer px-5 py-2 fs-16 font-medium text-foreground transition-colors duration-160 ease-standard",
                   unit === u.value && "bg-primary text-primary-foreground",
