@@ -1,5 +1,7 @@
 import { useEffect, type RefObject } from "react";
 
+import { motionStopped } from "@/components/solodoor/accessibility/a11y";
+
 const EASE = "cubic-bezier(.16,1,.3,1)";
 
 type RevealEl = HTMLElement & { _delay?: number; _shown?: boolean; _timer?: number };
@@ -33,6 +35,13 @@ export function useSectionReveal(rootRef: RefObject<HTMLElement | null>) {
       (entries) => {
         for (const entry of entries) {
           const el = entry.target as RevealEl;
+          // "Stop animations" in the accessibility menu: the block simply stands in its place.
+          if (motionStopped()) {
+            window.clearTimeout(el._timer);
+            clear(el);
+            el._shown = true;
+            continue;
+          }
           if (!entry.isIntersecting) {
             const rect = entry.boundingClientRect;
             if (rect.top >= window.innerHeight || rect.bottom <= 0) {
@@ -70,8 +79,20 @@ export function useSectionReveal(rootRef: RefObject<HTMLElement | null>) {
       });
     });
 
+    // Turning "stop animations" on shows at once whatever was still waiting below the fold.
+    const motion = new MutationObserver(() => {
+      if (!motionStopped()) return;
+      for (const el of targets) {
+        window.clearTimeout(el._timer);
+        clear(el);
+        el._shown = true;
+      }
+    });
+    motion.observe(document.documentElement, { attributes: true, attributeFilter: ["data-a11y-motion"] });
+
     return () => {
       io.disconnect();
+      motion.disconnect();
       for (const el of targets) {
         window.clearTimeout(el._timer);
         clear(el);

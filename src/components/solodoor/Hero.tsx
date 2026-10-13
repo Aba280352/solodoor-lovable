@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
+import { useMotionStopped } from "./accessibility/a11y";
 import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
 import { heroSlides, heroTrust } from "./data";
@@ -23,10 +24,13 @@ export function Hero() {
   const current = heroSlides[slide];
 
   // Auto-advance; the timer restarts whenever the slide changes (also by hand).
+  // With "stop animations" on, the slides change by hand only.
+  const still = useMotionStopped();
   useEffect(() => {
+    if (still) return;
     const timer = window.setTimeout(() => setSlide((s) => (s + 1) % count), SLIDE_MS);
     return () => window.clearTimeout(timer);
-  }, [slide, count]);
+  }, [slide, count, still]);
 
   return (
     <section className="relative overflow-hidden border-b border-border">

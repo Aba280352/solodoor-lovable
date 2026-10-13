@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 import { Icon } from "./Icon";
+import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { processSteps } from "./data";
 
@@ -48,7 +49,8 @@ export function Process() {
     let pos = track.scrollLeft;
     let raf = 0;
     const tick = (now: number) => {
-      if (last !== null && !hover.current && !jumping.current) {
+      // "Stop animations" holds the track still; the arrows still move it.
+      if (last !== null && !hover.current && !jumping.current && !motionStopped()) {
         const scale = parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
         pos -= SPEED * scale * ((now - last) / 1000);
         track.scrollLeft = pos;
@@ -76,6 +78,11 @@ export function Process() {
     const from = track.scrollLeft;
     const to = from + dir * measure().step;
     cancelAnimationFrame(jumpRaf.current);
+    if (motionStopped()) {
+      track.scrollLeft = to;
+      normalize();
+      return;
+    }
     jumping.current = true;
     const t0 = performance.now();
     const step = (now: number) => {

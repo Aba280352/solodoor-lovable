@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "./Icon";
+import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { beforeAfterFigures, beforeAfterPairs } from "./data";
 
@@ -32,6 +33,11 @@ function useCountUp<T extends HTMLElement>(duration = 1600) {
     if (!el) return;
     let raf = 0;
     const run = () => {
+      // With "stop animations" on, the figures stand at their value.
+      if (motionStopped()) {
+        setProgress(1);
+        return;
+      }
       const t0 = performance.now();
       const tick = (now: number) => {
         const p = Math.min(1, (now - t0) / duration);
@@ -157,7 +163,8 @@ export function BeforeAfterCarousel({ pairs }: { pairs: BeforeAfterPair[] }) {
     let pos = track.scrollLeft;
     let raf = 0;
     const tick = (now: number) => {
-      const idle = !touching.current && now >= resumeAt.current && !hover.current && !drag.current;
+      // "Stop animations" holds the track still; it can still be swiped or dragged.
+      const idle = !touching.current && now >= resumeAt.current && !hover.current && !drag.current && !motionStopped();
       if (last !== null && idle) {
         const scale = parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
         pos -= SPEED * scale * ((now - last) / 1000);

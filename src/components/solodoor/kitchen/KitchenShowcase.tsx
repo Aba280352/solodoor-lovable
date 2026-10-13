@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
+import { useMotionStopped } from "../accessibility/a11y";
 import { kitchenModels } from "./data";
 
 /** How long each model stays, and how many vertical panels the curtain has. */
@@ -32,10 +33,13 @@ export function KitchenShowcase() {
   };
 
   // Restarts whenever the model changes, so picking one by hand gives it a full turn.
+  // With "stop animations" on, the models change by hand only.
+  const still = useMotionStopped();
   useEffect(() => {
+    if (still) return;
     const timer = window.setTimeout(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
     return () => window.clearTimeout(timer);
-  }, [index, count]);
+  }, [index, count, still]);
 
   return (
     <div

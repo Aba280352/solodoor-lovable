@@ -364,6 +364,10 @@ html[data-a11y-motion] *::after {
   transition: none !important;
   scroll-behavior: auto !important;
 }
+/* The benefits that take turns in one slot (About) are hidden until their turn: the first one stays. */
+html[data-a11y-motion] .animate-stat-cycle:first-child {
+  opacity: 1 !important;
+}
 
 html[data-a11y-cursor],
 html[data-a11y-cursor] * {

@@ -3,6 +3,7 @@
  * (`data-a11y-contrast`, `data-a11y-links`, ...) and one custom property for the text size; the rules
  * that act on them are at the end of styles.css.
  */
+import { useSyncExternalStore } from "react";
 
 export interface A11yPrefs {
   /** Index into TEXT_STEPS. */
@@ -78,3 +79,22 @@ export function applyA11y(prefs: A11yPrefs) {
 }
 
 export const a11yActive = (prefs: A11yPrefs) => prefs.text > 0 || A11Y_TOGGLES.some(({ key }) => prefs[key]);
+
+const MOTION_ATTRIBUTE = "data-a11y-motion";
+
+/**
+ * "Stop animations" is on. The style sheet stops what CSS animates; whatever moves by script
+ * (slideshows, self-scrolling carousels, counters, the scroll reveal) asks here.
+ */
+export const motionStopped = () => typeof document !== "undefined" && document.documentElement.hasAttribute(MOTION_ATTRIBUTE);
+
+function subscribeMotion(listener: () => void) {
+  const observer = new MutationObserver(listener);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: [MOTION_ATTRIBUTE] });
+  return () => observer.disconnect();
+}
+
+/** `motionStopped` as state, for components that start timers. */
+export function useMotionStopped() {
+  return useSyncExternalStore(subscribeMotion, motionStopped, () => false);
+}
