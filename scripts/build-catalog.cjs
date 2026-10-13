@@ -630,7 +630,7 @@ const STRIP_DESIGNS = {
   "strips-04": { title: "3 פסים לרוחב", price: 150, sort: 6, picture: true },
   "strips-07": { title: "4 פסים לרוחב", price: 200, sort: 7, picture: true },
   "strips-09": { title: "פס אחד לאורך", price: 100, sort: 8, picture: true },
-  "strips-10": { title: "פס אחד מדורג", price: 100, sort: 9, picture: true },
+  "strips-10": { title: "3 פסים מדורגים לרוחב", price: 100, sort: 9, picture: true },
   "strips-02": { title: "2 פסים לאורך", price: 200, sort: 10, picture: true },
   "strips-03": { title: "2 פסים מדורגים", price: 200, sort: 11, picture: true },
   "strips-05": { title: "3 פסים לאורך", price: 300, sort: 12, picture: true },
