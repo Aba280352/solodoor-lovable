@@ -306,7 +306,9 @@ Deno.serve(async (req) => {
       }
     }
 
-    const message = changes.length ? "Shopify עודכן." : "Shopify כבר מעודכן, לא היה מה לשנות.";
+    const message = changes.length
+      ? "Shopify עודכן."
+      : "Shopify כבר מעודכן, לא היה מה לשנות. ל-Shopify עוברים השם, התיאור המלא, המחירים, ההצגה למכירה והתמונה הראשית; השאר מופיע באתר בלבד.";
     await admin.from("shopify_sync").upsert({ handle, synced_at: new Date().toISOString(), ok: true, message: changes.join(" | ") || message });
     return json(200, { ok: true, message, changes });
   } catch (error) {

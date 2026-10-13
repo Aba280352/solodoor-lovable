@@ -269,7 +269,7 @@ export function ProductEditor({ handle }: { handle: string }) {
             <Field label="שם המוצר" hint={`ב-Shopify ובקופה המוצר ייקרא: ${shopifyTitle(product)}`}>
               <Input value={product.title} onChange={(e) => setProduct({ title: e.target.value })} className="fs-20 font-semibold" />
             </Field>
-            <Field label="תיאור קצר" hint="משפט או שניים, מופיעים בראש דף המוצר ובכרטיס.">
+            <Field label="תיאור קצר" hint="משפט או שניים, מופיעים בראש דף המוצר ובכרטיס. באתר בלבד, לא נשלח ל-Shopify.">
               <Textarea rows={2} value={product.short_description ?? ""} onChange={(e) => setProduct({ short_description: e.target.value })} className="fs-16" />
             </Field>
             <Field label="תיאור מלא" hint="שורה ריקה בין פסקאות. התיאור הזה נשלח גם ל-Shopify.">
