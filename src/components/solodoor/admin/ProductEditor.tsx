@@ -248,7 +248,7 @@ export function ProductEditor({ handle }: { handle: string }) {
         >
           {sync.message === SYNC_NOT_CONFIGURED ? (
             <span>
-              Shopify עדיין לא מחובר לפאנל: חסר המפתח SHOPIFY_ADMIN_TOKEN בהגדרות Lovable Cloud. עד שהוא יתווסף, שינויים במחיר, בשם ובהצגה צריכים להיעשות גם ב-Shopify.
+              Shopify עדיין לא מחובר לפאנל: חסר הסוד SHOPIFY_CLIENT_SECRET בהגדרות Lovable Cloud. עד שהוא יתווסף, שינויים במחיר, בשם ובהצגה צריכים להיעשות גם ב-Shopify.
             </span>
           ) : (
             <>

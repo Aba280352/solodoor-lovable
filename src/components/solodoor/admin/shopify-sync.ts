@@ -12,7 +12,7 @@ export interface SyncResult {
   changes?: string[];
 }
 
-/** The function answers this when the Shopify token has not been added to the project yet. */
+/** The function answers this when the Shopify app secret (SHOPIFY_CLIENT_SECRET) has not been added to the project yet. */
 export const SYNC_NOT_CONFIGURED = "not_configured";
 
 export async function syncProduct(handle: string): Promise<SyncResult> {

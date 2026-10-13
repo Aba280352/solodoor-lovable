@@ -40,7 +40,7 @@ export function PricesPage() {
       if (!result.ok) {
         if (result.message === SYNC_NOT_CONFIGURED) {
           setProgress(null);
-          setStatus("Shopify עדיין לא מחובר לפאנל: חסר המפתח SHOPIFY_ADMIN_TOKEN בהגדרות Lovable Cloud. המחירים נשמרו באתר בלבד.");
+          setStatus("Shopify עדיין לא מחובר לפאנל: חסר הסוד SHOPIFY_CLIENT_SECRET בהגדרות Lovable Cloud. המחירים נשמרו באתר בלבד.");
           return;
         }
         failed.push(`${handle}: ${result.message}`);

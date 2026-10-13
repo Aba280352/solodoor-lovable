@@ -4,11 +4,34 @@
 // the caller's session is checked first. It then reads the product with the service role, works out
 // what Shopify should hold (name, description, status, the price of every variant by SKU, the cover
 // photo and the name of the sample) and writes the differences through the Admin GraphQL API.
-// The Shopify token is the secret SHOPIFY_ADMIN_TOKEN (a custom app with write_products).
+//
+// Shopify access: the app "Solodoor Admin" of the store's own organisation (Dev Dashboard), installed
+// on the store with write_products. Such an app gets a day-long token with the client credentials grant
+// from its client id and the secret SHOPIFY_CLIENT_SECRET; the token is kept here until it expires.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SHOP = "1ass3z-be.myshopify.com";
 const API_VERSION = "2026-01";
+/** The public id of the Solodoor Admin app; the secret next to it in the Dev Dashboard is SHOPIFY_CLIENT_SECRET. */
+const CLIENT_ID = "e1869ac27259c4bf320524dde16a63ce";
+
+let cachedToken: { value: string; expiresAt: number } | null = null;
+
+/** A Shopify Admin API token for the store, fetched with the client credentials grant and reused while valid. */
+async function shopifyToken(clientSecret: string): Promise<string> {
+  if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.value;
+  const res = await fetch(`https://${SHOP}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ grant_type: "client_credentials", client_id: Deno.env.get("SHOPIFY_CLIENT_ID") || CLIENT_ID, client_secret: clientSecret }),
+  });
+  const body = (await res.json()) as { access_token?: string; expires_in?: number; error?: string; error_description?: string };
+  if (!res.ok || !body.access_token) {
+    throw new Error(`Shopify לא נתן גישה (${res.status}): ${body.error_description ?? body.error ?? "בדקו שהאפליקציה Solodoor Admin מותקנת בחנות ושהסוד נכון"}`);
+  }
+  cachedToken = { value: body.access_token, expiresAt: Date.now() + (body.expires_in ?? 86399) * 1000 };
+  return cachedToken.value;
+}
 const OWNER_EMAIL = "barido101@gmail.com";
 const SAMPLE_HANDLE = "wallpaper-sample";
 const SAMPLE_OPTION = "טפט";
@@ -104,8 +127,8 @@ Deno.serve(async (req) => {
     return json(401, { ok: false, message: "יש להתחבר כבעלי האתר כדי לסנכרן." });
   }
 
-  const token = Deno.env.get("SHOPIFY_ADMIN_TOKEN");
-  if (!token) {
+  const clientSecret = Deno.env.get("SHOPIFY_CLIENT_SECRET");
+  if (!clientSecret) {
     return json(503, { ok: false, message: "not_configured" });
   }
 
@@ -125,6 +148,7 @@ Deno.serve(async (req) => {
   };
 
   try {
+    const token = await shopifyToken(clientSecret);
     const { data: products } = await admin.from("products").select("*").eq("handle", handle).limit(1);
     const product = (products ?? [])[0] as Product | undefined;
     if (!product) return json(404, { ok: false, message: "המוצר לא נמצא במסד הנתונים." });
