@@ -36,9 +36,10 @@ export interface FaqSearch {
 }
 
 export async function fetchFaqEntries(): Promise<FaqEntry[]> {
-  const { data, error } = await supabase.from("faq_items").select("*").neq("categories", "{}").order("sort_order");
+  const { data, error } = await supabase.from("faq_items").select("*").order("sort_order");
   if (error) throw new Error(error.message);
-  return (data ?? []) as FaqEntry[];
+  // Questions written for one product page only have no chips and stay off this page.
+  return ((data ?? []) as FaqEntry[]).filter((e) => e.categories.length > 0);
 }
 
 export const selectedCategories = (search: FaqSearch) =>

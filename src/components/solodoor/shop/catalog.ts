@@ -281,7 +281,7 @@ export async function fetchProduct(slug: string): Promise<ProductData | null> {
       type === "pvc_rug" ? rows<RugSize>(supabase.from("rug_sizes").select("*").order("sort_order")) : Promise.resolve([]),
       rows<Benefit>(supabase.from("benefits").select("*").contains("product_types", [type]).order("sort_order")),
       rows<InfoTab>(supabase.from("info_tabs").select("*").contains("product_types", [type]).order("sort_order")),
-      rows<FaqItem>(supabase.from("faq_items").select("*").neq("product_scopes", "{}").order("sort_order")),
+      rows<FaqItem>(supabase.from("faq_items").select("*").order("sort_order")).then((items) => items.filter((i) => i.product_scopes.length > 0)),
       rows<Product>(
         supabase
           .from("products")
