@@ -250,8 +250,10 @@ Deno.serve(async (req) => {
     const missing = [...prices.keys()].filter((sku) => !shop.variants.nodes.some((v) => v.sku === sku));
     if (missing.length) changes.push(`לא קיימים ב-Shopify ולכן לא עודכנו: ${missing.join(", ")}`);
 
-    // The cover photo: added in front of the others when it is not there yet (its URL is kept as the alt text).
-    if (coverUrl && !shop.media.nodes.some((m) => m.alt === coverUrl)) {
+    // The cover photo. The imported products already carry their photos, so only a photo uploaded in the
+    // admin (stored as a full URL), or a product with no photo at all, is sent; its URL is kept as the alt text.
+    const uploaded = !!cover && /^https?:///.test(cover);
+    if (coverUrl && (uploaded || shop.media.nodes.length === 0) && !shop.media.nodes.some((m) => m.alt === coverUrl)) {
       const r = await shopify<{ productCreateMedia: { media: { id: string }[]; mediaUserErrors: { message: string }[] } }>(
         token,
         `mutation($productId: ID!, $media: [CreateMediaInput!]!) { productCreateMedia(productId: $productId, media: $media) { media { id } mediaUserErrors { field message } } }`,
