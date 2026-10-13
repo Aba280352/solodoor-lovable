@@ -240,7 +240,7 @@ Deno.serve(async (req) => {
         if (created && shop.media.nodes.length) {
           await shopify(
             token,
-            `mutation($id: ID!, $moves: [MoveInput!]!) { productReorderMedia(id: $id, moves: $moves) { userErrors { field message } } }`,
+            `mutation($id: ID!, $moves: [MoveInput!]!) { productReorderMedia(id: $id, moves: $moves) { mediaUserErrors { field message } } }`,
             { id: shop.id, moves: [{ id: created, newPosition: "0" }] },
           );
         }
