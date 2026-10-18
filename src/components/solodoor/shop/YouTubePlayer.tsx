@@ -9,6 +9,9 @@ interface Player {
   mute(): void;
   unMute(): void;
   isMuted(): boolean;
+  getCurrentTime(): number;
+  getDuration(): number;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
   destroy(): void;
 }
 
@@ -54,6 +57,8 @@ function loadYouTubeApi(): Promise<YouTubeApi> {
 }
 
 /** iPhones and iPads let only the hardware buttons set the volume; a page cannot. */
+const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+
 const isIos = () => typeof navigator !== "undefined" && (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
 
 function Speaker({ muted }: { muted: boolean }) {
@@ -74,6 +79,7 @@ export function YouTubePlayer({ id, title, wide, className }: { id: string; titl
   const [player, setPlayer] = useState<Player | null>(null);
   const [volume, setVolume] = useState(100);
   const [muted, setMuted] = useState(false);
+  const [time, setTime] = useState({ now: 0, total: 0 });
   const ios = isIos();
 
   useEffect(() => {
@@ -89,7 +95,7 @@ export function YouTubePlayer({ id, title, wide, className }: { id: string; titl
         host: "https://www.youtube-nocookie.com",
         width: "100%",
         height: "100%",
-        playerVars: { autoplay: 1, rel: 0, playsinline: 1, modestbranding: 1 },
+        playerVars: { autoplay: 1, rel: 0, playsinline: 1, modestbranding: 1, controls: 0, fs: 0 },
         events: {
           onReady: (event) => {
             setPlayer(event.target);
@@ -105,6 +111,15 @@ export function YouTubePlayer({ id, title, wide, className }: { id: string; titl
       setPlayer(null);
     };
   }, [id]);
+
+  // The built-in controls are off (they carried a second volume button), so the position is shown and set here.
+  useEffect(() => {
+    if (!player) return;
+    const tick = () => setTime({ now: player.getCurrentTime() || 0, total: player.getDuration() || 0 });
+    tick();
+    const timer = window.setInterval(tick, 500);
+    return () => window.clearInterval(timer);
+  }, [player]);
 
   const change = (next: number) => {
     setVolume(next);
@@ -138,6 +153,30 @@ export function YouTubePlayer({ id, title, wide, className }: { id: string; titl
           wide ? "aspect-video w-full" : "aspect-[9/16] h-[min(40rem,calc(100dvh-14rem))] max-w-full",
         )}
       />
+      <div dir="ltr" className="flex w-full max-w-[22rem] items-center gap-3 px-1">
+        <span dir="ltr" className="w-10 flex-none text-center fs-13 tabular-nums text-foreground">
+          {clock(time.now)}
+        </span>
+        <input
+          type="range"
+          dir="ltr"
+          min={0}
+          max={Math.max(1, Math.floor(time.total))}
+          step={1}
+          value={Math.min(Math.floor(time.now), Math.max(1, Math.floor(time.total)))}
+          disabled={!player || time.total === 0}
+          onChange={(e) => {
+            const next = Number(e.target.value);
+            player?.seekTo(next, true);
+            setTime((t) => ({ ...t, now: next }));
+          }}
+          aria-label="מיקום בסרטון"
+          className="h-8 min-w-0 flex-auto cursor-pointer accent-[var(--color-clay)] disabled:cursor-default disabled:opacity-40"
+        />
+        <span dir="ltr" className="w-10 flex-none text-center fs-13 tabular-nums text-foreground">
+          {clock(time.total)}
+        </span>
+      </div>
       <div className="flex w-full max-w-[22rem] items-center gap-3 rounded-full bg-muted py-1.5 ps-1.5 pe-5">
         <button
           type="button"
