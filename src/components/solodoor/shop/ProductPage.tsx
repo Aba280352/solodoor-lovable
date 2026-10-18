@@ -10,6 +10,7 @@ import { Reviews } from "../Reviews";
 import { ICON_DATA, type IconName } from "../icon-data";
 import { Container, CoverImage, Pill } from "../primitives";
 import { ProductBuyBox } from "./ProductBuyBox";
+import { YouTubePlayer } from "./YouTubePlayer";
 import { ShopCard } from "./ShopCard";
 import { DEFAULT_APPLICATION, DOOR_SIZE_TEXT, catalogImage, type Application, type FaqItem, type ProductData, type ProductVariant } from "./catalog";
 
@@ -239,12 +240,14 @@ function youtubeId(url: string): string | null {
 }
 
 /**
- * A video card. A YouTube link opens a pop-up with the title and a player of the right shape (a Short is
- * vertical, a normal video wide) that starts when it opens and stops when it is closed; a file plays in the card.
+ * A video card. A YouTube link opens a pop-up with the title, an upright player and a volume control under it;
+ * the video starts when the pop-up opens and stops when it is closed. A file plays in the card.
  * Until a video exists the poster is shown with a "soon" tag.
  */
 function VideoCard({ title, url, poster }: { title: string; url: string | null; poster: string | null }) {
   const id = url ? youtubeId(url) : null;
+  // The videos are filmed upright, so the player is upright too; "#wide" at the end of a link asks for a wide one.
+  const wide = !!url && url.includes("#wide");
   const vertical = !!url && url.includes("/shorts/");
   const card = "relative aspect-video overflow-hidden rounded-lg bg-foreground";
 
@@ -286,31 +289,21 @@ function VideoCard({ title, url, poster }: { title: string; url: string | null; 
         </span>
       </DialogTrigger>
       <DialogContent
-        overlayClassName="items-center justify-center p-3 lg:p-8"
-        className={cn("flex max-h-[94dvh] w-full flex-col gap-4 rounded-[1rem] px-4 pt-5 pb-5 lg:px-6", vertical ? "max-w-md" : "max-w-4xl")}
+        overlayClassName="items-center justify-center p-2 lg:p-8"
+        className={cn("flex max-h-[98dvh] w-full flex-col gap-3 overflow-y-auto rounded-[1rem] px-4 pt-4 pb-4 lg:px-6", wide ? "max-w-4xl" : "max-w-md")}
       >
-        <div className="flex items-start justify-between gap-4">
-          <DialogTitle className="fs-20 leading-[1.3] font-bold text-foreground lg:fs-24">{title}</DialogTitle>
-          <DialogClose aria-label="סגירה" className="inline-flex flex-none cursor-pointer items-center text-foreground">
-            <Icon name="Times" size={24} />
+        <div className="flex items-start justify-between gap-3">
+          <DialogTitle className="pt-1.5 fs-20 leading-[1.3] font-bold text-foreground lg:fs-24">{title}</DialogTitle>
+          <DialogClose
+            aria-label="סגירה"
+            className="flex size-[46px] flex-none cursor-pointer items-center justify-center rounded-full border-2 border-foreground bg-background text-foreground transition-colors duration-160 ease-standard hover:bg-primary active:bg-primary"
+          >
+            <Icon name="Times" size={22} />
           </DialogClose>
         </div>
-        <DialogDescription className="sr-only">נגן הסרטון. הסרטון מתחיל מעצמו.</DialogDescription>
+        <DialogDescription className="sr-only">נגן הסרטון. הסרטון מתחיל מעצמו, ואפשר לכוון את עוצמת הקול מתחתיו.</DialogDescription>
         {/* The player is built only while the pop-up is open, so closing it stops the video. */}
-        <div
-          className={cn(
-            "relative mx-auto w-full overflow-hidden rounded-lg bg-foreground",
-            vertical ? "aspect-[9/16] max-h-[calc(94dvh-8rem)] max-w-[22rem]" : "aspect-video",
-          )}
-        >
-          <iframe
-            title={title}
-            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-            className="absolute inset-0 size-full border-0"
-          />
-        </div>
+        <YouTubePlayer id={id} title={title} wide={wide} />
       </DialogContent>
     </Dialog>
   );
