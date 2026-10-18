@@ -315,7 +315,7 @@ function Videos({ application }: { application: Application | null }) {
   const poster = catalogImage(application.video_poster_path);
   const videos = [
     { title: `איך להדביק טפט על ${application.label}`, url: application.install_video_url },
-    { title: `איך מודדים ${application.label} לפני הזמנת חומר`, url: application.measure_video_url },
+    { title: `מדידת ${application.label} לפני הזמנה`, url: application.measure_video_url },
   ];
   return (
     <section data-reveal className="pt-14 lg:pt-22">
