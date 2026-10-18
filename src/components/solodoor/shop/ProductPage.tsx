@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 import { DragRow } from "../DragRow";
@@ -231,13 +232,97 @@ function Benefits({ data }: { data: ProductData }) {
   );
 }
 
-/** Installation and measuring videos. Until a video exists its poster is shown with a "soon" tag. */
+/** The id of a YouTube video from a watch, shorts, embed or youtu.be link; null for any other address. */
+function youtubeId(url: string): string | null {
+  const match = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
+/**
+ * A video card. A YouTube link opens a pop-up with the title and a player of the right shape (a Short is
+ * vertical, a normal video wide) that starts when it opens and stops when it is closed; a file plays in the card.
+ * Until a video exists the poster is shown with a "soon" tag.
+ */
+function VideoCard({ title, url, poster }: { title: string; url: string | null; poster: string | null }) {
+  const id = url ? youtubeId(url) : null;
+  const vertical = !!url && url.includes("/shorts/");
+  const card = "relative aspect-video overflow-hidden rounded-lg bg-foreground";
+
+  if (!url) {
+    return (
+      <div className={card}>
+        {poster && <CoverImage src={poster} alt="" loading="lazy" className="opacity-60" />}
+        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7">
+          <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{title}</span>
+          <span className="flex-none rounded-full bg-background px-3.5 py-1.5 fs-14 font-semibold text-foreground">בקרוב</span>
+        </span>
+      </div>
+    );
+  }
+  if (!id) {
+    return (
+      <div className={card}>
+        <video src={url} poster={poster ?? undefined} controls preload="none" className="absolute inset-0 size-full object-cover" />
+      </div>
+    );
+  }
+  return (
+    <Dialog>
+      <DialogTrigger
+        aria-label={`${title}, פתיחת הסרטון`}
+        className={cn(card, "group block w-full cursor-pointer p-0 text-right")}
+      >
+        {poster && <CoverImage src={poster} alt="" loading="lazy" className="opacity-55 transition-opacity duration-240 ease-standard group-hover:opacity-70" />}
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="flex size-16 items-center justify-center rounded-full bg-background text-foreground shadow-handle transition-transform duration-240 ease-standard group-hover:scale-108 lg:size-20">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="size-7 translate-x-[0.1rem] lg:size-8" fill="currentColor">
+              <path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z" />
+            </svg>
+          </span>
+        </span>
+        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7">
+          <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{title}</span>
+          {vertical && <span className="flex-none rounded-full bg-background px-3.5 py-1.5 fs-14 font-semibold text-foreground">סרטון קצר</span>}
+        </span>
+      </DialogTrigger>
+      <DialogContent
+        overlayClassName="items-center justify-center p-3 lg:p-8"
+        className={cn("flex max-h-[94dvh] w-full flex-col gap-4 rounded-[1rem] px-4 pt-5 pb-5 lg:px-6", vertical ? "max-w-md" : "max-w-4xl")}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <DialogTitle className="fs-20 leading-[1.3] font-bold text-foreground lg:fs-24">{title}</DialogTitle>
+          <DialogClose aria-label="סגירה" className="inline-flex flex-none cursor-pointer items-center text-foreground">
+            <Icon name="Times" size={24} />
+          </DialogClose>
+        </div>
+        <DialogDescription className="sr-only">נגן הסרטון. הסרטון מתחיל מעצמו.</DialogDescription>
+        {/* The player is built only while the pop-up is open, so closing it stops the video. */}
+        <div
+          className={cn(
+            "relative mx-auto w-full overflow-hidden rounded-lg bg-foreground",
+            vertical ? "aspect-[9/16] max-h-[calc(94dvh-8rem)] max-w-[22rem]" : "aspect-video",
+          )}
+        >
+          <iframe
+            title={title}
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            className="absolute inset-0 size-full border-0"
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Installation and measuring videos of the selected surface. */
 function Videos({ application }: { application: Application | null }) {
   if (!application) return null;
   const poster = catalogImage(application.video_poster_path);
   const videos = [
-    { title: `איך מדביקים טפט על ${application.label}`, url: application.install_video_url },
-    { title: `איך מודדים ${application.label} לפני ההזמנה`, url: application.measure_video_url },
+    { title: `איך להדביק טפט על ${application.label}`, url: application.install_video_url },
+    { title: `איך מודדים ${application.label} לפני הזמנת חומר`, url: application.measure_video_url },
   ];
   return (
     <section data-reveal className="pt-14 lg:pt-22">
@@ -248,19 +333,7 @@ function Videos({ application }: { application: Application | null }) {
         </div>
         <div className="mt-7 grid grid-cols-1 gap-4 lg:mt-10 lg:grid-cols-2 lg:gap-6">
           {videos.map((video) => (
-            <div key={video.title} className="relative aspect-video overflow-hidden rounded-lg bg-foreground">
-              {video.url ? (
-                <video src={video.url} poster={poster ?? undefined} controls preload="none" className="absolute inset-0 size-full object-cover" />
-              ) : (
-                <>
-                  {poster && <CoverImage src={poster} alt="" loading="lazy" className="opacity-60" />}
-                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7">
-                    <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{video.title}</span>
-                    <span className="flex-none rounded-full bg-background px-3.5 py-1.5 fs-14 font-semibold text-foreground">בקרוב</span>
-                  </span>
-                </>
-              )}
-            </div>
+            <VideoCard key={video.title} title={video.title} url={video.url} poster={poster} />
           ))}
         </div>
       </Container>
