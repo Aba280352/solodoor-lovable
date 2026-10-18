@@ -4,8 +4,11 @@ import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { CONTACT, LEGAL_DOCS, LEGAL_UPDATED, type LegalBlock, type LegalDoc } from "./legal-content";
 
-/** One block of a legal text: a paragraph, a list or a table. Shared with the terms pop-up. */
+/** One block of a legal text: a sub-heading, a paragraph, a list or a table. Shared with the terms pop-up. */
 export function LegalBlockView({ block }: { block: LegalBlock }) {
+  if (block.type === "h") {
+    return <h3 className="mt-2 fs-19 leading-[1.4] font-bold text-foreground lg:fs-21">{block.text}</h3>;
+  }
   if (block.type === "p") {
     return <p className="fs-17 leading-[1.9] text-pretty text-foreground lg:fs-18">{block.text}</p>;
   }
@@ -122,6 +125,8 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
               <h2 className="fs-22 font-bold text-foreground lg:fs-26">יצירת קשר</h2>
               <p className="mt-2 fs-16 leading-[1.7] text-foreground lg:fs-17">שאלה על המסמך הזה, על הזמנה או על ההתקנה? נשמח לעזור.</p>
               <dl className="mt-4 grid gap-x-8 gap-y-2.5 fs-16 text-foreground lg:grid-cols-[auto_1fr] lg:fs-17">
+                <dt className="font-semibold">כתובת</dt>
+                <dd>{CONTACT.address}</dd>
                 <dt className="font-semibold">טלפון</dt>
                 <dd dir="ltr" className="text-right">
                   <a href={`tel:${CONTACT.phone.replace(/\D/g, "")}`} className="transition-colors duration-160 ease-standard hover:text-clay">
