@@ -248,7 +248,6 @@ function VideoCard({ title, url, poster }: { title: string; url: string | null; 
   const id = url ? youtubeId(url) : null;
   // The videos are filmed upright, so the player is upright too; "#wide" at the end of a link asks for a wide one.
   const wide = !!url && url.includes("#wide");
-  const vertical = !!url && url.includes("/shorts/");
   const card = "relative aspect-video overflow-hidden rounded-lg bg-foreground";
 
   if (!url) {
@@ -284,9 +283,7 @@ function VideoCard({ title, url, poster }: { title: string; url: string | null; 
           </span>
         </span>
         <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7">
-          <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{title}</span>
-          {vertical && <span className="flex-none rounded-full bg-background px-3.5 py-1.5 fs-14 font-semibold text-foreground">סרטון קצר</span>}
-        </span>
+          <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{title}</span>        </span>
       </DialogTrigger>
       <DialogContent
         overlayClassName="items-center justify-center p-2 lg:p-8"
