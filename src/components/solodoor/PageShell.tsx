@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from "react";
 
+import { useContentProtection } from "@/hooks/use-content-protection";
 import { useSectionReveal } from "@/hooks/use-section-reveal";
 import { useSmoothWheel } from "@/hooks/use-smooth-wheel";
 import { useViewportScale } from "@/hooks/use-viewport-scale";
@@ -16,6 +17,7 @@ import { QuizProvider } from "./quiz-context";
 export function PageShell({ children }: { children: ReactNode }) {
   const pageRef = useRef<HTMLDivElement>(null);
   useViewportScale();
+  useContentProtection();
   useSectionReveal(pageRef);
   useSmoothWheel();
 

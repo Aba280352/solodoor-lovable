@@ -382,3 +382,32 @@ html[data-a11y-focus] :focus {
   outline-offset: 3px !important;
   box-shadow: 0 0 0 0.5rem var(--color-star) !important;
 }
+
+/*
+ * Copy protection (useContentProtection sets data-protect on <html> for the public pages): pictures cannot be
+ * long-pressed, saved or dragged, and the page text cannot be selected. Fields stay normal.
+ */
+html[data-protect],
+html[data-protect] body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html[data-protect] img,
+html[data-protect] picture,
+html[data-protect] svg {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* A tap or long-press on a picture goes to whatever holds it, so the phone's save/copy menu never opens. */
+html[data-protect] img {
+  pointer-events: none;
+}
+
+html[data-protect] :is(input, textarea, [contenteditable="true"]) {
+  -webkit-user-select: text;
+  user-select: text;
+}
