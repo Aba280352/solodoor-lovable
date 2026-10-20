@@ -44,8 +44,8 @@ export const CONTACT = {
 
 export const TERMS: LegalDoc = {
   path: "/terms",
-  name: "תנאי שימוש",
-  title: "תקנון האתר ותנאי שימוש",
+  name: "תקנון האתר",
+  title: "תקנון האתר",
   description:
     "התקנון של סולודור: איך מזמינים, מחירים ותשלום, משלוחים, ביטול והחזרות, תנאי ההתקנה לדלתות ופרטי יצירת קשר.",
   intro:

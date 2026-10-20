@@ -286,7 +286,7 @@ export const footerColumns = [
 export const footerLegal: { label: string; to: "/accessibility" | "/privacy-policy" | "/terms" }[] = [
   { label: "הצהרת נגישות", to: "/accessibility" },
   { label: "מדיניות פרטיות", to: "/privacy-policy" },
-  { label: "תנאי שימוש", to: "/terms" },
+  { label: "תקנון האתר", to: "/terms" },
 ];
 
 /* ───────────── Quantity calculator ───────────── */
