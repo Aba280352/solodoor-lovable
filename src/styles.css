@@ -385,29 +385,13 @@ html[data-a11y-focus] :focus {
 
 /*
  * Copy protection (useContentProtection sets data-protect on <html> for the public pages): pictures cannot be
- * long-pressed, saved or dragged, and the page text cannot be selected. Fields stay normal.
+ * long-pressed, saved or dragged. Copying text is stopped by the copy handler in the hook, so no page-wide
+ * user-select rule is needed (it risked touch problems on iPhones).
  */
-html[data-protect],
-html[data-protect] body {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-html[data-protect] img,
-html[data-protect] picture,
-html[data-protect] svg {
+html[data-protect] img {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
-}
-
-/* A tap or long-press on a picture goes to whatever holds it, so the phone's save/copy menu never opens. */
-html[data-protect] img {
+  /* A tap or long-press on a picture goes to whatever holds it, so the phone's save/copy menu never opens. */
   pointer-events: none;
-}
-
-html[data-protect] :is(input, textarea, [contenteditable="true"]) {
-  -webkit-user-select: text;
-  user-select: text;
 }
