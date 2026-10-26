@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { catalogImage, fetchShop, formatPrice, type ProductType, type ShopItem } from "../shop/catalog";
+import { STOCK_LABELS, catalogImage, fetchShop, formatPrice, type ProductType, type ShopItem } from "../shop/catalog";
 import { PRODUCT_TYPE_LABELS, createProduct, db, type AdminProduct, type SyncState } from "./db";
 import { syncLabel } from "./shopify-sync";
 
@@ -241,6 +241,9 @@ export function ProductList() {
                         <Icon name="AngleDown" size={14} />
                       </button>
                     </span>
+                  )}
+                  {product.product_type === "wallpaper" && product.stock_status && product.stock_status !== "in_stock" && (
+                    <span className="flex-none rounded-full border border-border px-3 py-1 fs-13 font-semibold text-foreground">{STOCK_LABELS[product.stock_status]}</span>
                   )}
                   <span
                     className={cn(

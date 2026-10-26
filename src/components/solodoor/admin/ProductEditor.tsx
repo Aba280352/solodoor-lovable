@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { STYLE_FAMILIES, catalogImage, formatPrice } from "../shop/catalog";
+import { STOCK_LABELS, STYLE_FAMILIES, catalogImage, formatPrice, type StockStatus } from "../shop/catalog";
 import { COLOR_FAMILIES } from "../shop/colors";
 import {
   PRODUCT_TYPE_LABELS,
@@ -159,6 +159,7 @@ export function ProductEditor({ handle }: { handle: string }) {
       installation_available: product.installation_available,
       colors: product.colors,
       is_active: product.is_active,
+      stock_status: product.stock_status ?? "in_stock",
       sort_order: Number(product.sort_order) || 0,
     };
     const results = [
@@ -456,6 +457,33 @@ export function ProductEditor({ handle }: { handle: string }) {
               <span className="fs-15 font-semibold text-foreground">מוצג בחנות</span>
             </label>
             <p className="fs-13 leading-[1.5] text-foreground/70">מוצר מוסתר נעלם מהחנות ומהחיפוש, ובשופיפיי עובר לטיוטה, כך שאי אפשר לשלם עליו.</p>
+            {isWallpaper && (
+              <div className="flex flex-col gap-2">
+                <span className="fs-15 font-semibold text-foreground">מלאי</span>
+                <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="מלאי">
+                  {(Object.keys(STOCK_LABELS) as StockStatus[]).map((value) => {
+                    const on = (product.stock_status ?? "in_stock") === value;
+                    const option = { value, label: STOCK_LABELS[value] };
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={on}
+                        onClick={() => setProduct({ stock_status: option.value })}
+                        className={cn(
+                          "cursor-pointer rounded-md border px-3 py-2.5 fs-14 font-semibold",
+                          on ? "border-foreground bg-foreground text-background" : "border-border bg-card text-foreground",
+                        )}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="fs-13 leading-[1.5] text-foreground/70">מופיע בדף המוצר. במלאי מוגבל אפשר להזמין, עם הערה שזמן האספקה עשוי להתארך. כשאין במלאי אי אפשר להוסיף לסל, ובמקום זה מופיע כפתור לבירור זמינות בווצאפ. דוגמית אפשר להזמין תמיד.</p>
+              </div>
+            )}
             <Field label="סדר הצגה" hint="מספר נמוך מופיע ראשון. אפשר גם לסדר בחצים ברשימת המוצרים.">
               <Input dir="ltr" inputMode="numeric" value={product.sort_order} onChange={(e) => setProduct({ sort_order: e.target.value as unknown as number })} className="text-center fs-15" />
             </Field>

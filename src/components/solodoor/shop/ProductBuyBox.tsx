@@ -14,7 +14,7 @@ import { TermsDialog } from "../legal/TermsDialog";
 
 /** Metres are sold to the nearest ten centimetres. */
 const METRE_PRECISION = 0.1;
-import { DOOR_SIZE_TEXT, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
+import { DOOR_SIZE_TEXT, STOCK_LABELS, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
 
 interface ProductBuyBoxProps {
@@ -115,6 +115,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const { product, addons, rugSizes, variants } = data;
   const isWallpaper = product.product_type === "wallpaper";
   const isRug = product.product_type === "pvc_rug";
+  const stock = isWallpaper ? (product.stock_status ?? "in_stock") : null;
   const onDoor = product.product_type === "designed_door" || application?.slug === "door";
 
   const min = application?.min_quantity ?? 1;
@@ -230,6 +231,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const cityStop = installBlocked && cityStopped ? (cityStatus === "bad" ? INSTALL_CITY_BAD : INSTALL_CITY_EMPTY) : null;
 
   function addToCart(open: boolean) {
+    if (stock === "out_of_stock") return;
     if (installBlocked) {
       setCityTouched(true);
       setCityStopped(true);
@@ -250,6 +252,23 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         <span className="fs-17 font-medium text-foreground lg:fs-18">{unitLabel}</span>
         <span className="w-full fs-15 text-foreground">המחיר לחומר בלבד, כולל מע"מ.</span>
       </div>
+
+      {/* Wallpapers only: designed doors and rugs are made to order. */}
+      {stock && (
+        <div className="flex flex-col gap-1.5">
+          <span className="flex w-fit items-center gap-2 rounded-full bg-muted px-3.5 py-1.5 fs-15 font-semibold text-foreground">
+            <span
+              aria-hidden="true"
+              className={cn("size-2.5 rounded-full", stock === "in_stock" ? "bg-sage" : stock === "limited" ? "bg-star" : "bg-foreground/40")}
+            />
+            {STOCK_LABELS[stock]}
+          </span>
+          {stock === "limited" && <span className="fs-15 leading-[1.5] text-foreground">נשארו כמויות קטנות מהדגם הזה, וזמן האספקה עשוי להתארך.</span>}
+          {stock === "out_of_stock" && (
+            <span className="fs-15 leading-[1.5] text-foreground">כרגע אי אפשר להזמין את הדגם הזה באתר. כתבו לנו בווצאפ ונבדוק מתי הוא יגיע.</span>
+          )}
+        </div>
+      )}
 
       {variants.length > 1 && (
         <div className="flex flex-col gap-2.5">
@@ -502,27 +521,38 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             {formatPrice(total)}
           </span>
         </div>
-        <Button type="button" onClick={() => addToCart(false)} className="w-full py-4">
-          <span>{added ? "נוסף לסל" : "הוספה לסל"}</span>
-          <Icon name={added ? "Check" : "ShoppingCart"} size={18} />
-        </Button>
-        {cityStop && (
-          <span role="alert" className="rounded-md border border-destructive bg-destructive/8 px-3.5 py-3 fs-15 leading-[1.5] font-bold text-destructive">
-            {cityStop}
-          </span>
-        )}
-        <div className="grid grid-cols-2 gap-3">
-          <Button type="button" variant="secondary" onClick={() => addToCart(true)} className="px-3 py-3.5 fs-16">
-            <span>רכישה מהירה</span>
-            <Icon name="ArrowLeft" size={16} />
-          </Button>
-          <Button asChild variant="outline" className="px-3 py-3.5 fs-16">
-            <a href={whatsappHref(`${WHATSAPP_MESSAGE}, אשמח להתייעץ לגבי ${productTitle}`)} target="_blank" rel="noopener noreferrer">
-              <span>התייעצות בווצאפ</span>
-              <Icon name="ChatDots" size={17} />
+        {stock === "out_of_stock" ? (
+          <Button asChild className="w-full py-4">
+            <a href={whatsappHref(`${WHATSAPP_MESSAGE}, אשמח לבדוק מתי ${productTitle} יחזור למלאי`)} target="_blank" rel="noopener noreferrer">
+              <span>לבירור זמינות בווצאפ</span>
+              <Icon name="ChatDots" size={18} />
             </a>
           </Button>
-        </div>
+        ) : (
+          <>
+            <Button type="button" onClick={() => addToCart(false)} className="w-full py-4">
+              <span>{added ? "נוסף לסל" : "הוספה לסל"}</span>
+              <Icon name={added ? "Check" : "ShoppingCart"} size={18} />
+            </Button>
+            {cityStop && (
+              <span role="alert" className="rounded-md border border-destructive bg-destructive/8 px-3.5 py-3 fs-15 leading-[1.5] font-bold text-destructive">
+                {cityStop}
+              </span>
+            )}
+            <div className="grid grid-cols-2 gap-3">
+              <Button type="button" variant="secondary" onClick={() => addToCart(true)} className="px-3 py-3.5 fs-16">
+                <span>רכישה מהירה</span>
+                <Icon name="ArrowLeft" size={16} />
+              </Button>
+              <Button asChild variant="outline" className="px-3 py-3.5 fs-16">
+                <a href={whatsappHref(`${WHATSAPP_MESSAGE}, אשמח להתייעץ לגבי ${productTitle}`)} target="_blank" rel="noopener noreferrer">
+                  <span>התייעצות בווצאפ</span>
+                  <Icon name="ChatDots" size={17} />
+                </a>
+              </Button>
+            </div>
+          </>
+        )}
         {sampleAddon && (
           <div className="mt-1 flex flex-col gap-3 rounded-md border border-border bg-muted p-4 lg:p-5">
             <span className="fs-22 leading-[1.2] font-bold text-foreground lg:fs-24">לא בטוחים בגוון?</span>

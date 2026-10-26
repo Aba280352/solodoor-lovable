@@ -3,6 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type ProductType = "wallpaper" | "designed_door" | "pvc_rug";
 
+export type StockStatus = "in_stock" | "limited" | "out_of_stock";
+
+export const STOCK_LABELS: Record<StockStatus, string> = {
+  in_stock: "במלאי",
+  limited: "מלאי מוגבל",
+  out_of_stock: "לא במלאי",
+};
+
 export interface Product {
   handle: string;
   slug: string;
@@ -23,6 +31,8 @@ export interface Product {
   colors: string[];
   /** Hidden products are kept for the admin; the site's policies never return them. */
   is_active: boolean;
+  /** Wallpapers only, set by hand in the admin. "out_of_stock" replaces the cart buttons with a WhatsApp button. */
+  stock_status?: StockStatus;
   sort_order: number;
 }
 
