@@ -327,7 +327,10 @@ export function CartButton() {
                 <span className="fs-18 font-semibold text-foreground">סה"כ</span>
                 <span className="fs-26 leading-none font-bold text-foreground">{formatPrice(cartTotal(lines))}</span>
               </div>
-              <span className="fs-14 leading-[1.5] text-foreground">המשלוח מחושב בקופה. התשלום בעמוד מאובטח.</span>
+              <span className="fs-14 leading-[1.5] text-foreground">
+                המשלוח מחושב בקופה. התשלום בעמוד מאובטח. בתשלום נשמרת מסגרת האשראי בלבד, והחיוב מתבצע אחרי שנאשר את זמינות החומר ומועד
+                האספקה. הזמנה שלא תאושר תבוטל, והמסגרת תשוחרר.
+              </span>
               <label className="flex cursor-pointer items-start gap-2.5 fs-15 leading-[1.5] text-foreground">
                 <input
                   type="checkbox"
