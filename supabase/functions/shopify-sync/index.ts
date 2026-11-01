@@ -29,6 +29,8 @@ const ONLINE_STORE_PUBLICATION = "gid://shopify/Publication/232500068510";
 const INSTALL_DELIVERY_PROFILE = "gid://shopify/DeliveryProfile/110825963678";
 const VENDOR = "סולודור";
 const SITE = "https://solodoor-il.lovable.app";
+const INSTALL_ADDON = "installation";
+const INSTALL_HANDLE = "addon-installation";
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
@@ -222,6 +224,35 @@ async function createVariants(token: string, productId: string, variants: Desire
   return r.productVariantsBulkCreate.productVariants;
 }
 
+/** The installation is one Shopify product with a variant per kind of door. Writes the prices of the add-on row to it. */
+async function syncInstallPrices(admin: ReturnType<typeof createClient>, clientSecret: string): Promise<Response> {
+  const { data } = await admin.from("addons").select("price, price_one_side, price_designed_double").eq("slug", INSTALL_ADDON).limit(1);
+  const row = (data ?? [])[0] as { price: number; price_one_side: number | null; price_designed_double: number | null } | undefined;
+  if (!row || row.price_one_side === null || row.price_designed_double === null) {
+    return json(200, { ok: false, message: "מחירי ההתקנה חסרים במסד הנתונים." });
+  }
+  const desired: Record<string, string> = {
+    addon__installation: money(Number(row.price)),
+    "addon__installation-one-side": money(Number(row.price_one_side)),
+    "addon__installation-designed": money(Number(row.price_designed_double)),
+  };
+  const token = await shopifyToken(clientSecret);
+  const shop = await findProduct(token, INSTALL_HANDLE);
+  const absent = Object.keys(desired).filter((sku) => !shop?.variants.nodes.some((v) => v.sku === sku));
+  if (!shop || absent.length) return json(200, { ok: false, message: `לא נמצאו ב-Shopify: ${absent.join(", ")}` });
+  const updates = shop.variants.nodes.filter((v) => v.sku && desired[v.sku] && Number(v.price) !== Number(desired[v.sku]));
+  if (updates.length) {
+    const r = await shopify<{ productVariantsBulkUpdate: { userErrors: { message: string }[] } }>(
+      token,
+      `mutation($productId: ID!, $variants: [ProductVariantsBulkInput!]!) { productVariantsBulkUpdate(productId: $productId, variants: $variants) { userErrors { field message } } }`,
+      { productId: shop.id, variants: updates.map((v) => ({ id: v.id, price: desired[v.sku!] })) },
+    );
+    const err = userErrors(r.productVariantsBulkUpdate);
+    if (err) return json(200, { ok: false, message: `עדכון המחירים נכשל: ${err}` });
+  }
+  return json(200, { ok: true, message: "Shopify עודכן.", changes: updates.map((v) => `${v.sku} ${desired[v.sku!]}`) });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json(405, { ok: false, message: "POST only" });
@@ -244,14 +275,24 @@ Deno.serve(async (req) => {
   }
 
   let handle = "";
+  let install = false;
   try {
-    handle = String(((await req.json()) as { handle?: string }).handle ?? "").trim();
+    const body = (await req.json()) as { handle?: string; install?: boolean };
+    handle = String(body.handle ?? "").trim();
+    install = body.install === true;
   } catch {
     // No body: handled below.
   }
+  const admin = createClient(supabaseUrl, serviceKey);
+  if (install) {
+    try {
+      return await syncInstallPrices(admin, clientSecret);
+    } catch (error) {
+      return json(200, { ok: false, message: (error as Error).message });
+    }
+  }
   if (!handle) return json(400, { ok: false, message: "חסר מזהה מוצר." });
 
-  const admin = createClient(supabaseUrl, serviceKey);
   const changes: string[] = [];
   const fail = async (message: string) => {
     await admin.from("shopify_sync").upsert({ handle, synced_at: new Date().toISOString(), ok: false, message });

@@ -1,6 +1,8 @@
 /** Reads the product catalogue from the database. Used by the shop and product routes' loaders. */
 import { supabase } from "@/integrations/supabase/client";
 
+import { installPrices, type InstallPrices } from "./install-pricing";
+
 export type ProductType = "wallpaper" | "designed_door" | "pvc_rug";
 
 export type StockStatus = "in_stock" | "limited" | "out_of_stock";
@@ -88,6 +90,9 @@ export interface Addon {
   title: string;
   addon_type: "diy_tool" | "door_strips" | "door_number" | "service" | "sample";
   price: number;
+  /** Only on the installation: `price` is a door on both sides, these are the other two kinds. */
+  price_one_side?: number | null;
+  price_designed_double?: number | null;
   applies_to: string[];
   description: string | null;
   image_path: string | null;
@@ -187,6 +192,12 @@ async function rows<T>(query: PromiseLike<{ data: unknown; error: { message: str
   const { data, error } = await query;
   if (error) throw new Error(error.message);
   return (data ?? []) as T[];
+}
+
+/** The current installation prices, for text outside the product page. */
+export async function fetchInstallPrices(): Promise<InstallPrices> {
+  const [addon] = await rows<Addon>(supabase.from("addons").select("*").eq("slug", "installation").limit(1));
+  return installPrices(addon);
 }
 
 function toShopItems(

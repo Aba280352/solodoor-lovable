@@ -15,8 +15,13 @@ export interface SyncResult {
 /** The function answers this when the Shopify app secret (SHOPIFY_CLIENT_SECRET) has not been added to the project yet. */
 export const SYNC_NOT_CONFIGURED = "not_configured";
 
-export async function syncProduct(handle: string): Promise<SyncResult> {
-  const { data, error } = await supabase.functions.invoke("shopify-sync", { body: { handle } });
+export const syncProduct = (handle: string) => callSync({ handle });
+
+/** Brings the three installation variants in Shopify up to the prices in the database. */
+export const syncInstallPrices = () => callSync({ install: true });
+
+async function callSync(body: { handle: string } | { install: true }): Promise<SyncResult> {
+  const { data, error } = await supabase.functions.invoke("shopify-sync", { body });
   if (error) {
     // A non-2xx answer still carries the function's own message when it sent one.
     const body = (error as { context?: Response }).context;

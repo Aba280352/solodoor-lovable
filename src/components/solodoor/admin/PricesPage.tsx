@@ -4,29 +4,61 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-import { formatPrice, type Application, type RugSize } from "../shop/catalog";
+import { formatPrice, type Addon, type Application, type RugSize } from "../shop/catalog";
+import { installPrices, type InstallPrices } from "../shop/install-pricing";
 import { db } from "./db";
-import { SYNC_NOT_CONFIGURED, syncProduct } from "./shopify-sync";
+import { SYNC_NOT_CONFIGURED, syncInstallPrices, syncProduct } from "./shopify-sync";
+
+const INSTALL_ROWS: { key: keyof InstallPrices; label: string; note: string }[] = [
+  { key: "double", label: "דלת עם שני צדדים", note: "טפט לדלת" },
+  { key: "designedDouble", label: "דלת מעוצבת עם שני צדדים", note: "טפט מעוצב לדלת" },
+  { key: "single", label: "דלת עם צד אחד", note: "טפט לדלת וטפט מעוצב לדלת" },
+];
+
+/**
+ * The FAQ answers about installation quote its prices as plain text: each old price becomes the new one,
+ * all in one pass so that two prices trading places do not get mixed up. Returns the error, if any.
+ */
+async function updateFaqPrices(old: InstallPrices, next: InstallPrices): Promise<string | null> {
+  const swaps = new Map((Object.keys(old) as (keyof InstallPrices)[]).map((key) => [String(old[key]), String(next[key])]));
+  const pattern = new RegExp(`(?<![\\d.])(${[...swaps.keys()].map((p) => p.replace(".", "\\.")).join("|")})(?= ש["״]ח)`, "g");
+  const { data, error } = await db.from("faq_items").select("id, answer");
+  if (error) return error.message;
+  for (const item of (data ?? []) as { id: number; answer: string }[]) {
+    if (!item.answer.includes("התקנה")) continue;
+    const answer = item.answer.replace(pattern, (price) => swaps.get(price) ?? price);
+    if (answer === item.answer) continue;
+    const { error: failed } = await db.from("faq_items").update({ answer }).eq("id", item.id);
+    if (failed) return failed.message;
+  }
+  return null;
+}
 
 /**
  * The prices that are shared by many products: what a metre or a door side of any wallpaper costs on
- * each surface, and the rug sizes. A change here is followed by a sync of every product it touches.
+ * each surface, the rug sizes and the installation. A change here is followed by a sync of what it touches.
  */
 export function PricesPage() {
   const [applications, setApplications] = useState<Application[] | null>(null);
   const [sizes, setSizes] = useState<RugSize[] | null>(null);
+  const [install, setInstall] = useState<InstallPrices | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number; failed: string[] } | null>(null);
 
   useEffect(() => {
-    Promise.all([db.from("applications").select("*").order("sort_order"), db.from("rug_sizes").select("*").order("sort_order")]).then(([a, s]) => {
+    Promise.all([
+      db.from("applications").select("*").order("sort_order"),
+      db.from("rug_sizes").select("*").order("sort_order"),
+      db.from("addons").select("*").eq("slug", "installation").limit(1),
+    ]).then(([a, s, i]) => {
       setApplications((a.data ?? []) as Application[]);
       setSizes((s.data ?? []) as RugSize[]);
+      setInstall(installPrices(((i.data ?? []) as Addon[])[0]));
     });
   }, []);
 
-  if (!applications || !sizes) return <p className="fs-16 text-foreground">טוען…</p>;
+  if (!applications || !sizes || !install) return <p className="fs-16 text-foreground">טוען…</p>;
 
   const setApp = (slug: string, unit_price: number) => setApplications(applications.map((a) => (a.slug === slug ? { ...a, unit_price } : a)));
   const setSize = (key: string, price: number) => setSizes(sizes.map((s) => (s.size_key === key ? { ...s, price } : s)));
@@ -82,6 +114,33 @@ export function PricesPage() {
       const { data } = await db.from("products").select("handle").eq("product_type", "pvc_rug").order("sort_order");
       await syncAll(((data ?? []) as { handle: string }[]).map((p) => p.handle));
     }
+    setBusy(false);
+  };
+
+  const saveInstall = async () => {
+    const [price, price_one_side, price_designed_double] = [install.double, install.single, install.designedDouble].map(Number);
+    // An empty field must not turn into a free installation.
+    if (![price, price_one_side, price_designed_double].every((p) => p > 0)) {
+      setStatus("מחיר התקנה חייב להיות מספר גדול מ-0. לא נשמר דבר.");
+      return;
+    }
+    setBusy(true);
+    setStatus(null);
+    setProgress(null);
+    const { data: before } = await db.from("addons").select("*").eq("slug", "installation").limit(1);
+    const old = installPrices(((before ?? []) as Addon[])[0]);
+    const { data, error } = await db.from("addons").update({ price, price_one_side, price_designed_double }).eq("slug", "installation").select("slug");
+    if (error || !data?.length) {
+      setStatus(`השמירה נכשלה: ${error?.message ?? "השורה של ההתקנה לא עודכנה."}`);
+      setBusy(false);
+      return;
+    }
+    const faqFailed = await updateFaqPrices(old, { double: price, single: price_one_side, designedDouble: price_designed_double });
+    const result = await syncInstallPrices();
+    if (faqFailed) setStatus(`המחירים נשמרו, אבל התשובות בשאלות הנפוצות לא עודכנו: ${faqFailed}. ${result.ok ? "Shopify עודכן." : `גם Shopify לא עודכן, ובקופה עדיין יחויב המחיר הקודם. ${result.message}`}`);
+    else if (result.ok) setStatus("מחירי ההתקנה עודכנו באתר, בשאלות הנפוצות וב-Shopify. נשאר לעדכן את הטקסט של התקנון ומדיניות המשלוחים ב-Shopify.");
+    else if (result.message === SYNC_NOT_CONFIGURED) setStatus("Shopify עדיין לא מחובר לפאנל: חסר הסוד SHOPIFY_CLIENT_SECRET בהגדרות Lovable Cloud. המחירים נשמרו באתר בלבד, ובקופה עדיין יחויב המחיר הקודם.");
+    else setStatus(`המחירים נשמרו באתר, אבל Shopify לא עודכן, ובקופה עדיין יחויב המחיר הקודם. ${result.message}`);
     setBusy(false);
   };
 
@@ -160,6 +219,35 @@ export function PricesPage() {
           <Button type="button" disabled={busy} className="self-start px-6 py-3 fs-15" onClick={() => save("sizes")}>
             שמירה ועדכון כל השטיחים ב-Shopify
           </Button>
+        </section>
+
+        <section className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
+          <h2 className="fs-17 font-bold text-foreground">התקנה: מחיר לדלת</h2>
+          <p className="fs-13 leading-[1.5] text-foreground/70">המחירים מתעדכנים בעמודי המוצר, בתקנון שבאתר, בשאלות הנפוצות ובקופה.</p>
+          <ul className="flex flex-col divide-y divide-border">
+            {INSTALL_ROWS.map((row) => (
+              <li key={row.key} className="flex items-center justify-between gap-4 py-3">
+                <span className="flex flex-col">
+                  <span className="fs-16 font-semibold text-foreground">{row.label}</span>
+                  <span className="fs-13 text-foreground/70">{row.note}</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="fs-15 text-foreground">₪</span>
+                  <Input dir="ltr" inputMode="decimal" value={install[row.key]} onChange={(e) => setInstall({ ...install, [row.key]: e.target.value as unknown as number })} className="w-28 text-center fs-16 font-semibold" />
+                </span>
+              </li>
+            ))}
+          </ul>
+          <Button type="button" disabled={busy} className="self-start px-6 py-3 fs-15" onClick={saveInstall}>
+            שמירה ועדכון ההתקנה ב-Shopify
+          </Button>
+          <p className="fs-13 leading-[1.5] text-foreground/70">
+            התקנון ומדיניות המשלוחים בתוך Shopify לא מתעדכנים מכאן. אחרי שינוי מחיר צריך לתקן בהם את טבלת ההתקנה ב
+            <a href="https://admin.shopify.com/store/1ass3z-be/settings/legal" target="_blank" rel="noreferrer" className="font-semibold underline">
+              הגדרות המדיניות של Shopify
+            </a>
+            .
+          </p>
         </section>
       </div>
 

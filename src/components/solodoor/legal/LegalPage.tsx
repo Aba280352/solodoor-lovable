@@ -1,8 +1,48 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
+import { fetchInstallPrices } from "../shop/catalog";
+import { DEFAULT_INSTALL_PRICES, fillInstallPrices, type InstallPrices } from "../shop/install-pricing";
 import { CONTACT, LEGAL_DOCS, LEGAL_UPDATED, type LegalBlock, type LegalDoc } from "./legal-content";
+
+let installPricesRequest: Promise<InstallPrices> | null = null;
+
+/** A table of a legal text. The installation prices in it are the ones set in the admin. */
+function LegalTable({ rows }: { rows: [string, string][] }) {
+  const [prices, setPrices] = useState(DEFAULT_INSTALL_PRICES);
+  useEffect(() => {
+    let active = true;
+    (installPricesRequest ??= fetchInstallPrices())
+      .then((loaded) => {
+        if (active) setPrices(loaded);
+      })
+      .catch(() => {
+        installPricesRequest = null;
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return (
+    <div className="overflow-hidden rounded-[0.5rem] border border-border bg-card">
+      <table className="w-full border-collapse text-right">
+        <tbody>
+          {rows.map(([label, value]) => (
+            <tr key={label} className="border-b border-border last:border-b-0">
+              <th scope="row" className="w-[58%] px-4 py-3.5 align-top fs-16 leading-[1.6] font-semibold text-foreground lg:px-6 lg:fs-17">
+                {label}
+              </th>
+              <td className="px-4 py-3.5 align-top fs-16 leading-[1.6] text-foreground lg:px-6 lg:fs-17">{fillInstallPrices(value, prices)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 /** One block of a legal text: a sub-heading, a paragraph, a list or a table. Shared with the terms pop-up. */
 export function LegalBlockView({ block }: { block: LegalBlock }) {
@@ -24,22 +64,7 @@ export function LegalBlockView({ block }: { block: LegalBlock }) {
       </ul>
     );
   }
-  return (
-    <div className="overflow-hidden rounded-[0.5rem] border border-border bg-card">
-      <table className="w-full border-collapse text-right">
-        <tbody>
-          {block.rows.map(([label, value]) => (
-            <tr key={label} className="border-b border-border last:border-b-0">
-              <th scope="row" className="w-[58%] px-4 py-3.5 align-top fs-16 leading-[1.6] font-semibold text-foreground lg:px-6 lg:fs-17">
-                {label}
-              </th>
-              <td className="px-4 py-3.5 align-top fs-16 leading-[1.6] text-foreground lg:px-6 lg:fs-17">{value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <LegalTable rows={block.rows} />;
 }
 
 /** Table of contents: a list of anchors. The sections have scroll-mt, so the sticky header never covers a heading. */

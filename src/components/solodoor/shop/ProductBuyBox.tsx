@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { SAMPLE_EXTRA_PRICE, cart, type CartLine } from "./cart";
 import { INSTALL_CITY_BAD, INSTALL_CITY_EMPTY, INSTALL_DAYS, checkInstallCity } from "./install-areas";
-import { INSTALL_DESIGNED_BOTH_SIDES_EXTRA, INSTALL_ONE_SIDE_PRICE, INSTALL_SKU, splitSides } from "./install-pricing";
+import { INSTALL_SKU, installPrices, splitSides } from "./install-pricing";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
 import { TermsDialog } from "../legal/TermsDialog";
@@ -155,11 +155,12 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const installAddon = product.installation_available
     ? addons.find((a) => a.addon_type === "service" && (a.applies_to.includes("all") || a.applies_to.includes(surfaceKey)))
     : undefined;
-  // Installation is priced per door: both sides of one door, or one side only. A designed door costs more on both sides.
+  // Installation is priced per door: both sides of one door, or one side only. A designed door has its own price on both sides.
   const isDesigned = product.product_type === "designed_door";
-  const doublePrice = (installAddon?.price ?? 0) + (isDesigned ? INSTALL_DESIGNED_BOTH_SIDES_EXTRA : 0);
+  const prices = installPrices(installAddon);
+  const doublePrice = isDesigned ? prices.designedDouble : prices.double;
   const split = splitSides(qty, doubleChoice ?? Infinity);
-  const installTotal = split.doubles * doublePrice + split.singles * INSTALL_ONE_SIDE_PRICE;
+  const installTotal = split.doubles * doublePrice + split.singles * prices.single;
   // Strips on a door are put on by the installer, so nobody gluing it themselves would order them:
   // the choice appears only once professional installation is ticked.
   const allStrips = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
@@ -204,7 +205,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
         result.push({ id: `${mainId}:install-double`, title: "התקנה: דלת עם שני צדדים", price: doublePrice, qty: split.doubles, install: "double", sku: isDesigned ? INSTALL_SKU.designedDouble : INSTALL_SKU.double, ...place });
       }
       if (split.singles) {
-        result.push({ id: `${mainId}:install-single`, title: "התקנה: דלת עם צד אחד", price: INSTALL_ONE_SIDE_PRICE, qty: split.singles, install: "single", sku: INSTALL_SKU.single, ...place });
+        result.push({ id: `${mainId}:install-single`, title: "התקנה: דלת עם צד אחד", price: prices.single, qty: split.singles, install: "single", sku: INSTALL_SKU.single, ...place });
       }
     }
     if (stripAddon) {
@@ -385,7 +386,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             checked={installation}
             onChange={setInstallation}
             title="אני רוצה התקנה מקצועית"
-            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. ${formatPrice(doublePrice)} לדלת סטנדרטית משני הצדדים, ${formatPrice(INSTALL_ONE_SIDE_PRICE)} לדלת מצד אחד. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
+            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. ${formatPrice(doublePrice)} לדלת סטנדרטית משני הצדדים, ${formatPrice(prices.single)} לדלת מצד אחד. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
             price={`+${formatPrice(installTotal)}`}
           />
           {/* With one or two sides there is nothing to split: one door, one side or both. */}
@@ -405,7 +406,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
               <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
                 <span className="flex min-w-0 flex-col">
                   <span className="fs-16 leading-[1.35] font-semibold text-foreground">דלתות עם צד אחד</span>
-                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(INSTALL_ONE_SIDE_PRICE)} להתקנת דלת</span>
+                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(prices.single)} להתקנת דלת</span>
                 </span>
                 <span dir="ltr" className="w-34 flex-none text-center fs-18 font-semibold text-foreground" aria-live="polite">
                   {split.singles}
