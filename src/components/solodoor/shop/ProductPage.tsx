@@ -4,6 +4,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
+import { KITCHEN_DOOR_VIDEO } from "../data";
 import { DragRow } from "../DragRow";
 import { Icon } from "../Icon";
 import { Reviews } from "../Reviews";
@@ -242,9 +243,10 @@ function youtubeId(url: string): string | null {
 /**
  * A video card. A YouTube link opens a pop-up with the title, an upright player and a volume control under it;
  * the video starts when the pop-up opens and stops when it is closed. A file plays in the card.
- * Until a video exists the poster is shown with a "soon" tag.
+ * Until a video exists the poster is shown with a "soon" tag. A long title can give the card a shorter `label`,
+ * and `compact` fits the play button and the words on the smaller card of a row of three.
  */
-function VideoCard({ title, url, poster }: { title: string; url: string | null; poster: string | null }) {
+function VideoCard({ title, label, url, poster, compact }: { title: string; label?: string; url: string | null; poster: string | null; compact?: boolean }) {
   const id = url ? youtubeId(url) : null;
   // The videos are filmed upright, so the player is upright too; "#wide" at the end of a link asks for a wide one.
   const wide = !!url && url.includes("#wide");
@@ -276,14 +278,15 @@ function VideoCard({ title, url, poster }: { title: string; url: string | null; 
       >
         {poster && <CoverImage src={poster} alt="" loading="lazy" className="opacity-55 transition-opacity duration-240 ease-standard group-hover:opacity-70" />}
         <span className="absolute inset-0 flex items-center justify-center">
-          <span className="flex size-16 items-center justify-center rounded-full bg-background text-foreground shadow-handle transition-transform duration-240 ease-standard group-hover:scale-108 lg:size-20">
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="size-7 translate-x-[0.1rem] lg:size-8" fill="currentColor">
+          <span className={cn("flex size-16 items-center justify-center rounded-full bg-background text-foreground shadow-handle transition-transform duration-240 ease-standard group-hover:scale-108 lg:size-20", compact && "lg:size-14")}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" className={cn("size-7 translate-x-[0.1rem] lg:size-8", compact && "lg:size-6")} fill="currentColor">
               <path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z" />
             </svg>
           </span>
         </span>
-        <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7">
-          <span className="fs-20 leading-[1.25] font-bold lg:fs-26">{title}</span>        </span>
+        <span className={cn("absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-background lg:p-7", compact && "lg:p-5")}>
+          <span className={cn("fs-20 leading-[1.25] font-bold lg:fs-26", compact && "lg:fs-20")}>{label ?? title}</span>
+        </span>
       </DialogTrigger>
       <DialogContent
         overlayClassName="items-center justify-center p-2 lg:p-8"
@@ -311,8 +314,11 @@ function Videos({ application }: { application: Application | null }) {
   if (!application) return null;
   const poster = catalogImage(application.video_poster_path);
   const videos = [
-    { title: `איך להדביק טפט על ${application.label}`, url: application.install_video_url },
-    { title: `מדידת ${application.label} לפני הזמנה`, url: application.measure_video_url },
+    { title: `איך להדביק טפט על ${application.label}`, url: application.install_video_url, poster },
+    ...(application.slug === "kitchen"
+      ? [{ title: KITCHEN_DOOR_VIDEO.title, label: KITCHEN_DOOR_VIDEO.label, url: `https://youtu.be/${KITCHEN_DOOR_VIDEO.id}`, poster: KITCHEN_DOOR_VIDEO.poster }]
+      : []),
+    { title: `מדידת ${application.label} לפני הזמנה`, url: application.measure_video_url, poster },
   ];
   return (
     <section data-reveal className="pt-14 lg:pt-22">
@@ -321,9 +327,9 @@ function Videos({ application }: { application: Application | null }) {
           <Pill className="bg-secondary px-5 py-2 fs-16 text-secondary-foreground">מדביקים לבד</Pill>
           <h2 className="mt-4 fs-30 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-46">סרטוני הדרכה ומדידה</h2>
         </div>
-        <div className="mt-7 grid grid-cols-1 gap-4 lg:mt-10 lg:grid-cols-2 lg:gap-6">
+        <div className={cn("mt-7 grid grid-cols-1 gap-4 lg:mt-10 lg:gap-6", videos.length > 2 ? "lg:grid-cols-3" : "lg:grid-cols-2")}>
           {videos.map((video) => (
-            <VideoCard key={video.title} title={video.title} url={video.url} poster={poster} />
+            <VideoCard key={video.title} {...video} compact={videos.length > 2} />
           ))}
         </div>
       </Container>

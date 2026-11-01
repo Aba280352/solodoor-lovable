@@ -7,11 +7,44 @@ import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { QuantityCalculator } from "./QuantityCalculator";
 import { YouTubePlayer } from "./shop/YouTubePlayer";
-import { DIY_BG, DIY_VIDEO, diySteps, diyTools } from "./data";
+import { DIY_BG, DIY_VIDEO, KITCHEN_DOOR_VIDEO, diySteps, diyTools } from "./data";
 
 /** The kitchen installation video, the same one the kitchen product pages open. */
 const KITCHEN_VIDEO_ID = "HfiHdxP-eRI";
 const KITCHEN_VIDEO_TITLE = "איך להדביק טפט על מטבח";
+
+/** A pill on the section's photo that opens a video in a pop-up. */
+function VideoButton({ label, id, title }: { label: string; id: string; title: string }) {
+  return (
+    <Dialog>
+      <DialogTrigger
+        aria-label={`${title}, פתיחת הסרטון`}
+        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-background py-1.5 ps-1.5 pe-4 fs-14 font-medium text-foreground transition-transform duration-[480ms] ease-standard hover:scale-105 lg:gap-3 lg:py-2 lg:ps-2 lg:pe-5.5 lg:fs-18"
+      >
+        <span className="inline-flex size-8 items-center justify-center rounded-full border-[1.5px] border-foreground lg:size-10">
+          <span className="ml-[0.1875rem] block size-0 border-y-[0.4375rem] border-r-0 border-l-[0.6875rem] border-y-transparent border-l-foreground" />
+        </span>
+        <span>{label}</span>
+      </DialogTrigger>
+      <DialogContent
+        overlayClassName="items-center justify-center p-2 lg:p-8"
+        className="flex max-h-[98dvh] w-full max-w-md flex-col gap-3 overflow-y-auto rounded-[1rem] px-4 pt-4 pb-4 lg:px-6"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <DialogTitle className="pt-1.5 fs-20 leading-[1.3] font-bold text-foreground lg:fs-24">{title}</DialogTitle>
+          <DialogClose
+            aria-label="סגירה"
+            className="flex size-[46px] flex-none cursor-pointer items-center justify-center rounded-full border-2 border-foreground bg-background text-foreground transition-colors duration-160 ease-standard hover:bg-primary active:bg-primary"
+          >
+            <Icon name="Times" size={22} />
+          </DialogClose>
+        </div>
+        <DialogDescription className="sr-only">נגן הסרטון. הסרטון מתחיל מעצמו, ואפשר לכוון את עוצמת הקול מתחתיו.</DialogDescription>
+        <YouTubePlayer id={id} title={title} />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function Diy() {
   return (
@@ -69,33 +102,10 @@ export function Diy() {
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-5">
           <div className="relative order-2 aspect-[878/490] overflow-hidden rounded-xl bg-muted">
             <img src={DIY_VIDEO} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
-            <Dialog>
-              <DialogTrigger
-                aria-label={`${KITCHEN_VIDEO_TITLE}, פתיחת הסרטון`}
-                className="absolute end-3 bottom-3 inline-flex cursor-pointer items-center gap-3 rounded-full bg-background py-2 ps-2 pe-5.5 fs-16 font-medium text-foreground transition-transform duration-[480ms] ease-standard hover:scale-105 lg:end-5.5 lg:bottom-5.5 lg:fs-18"
-              >
-                <span className="inline-flex size-10 items-center justify-center rounded-full border-[1.5px] border-foreground">
-                  <span className="ml-[0.1875rem] block size-0 border-y-[0.4375rem] border-r-0 border-l-[0.6875rem] border-y-transparent border-l-foreground" />
-                </span>
-                <span>צפו איך זה עובד</span>
-              </DialogTrigger>
-              <DialogContent
-                overlayClassName="items-center justify-center p-2 lg:p-8"
-                className="flex max-h-[98dvh] w-full max-w-md flex-col gap-3 overflow-y-auto rounded-[1rem] px-4 pt-4 pb-4 lg:px-6"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <DialogTitle className="pt-1.5 fs-20 leading-[1.3] font-bold text-foreground lg:fs-24">{KITCHEN_VIDEO_TITLE}</DialogTitle>
-                  <DialogClose
-                    aria-label="סגירה"
-                    className="flex size-[46px] flex-none cursor-pointer items-center justify-center rounded-full border-2 border-foreground bg-background text-foreground transition-colors duration-160 ease-standard hover:bg-primary active:bg-primary"
-                  >
-                    <Icon name="Times" size={22} />
-                  </DialogClose>
-                </div>
-                <DialogDescription className="sr-only">נגן הסרטון. הסרטון מתחיל מעצמו, ואפשר לכוון את עוצמת הקול מתחתיו.</DialogDescription>
-                <YouTubePlayer id={KITCHEN_VIDEO_ID} title={KITCHEN_VIDEO_TITLE} />
-              </DialogContent>
-            </Dialog>
+            <div className="absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5 lg:inset-x-5.5 lg:bottom-5.5 lg:gap-3">
+              <VideoButton label="צפו איך זה עובד" id={KITCHEN_VIDEO_ID} title={KITCHEN_VIDEO_TITLE} />
+              <VideoButton label="השיטה הארוכה" id={KITCHEN_DOOR_VIDEO.id} title={KITCHEN_DOOR_VIDEO.title} />
+            </div>
           </div>
 
           <div className="order-3 rounded-xl bg-background px-4 pt-5.5 pb-6 lg:px-6">

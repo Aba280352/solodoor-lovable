@@ -261,6 +261,14 @@ export const INSTAGRAM_URL = "https://www.instagram.com/sollodoor/";
 export const FACEBOOK_URL = "https://www.facebook.com/solodoors/";
 export const YOUTUBE_URL = "https://youtube.com/@Solodoor1";
 
+/** The full method for a kitchen door, sides included. It sits beside the shorter kitchen video. */
+export const KITCHEN_DOOR_VIDEO = {
+  id: "z5Z8bX57sro",
+  title: "מצפים דלת מטבח כמו מקצוענים בשיטה הארוכה",
+  label: "השיטה הארוכה: דלת מטבח",
+  poster: "https://i.ytimg.com/vi/z5Z8bX57sro/maxresdefault.jpg",
+};
+
 export const footerSocial: { label: string; icon: IconName; href?: string }[] = [
   { label: "אינסטגרם", icon: "ImageGallery", href: INSTAGRAM_URL },
   { label: "וואטסאפ", icon: "ChatDots", href: whatsappHref() },
