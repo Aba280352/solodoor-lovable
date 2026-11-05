@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 
 import { Container, Pill } from "./primitives";
-import { GOOGLE_MARK, GOOGLE_WORDMARK, REVIEW_COUNT, reviews } from "./data";
+import { GOOGLE_MARK, GOOGLE_WORDMARK, reviews } from "./data";
+import { business } from "./content/business";
 
 type Review = (typeof reviews)[number];
 
@@ -79,7 +80,7 @@ export function Reviews({ pill = "אם עוד לא קניתם, בואו תראו
 
         <div className="mt-5 flex flex-col items-center gap-5 text-center">
           <Stars className="gap-1 fs-38" />
-          <span className="fs-18 font-semibold text-foreground">מבוסס על {REVIEW_COUNT} ביקורות</span>
+          <span className="fs-18 font-semibold text-foreground">מבוסס על {business.reviewCount} ביקורות</span>
           <img src={GOOGLE_WORDMARK} alt="Google" className="block h-10 w-auto" />
         </div>
       </Container>

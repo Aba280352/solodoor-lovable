@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { GOOGLE_MARK, REVIEW_COUNT } from "../data";
+import { GOOGLE_MARK } from "../data";
+import { business, phoneHref } from "../content/business";
 import { Container, CoverImage, Pill } from "../primitives";
-import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
 import { ArticleCard } from "./ArticleCard";
 import { AUTHOR, articleImage, articleUrl, formatDate, prepareContent, readingMinutes, type Article, type ArticleSummary, type TocItem } from "./articles";
 import { whatsappHref } from "../whatsapp";
@@ -97,9 +97,9 @@ function LeadCard({ article }: { article: string }) {
           </Button>
         </form>
       )}
-      <a href={DOORS_PHONE_HREF} className="mt-4 flex items-center justify-center gap-2 fs-16 font-medium">
+      <a href={phoneHref()} className="mt-4 flex items-center justify-center gap-2 fs-16 font-medium">
         <Icon name="Phone" size={16} />
-        <span dir="ltr">{DOORS_PHONE}</span>
+        <span dir="ltr">{business.phone}</span>
       </a>
     </div>
   );
@@ -196,7 +196,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
               <span className="fs-18 leading-none text-star" aria-hidden="true">
                 ★★★★★
               </span>
-              <span className="fs-15 font-medium text-foreground lg:fs-16">עסק מדורג 5 כוכבים בגוגל, על סמך {REVIEW_COUNT} ביקורות</span>
+              <span className="fs-15 font-medium text-foreground lg:fs-16">עסק מדורג 5 כוכבים בגוגל, על סמך {business.reviewCount} ביקורות</span>
             </div>
 
             {image && (

@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
+import { business } from "./content/business";
 import { formValues, submitLead } from "./leads";
+import { whatsappHref } from "./whatsapp";
 import { Container } from "./primitives";
 import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
@@ -19,6 +21,13 @@ import {
   footerLegal,
   footerSocial,
 } from "./data";
+
+/** The contact lines of the footer, with the business details in force (editable in the admin). */
+const contactLines = () =>
+  footerContact.map((c) => ({
+    ...c,
+    value: c.icon === "Phone" ? business.phone : c.icon === "Envelope" ? business.email : c.icon === "MapPin" ? business.area : c.icon === "Clock" ? business.hours : c.value,
+  }));
 
 const footerLinkClass =
   "flex items-center justify-between gap-2.5 fs-16 text-foreground transition-colors duration-160 ease-standard hover:text-clay";
@@ -194,7 +203,7 @@ export function SiteFooter() {
                   {footerSocial.map((social) => (
                     <a
                       key={social.label}
-                      href={social.href ?? "#"}
+                      href={(social.icon === "ChatDots" ? whatsappHref() : social.href) ?? "#"}
                       {...(social.href ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       aria-label={social.label}
                       className="inline-flex size-10.5 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors duration-240 ease-standard hover:bg-secondary hover:text-secondary-foreground"
@@ -205,7 +214,7 @@ export function SiteFooter() {
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3.5">
-                  {footerContact.map((contact) => (
+                  {contactLines().map((contact) => (
                     <div key={contact.value} className="flex items-center gap-3">
                       <span className="inline-flex size-8.5 flex-none items-center justify-center rounded-lg border border-primary bg-primary text-primary-foreground">
                         <Icon name={contact.icon} size={16} />

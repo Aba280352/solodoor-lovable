@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { DragRow } from "../DragRow";
 import { Container, Pill } from "../primitives";
-import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
+import { business, phoneHref } from "../content/business";
 import { FAQ_CATEGORIES, categoryLabel, filterFaq, selectedCategories, type FaqEntry, type FaqSearch } from "./faq-items";
 import { whatsappHref } from "../whatsapp";
 
@@ -204,8 +204,8 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
                   </a>
                 </Button>
                 <Button asChild variant="light" className="px-8 py-4">
-                  <a href={DOORS_PHONE_HREF}>
-                    <span dir="ltr">{DOORS_PHONE}</span>
+                  <a href={phoneHref()}>
+                    <span dir="ltr">{business.phone}</span>
                     <Icon name="Phone" size={16} />
                   </a>
                 </Button>

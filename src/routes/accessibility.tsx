@@ -7,7 +7,7 @@ import { legalHead } from "@/components/solodoor/legal/legal-head";
 
 // Same address as the old site's accessibility statement, so existing links keep working.
 export const Route = createFileRoute("/accessibility")({
-  head: () => legalHead(ACCESSIBILITY),
+  head: ({ matches }) => legalHead(ACCESSIBILITY, matches),
   component: () => (
     <PageShell>
       <LegalPage doc={ACCESSIBILITY} />

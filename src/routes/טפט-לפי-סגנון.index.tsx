@@ -4,6 +4,7 @@ import { PageShell } from "@/components/solodoor/PageShell";
 import { StyleArchive } from "@/components/solodoor/shop/StyleArchive";
 import { fetchStyleItems } from "@/components/solodoor/shop/catalog";
 import { STYLE_HUB } from "@/components/solodoor/shop/styles";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 const SITE = "https://solodoor.co.il";
 
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/טפט-לפי-סגנון/")({
     color: typeof search.color === "string" && search.color ? search.color : undefined,
   }),
   loader: () => fetchStyleItems(),
-  head: () => ({
+  head: ({ matches }) => withSeo(rootContent(matches), "/טפט-לפי-סגנון", {
     meta: [
       { title: `${STYLE_HUB.title} | סולודור` },
       { name: "description", content: STYLE_HUB.intro },

@@ -7,7 +7,7 @@ import { legalHead } from "@/components/solodoor/legal/legal-head";
 
 // Same address as the old site's privacy page, so existing links keep working.
 export const Route = createFileRoute("/privacy-policy")({
-  head: () => legalHead(PRIVACY),
+  head: ({ matches }) => legalHead(PRIVACY, matches),
   component: () => (
     <PageShell>
       <LegalPage doc={PRIVACY} />

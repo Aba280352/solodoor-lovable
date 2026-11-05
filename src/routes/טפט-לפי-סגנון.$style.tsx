@@ -4,6 +4,7 @@ import { PageShell } from "@/components/solodoor/PageShell";
 import { StyleArchive } from "@/components/solodoor/shop/StyleArchive";
 import { fetchStyleItems } from "@/components/solodoor/shop/catalog";
 import { stylePage } from "@/components/solodoor/shop/styles";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 const SITE = "https://solodoor.co.il";
 
@@ -17,11 +18,11 @@ export const Route = createFileRoute("/טפט-לפי-סגנון/$style")({
     if (!page) throw notFound();
     return { page, items: await fetchStyleItems() };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, matches }) => {
     if (!loaderData) return {};
     const { page } = loaderData;
     const url = `${SITE}/טפט-לפי-סגנון/${page.slug}`;
-    return {
+    return withSeo(rootContent(matches), `/טפט-לפי-סגנון/${page.slug}`, {
       meta: [
         { title: `${page.title} | סולודור` },
         { name: "description", content: page.intro },
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/טפט-לפי-סגנון/$style")({
           }),
         },
       ],
-    };
+    });
   },
   component: StyleRoute,
 });

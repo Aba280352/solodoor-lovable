@@ -10,19 +10,21 @@ import { DoorsProcess } from "@/components/solodoor/doors/DoorsProcess";
 import { DoorsQuote } from "@/components/solodoor/doors/DoorsQuote";
 import { DoorsShop } from "@/components/solodoor/doors/DoorsShop";
 import { doorsSeo } from "@/components/solodoor/doors/data";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 // Landing page for paid search traffic on "ציפוי דלתות".
 export const Route = createFileRoute("/ציפוי-דלתות")({
-  head: () => ({
-    meta: [
-      { title: doorsSeo.title },
-      { name: "description", content: doorsSeo.description },
-      { property: "og:title", content: doorsSeo.title },
-      { property: "og:description", content: doorsSeo.description },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "canonical", href: "https://solodoor.co.il/ציפוי-דלתות" }],
-  }),
+  head: ({ matches }) =>
+    withSeo(rootContent(matches), "/ציפוי-דלתות", {
+      meta: [
+        { title: doorsSeo.title },
+        { name: "description", content: doorsSeo.description },
+        { property: "og:title", content: doorsSeo.title },
+        { property: "og:description", content: doorsSeo.description },
+        { property: "og:type", content: "website" },
+      ],
+      links: [{ rel: "canonical", href: "https://solodoor.co.il/ציפוי-דלתות" }],
+    }),
   component: DoorsPage,
 });
 

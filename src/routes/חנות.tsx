@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 import { ShopArchive } from "@/components/solodoor/shop/ShopArchive";
 import { fetchShop } from "@/components/solodoor/shop/catalog";
 import { activeFilters, joinList, shopHeading, type ShopSearch } from "@/components/solodoor/shop/filters";
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/חנות")({
     rec: search.rec === "y" ? "y" : undefined,
   }),
   loader: () => fetchShop(),
-  head: ({ loaderData, match }) => {
+  head: ({ loaderData, match, matches }) => {
     if (!loaderData) return {};
     const search = match.search as ShopSearch;
     const { title, intro } = shopHeading(activeFilters(search, loaderData), loaderData);
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/חנות")({
       Object.entries(search)
         .filter((entry): entry is [string, string] => Boolean(entry[1]) && entry[0] !== "all"),
     ).toString();
-    return {
+    const head = {
       meta: [
         { title: `${title} | סולודור` },
         { name: "description", content: intro },
@@ -37,6 +38,8 @@ export const Route = createFileRoute("/חנות")({
       ],
       links: [{ rel: "canonical", href: `${SITE}/חנות` + (params ? `?${decodeURIComponent(params)}` : "") }],
     };
+    // The admin's SEO override is for the shop itself; filtered views keep their computed titles.
+    return params ? head : withSeo(rootContent(matches), "/חנות", head);
   },
   component: ShopPage,
 });

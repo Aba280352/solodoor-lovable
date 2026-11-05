@@ -1,11 +1,12 @@
+import { rootContent, withSeo } from "../content/site-content";
 import type { LegalDoc } from "./legal-content";
 
 const SITE = "https://solodoor.co.il";
 
-/** Title, description, canonical address and breadcrumb data of one legal page. */
-export function legalHead(doc: LegalDoc) {
+/** Title, description, canonical address and breadcrumb data of one legal page, with the admin's SEO override. */
+export function legalHead(doc: LegalDoc, matches?: readonly { loaderData?: unknown }[]) {
   const url = `${SITE}${doc.path}`;
-  return {
+  return withSeo(rootContent(matches), doc.path, {
     meta: [
       { title: `${doc.title} | סולודור` },
       { name: "description", content: doc.description },
@@ -27,5 +28,5 @@ export function legalHead(doc: LegalDoc) {
         }),
       },
     ],
-  };
+  });
 }

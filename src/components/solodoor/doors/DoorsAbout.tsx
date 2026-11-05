@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 
 import { Icon } from "../Icon";
 import { Container, CoverImage, Pill } from "../primitives";
-import { DOORS_PHONE, DOORS_PHONE_HREF, aboutFigures, aboutImages, aboutServices } from "./data";
+import { aboutFigures, aboutImages, aboutServices } from "./data";
+import { business, phoneHref } from "../content/business";
 
 /**
  * "קצת עלינו": the company story from the current site, set as an editorial
@@ -46,8 +47,8 @@ export function DoorsAbout() {
                 </a>
               </Button>
               <Button asChild variant="outline" className="px-3 py-3.5 fs-15 lg:px-9 lg:py-[1.0625rem] lg:fs-18">
-                <a href={DOORS_PHONE_HREF}>
-                  <span dir="ltr">{DOORS_PHONE}</span>
+                <a href={phoneHref()}>
+                  <span dir="ltr">{business.phone}</span>
                   <Icon name="Phone" size={16} />
                 </a>
               </Button>
@@ -84,7 +85,7 @@ export function DoorsAbout() {
                 }
               >
                 <span dir="ltr" className="fs-44 leading-none font-bold tracking-[-0.02em] text-foreground lg:fs-76">
-                  {figure.value}
+                  {figure.label === "ביקורות בגוגל" ? business.reviewCount : figure.value}
                 </span>
                 <span className="fs-15 font-medium text-foreground lg:fs-18">{figure.label}</span>
               </li>

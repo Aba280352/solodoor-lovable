@@ -14,6 +14,7 @@ import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/חנות'
 import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } from './routes/מאמרים'
@@ -27,6 +28,7 @@ import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
+import { Route as AdminSiteRouteImport } from './routes/admin.site'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport } from './routes/טפט-לפי-סגנון.index'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport } from './routes/טפט-לפי-סגנון.$style'
@@ -57,6 +59,11 @@ const AdminRoute = AdminRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -138,6 +145,11 @@ const AdminPricesRoute = AdminPricesRouteImport.update({
   path: '/prices',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSiteRoute = AdminSiteRouteImport.update({
+  id: '/site',
+  path: '/site',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
@@ -181,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
@@ -193,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/site': typeof AdminSiteRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
@@ -206,6 +220,7 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/accessibility': typeof AccessibilityRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
@@ -218,6 +233,7 @@ export interface FileRoutesByTo {
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/site': typeof AdminSiteRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin': typeof AdminIndexRoute
@@ -233,6 +249,7 @@ export interface FileRoutesById {
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
@@ -245,6 +262,7 @@ export interface FileRoutesById {
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
+  '/admin/site': typeof AdminSiteRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
@@ -261,6 +279,7 @@ export interface FileRouteTypes {
     | '/accessibility'
     | '/admin'
     | '/privacy-policy'
+    | '/sitemap.xml'
     | '/terms'
     | '/חנות'
     | '/מאמרים'
@@ -273,6 +292,7 @@ export interface FileRouteTypes {
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
+    | '/admin/site'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin/'
@@ -286,6 +306,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/accessibility'
     | '/privacy-policy'
+    | '/sitemap.xml'
     | '/terms'
     | '/חנות'
     | '/מאמרים'
@@ -298,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
+    | '/admin/site'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin'
@@ -312,6 +334,7 @@ export interface FileRouteTypes {
     | '/accessibility'
     | '/admin'
     | '/privacy-policy'
+    | '/sitemap.xml'
     | '/terms'
     | '/חנות'
     | '/מאמרים'
@@ -324,6 +347,7 @@ export interface FileRouteTypes {
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
+    | '/admin/site'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin/'
@@ -339,6 +363,7 @@ export interface RootRouteChildren {
   AccessibilityRoute: typeof AccessibilityRoute
   AdminRoute: typeof AdminRouteWithChildren
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   Char1495Char1504Char1493Char1514Route: typeof Char1495Char1504Char1493Char1514Route
   Char1502Char1488Char1502Char1512Char1497Char1501Route: typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
@@ -387,6 +412,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -480,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPricesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/site': {
+      id: '/admin/site'
+      path: '/site'
+      fullPath: '/admin/site'
+      preLoaderRoute: typeof AdminSiteRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -531,6 +570,7 @@ interface AdminRouteChildren {
   AdminFaqRoute: typeof AdminFaqRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminPricesRoute: typeof AdminPricesRoute
+  AdminSiteRoute: typeof AdminSiteRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductsHandleRoute: typeof AdminProductsHandleRoute
   AdminProductsIndexRoute: typeof AdminProductsIndexRoute
@@ -542,6 +582,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminFaqRoute: AdminFaqRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminPricesRoute: AdminPricesRoute,
+  AdminSiteRoute: AdminSiteRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductsHandleRoute: AdminProductsHandleRoute,
   AdminProductsIndexRoute: AdminProductsIndexRoute,
@@ -555,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccessibilityRoute: AccessibilityRoute,
   AdminRoute: AdminRouteWithChildren,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   Char1495Char1504Char1493Char1514Route: Char1495Char1504Char1493Char1514Route,
   Char1502Char1488Char1502Char1512Char1497Char1501Route:

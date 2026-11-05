@@ -13,21 +13,23 @@ import { Process } from "@/components/solodoor/Process";
 import { Reviews } from "@/components/solodoor/Reviews";
 import { StyleFamilies } from "@/components/solodoor/StyleFamilies";
 import { fetchLatestArticles } from "@/components/solodoor/blog/articles";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 export const Route = createFileRoute("/")({
   // The articles section shows the three latest posts; the rest of the page is static.
   loader: () => fetchLatestArticles(3).catch(() => []),
-  head: () => ({
-    meta: [
-      { title: "סולודור | טפט לדלת, ציפוי מטבחים ומשטחים" },
-      {
-        name: "description",
-        content:
-          "סולודור: ציפויים דקורטיביים לדלתות, מטבחים, מקררים, ארונות חשמל, קירות ושיש. מעל 200 עיצובים, ייעוץ חינם והתקנה מקצועית מצפון ועד דרום.",
-      },
-    ],
-    links: [{ rel: "canonical", href: "https://solodoor.co.il/" }],
-  }),
+  head: ({ matches }) =>
+    withSeo(rootContent(matches), "/", {
+      meta: [
+        { title: "סולודור | טפט לדלת, ציפוי מטבחים ומשטחים" },
+        {
+          name: "description",
+          content:
+            "סולודור: ציפויים דקורטיביים לדלתות, מטבחים, מקררים, ארונות חשמל, קירות ושיש. מעל 200 עיצובים, ייעוץ חינם והתקנה מקצועית מצפון ועד דרום.",
+        },
+      ],
+      links: [{ rel: "canonical", href: "https://solodoor.co.il/" }],
+    }),
   component: HomePage,
 });
 

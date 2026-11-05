@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { Pill } from "../primitives";
-import { DOORS_PHONE, DOORS_PHONE_HREF, doorTypes, quoteSteps } from "./data";
+import { doorTypes, quoteSteps } from "./data";
+import { business, phoneHref } from "../content/business";
 import { whatsappHref } from "../whatsapp";
 import { formValues, submitLead } from "../leads";
 
@@ -128,8 +129,8 @@ export function DoorsQuote() {
                 </a>
               </Button>
               <Button asChild variant="outline" className="px-3 py-3.5 fs-15 lg:fs-17">
-                <a href={DOORS_PHONE_HREF}>
-                  <span dir="ltr">{DOORS_PHONE}</span>
+                <a href={phoneHref()}>
+                  <span dir="ltr">{business.phone}</span>
                   <Icon name="Phone" size={16} />
                 </a>
               </Button>

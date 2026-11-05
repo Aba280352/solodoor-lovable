@@ -1,4 +1,5 @@
 import { Icon } from "./Icon";
+import { business } from "./content/business";
 import { whatsappHref } from "./whatsapp";
 
 /**
@@ -30,7 +31,7 @@ export function WhatsAppFloat() {
             <span>לשיחה בווצאפ</span>
             <Icon name="ArrowLeft" size={16} />
           </span>
-          <span className="text-center fs-13 leading-[1.5] text-foreground">א' עד ה' 09:00 עד 19:00, ו' 09:00 עד 13:00</span>
+          <span className="text-center fs-13 leading-[1.5] text-foreground">{business.hours.split(" | ").join(", ")}</span>
         </span>
       </span>
       <span className="flex size-12 flex-none items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-handle transition-transform duration-240 ease-standard group-hover:scale-105 lg:size-14">

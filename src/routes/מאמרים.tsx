@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/solodoor/PageShell";
 import { BlogArchive } from "@/components/solodoor/blog/BlogArchive";
 import { SITE, fetchArticles } from "@/components/solodoor/blog/articles";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 const TITLE = "מאמרים - סולודור | טפט לדלת";
 const DESCRIPTION = "מדריכים ומאמרים על חידוש דלתות, מטבחים, מקררים וארונות בציפוי פולימרי: השוואות, טיפים ותשובות מהניסיון של סולודור בשטח.";
@@ -10,7 +11,7 @@ const DESCRIPTION = "מדריכים ומאמרים על חידוש דלתות, �
 // The articles archive, at the same address as on the old site.
 export const Route = createFileRoute("/מאמרים")({
   loader: () => fetchArticles(),
-  head: () => ({
+  head: ({ matches }) => withSeo(rootContent(matches), "/מאמרים", {
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 import { FaqPage, faqHeading } from "@/components/solodoor/faq/FaqPage";
 import { fetchFaqEntries, filterFaq, selectedCategories, type FaqSearch } from "@/components/solodoor/faq/faq-items";
 
@@ -12,14 +13,14 @@ const text = (value: unknown) => (typeof value === "string" && value ? value : u
 export const Route = createFileRoute("/שאלות-נפוצות")({
   validateSearch: (search: Record<string, unknown>): FaqSearch => ({ cat: text(search.cat) }),
   loader: () => fetchFaqEntries(),
-  head: ({ loaderData, match }) => {
+  head: ({ loaderData, match, matches }) => {
     if (!loaderData) return {};
     const search = match.search as FaqSearch;
     const selected = selectedCategories(search);
     const { title, intro } = faqHeading(selected);
     const url = `${SITE}/שאלות-נפוצות` + (selected.length ? `?cat=${selected.join(",")}` : "");
     const shown = filterFaq(loaderData, selected);
-    return {
+    const head = {
       meta: [
         { title: `${title} | סולודור` },
         { name: "description", content: intro },
@@ -54,6 +55,8 @@ export const Route = createFileRoute("/שאלות-נפוצות")({
         },
       ],
     };
+    // The admin's SEO override is for the FAQ page itself; filtered views keep their computed titles.
+    return selected.length ? head : withSeo(rootContent(matches), "/שאלות-נפוצות", head);
   },
   component: FaqRoute,
 });

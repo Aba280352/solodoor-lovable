@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { Icon } from "../Icon";
 import { Pill } from "../primitives";
-import { REVIEW_COUNT } from "../data";
+import { business } from "../content/business";
 import { DoorViewer } from "./DoorViewer";
 import { doorsTrust } from "./data";
 import { whatsappHref } from "../whatsapp";
@@ -44,7 +44,7 @@ export function DoorsHero() {
             <span className="fs-20 leading-none text-star" aria-hidden="true">
               ★★★★★
             </span>
-            <span className="fs-15 font-medium text-foreground lg:fs-16">מבוסס על {REVIEW_COUNT} ביקורות בגוגל</span>
+            <span className="fs-15 font-medium text-foreground lg:fs-16">מבוסס על {business.reviewCount} ביקורות בגוגל</span>
           </div>
 
           <div className="mt-6 grid w-full grid-cols-2 gap-2.5 lg:mt-8 lg:flex lg:w-auto lg:gap-3">

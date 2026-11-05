@@ -8,13 +8,14 @@ import { KitchenHero } from "@/components/solodoor/kitchen/KitchenHero";
 import { KitchenIntro } from "@/components/solodoor/kitchen/KitchenIntro";
 import { KitchenValues } from "@/components/solodoor/kitchen/KitchenValues";
 import { kitchenSeo } from "@/components/solodoor/kitchen/data";
+import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 
 const CANONICAL = "https://solodoor.co.il/ציפוי-מטבחים/";
 
 // The file name is the URL. It matches the old site's slug on purpose: that page
 // ranks first for "ציפוי מטבחים", so the address must not change.
 export const Route = createFileRoute("/ציפוי-מטבחים")({
-  head: () => ({
+  head: ({ matches }) => withSeo(rootContent(matches), "/ציפוי-מטבחים", {
     meta: [
       { title: kitchenSeo.title },
       { name: "description", content: kitchenSeo.description },
