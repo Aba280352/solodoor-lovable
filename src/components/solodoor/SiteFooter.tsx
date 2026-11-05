@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
 import { business } from "./content/business";
+import { useFooterContent, useNav } from "./content/nav";
 import { formValues, submitLead } from "./leads";
 import { whatsappHref } from "./whatsapp";
 import { Container } from "./primitives";
@@ -44,9 +45,10 @@ const FOOTER_PATHS: Record<string, "/" | "/ציפוי-דלתות" | "/ציפוי
 const FOOTER_EXTERNAL: Record<string, string> = { "גלריה": INSTAGRAM_URL };
 
 function FooterLink({ label, category }: { label: string; category: boolean }) {
+  const nav = useNav();
   const inner = (
     <>
-      <span>{label}</span>
+      <span>{nav.label(label)}</span>
       <Icon name="AngleLeft" size={13} />
     </>
   );
@@ -112,6 +114,7 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
 
 /** The footer's contact form: name, phone, email and the privacy consent. */
 function FooterLeadForm() {
+  const footer = useFooterContent();
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,8 +135,8 @@ function FooterLeadForm() {
 
   return (
     <form onSubmit={submit} className="rounded-[0.5rem] border border-border bg-card px-5 pt-7 pb-7.5 text-right lg:px-7.5">
-      <span className="block fs-28 font-medium text-foreground">השאירו פרטים</span>
-      <span className="mt-1.5 block fs-16 text-foreground">ואנחנו נחזור אליכם בהקדם</span>
+      <span className="block fs-28 font-medium text-foreground">{footer.formTitle ?? "השאירו פרטים"}</span>
+      <span className="mt-1.5 block fs-16 text-foreground">{footer.formSubtitle ?? "ואנחנו נחזור אליכם בהקדם"}</span>
       {sent ? (
         <div role="status" className="mt-5 flex items-center gap-3 rounded-md bg-muted px-4 py-3.5">
           <span className="inline-flex text-clay">
@@ -170,25 +173,29 @@ function FooterLeadForm() {
 }
 
 export function SiteFooter() {
+  const nav = useNav();
+  const footer = useFooterContent();
+  const bannerLines = ["דלת חדשה,", "אותו בית,", "הרגשה אחרת"].map((line, i) => footer.bannerLines[i] ?? line);
+  const bannerEnglish = ["Small Change", "Big Difference"].map((line, i) => footer.bannerEnglish[i] ?? line);
   return (
     <footer data-reveal>
       <div className="relative">
         <div className="relative h-96 overflow-hidden bg-muted lg:h-130">
-          <img src={FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
+          <img src={footer.bannerImage ?? FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
           <div className="absolute inset-0 bg-footer-scrim" />
           <div className="absolute inset-y-0 right-0 flex w-full flex-col items-start justify-center gap-5.5 px-5 text-right lg:w-[52%] lg:px-27">
             <span className="fs-36 leading-[1.08] font-medium text-background lg:fs-52">
-              דלת חדשה,
+              {bannerLines[0]}
               <br />
-              אותו בית,
+              {bannerLines[1]}
               <br />
-              הרגשה אחרת
+              {bannerLines[2]}
             </span>
             <span className="block h-0.5 w-18 bg-primary" />
             <span dir="ltr" className="fs-20 leading-[1.45] font-medium text-clay lg:fs-24">
-              Small Change
+              {bannerEnglish[0]}
               <br />
-              Big Difference
+              {bannerEnglish[1]}
             </span>
           </div>
         </div>
@@ -198,7 +205,7 @@ export function SiteFooter() {
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-10 lg:grid-cols-[1.15fr_0.85fr_1fr_1.5fr] lg:gap-9">
               <div className="col-span-full text-right lg:col-span-1">
                 <img src={LOGO_SRC} alt="SOLODOOR" className="block h-11 w-37.5" />
-                <span className="mt-3 block fs-16 leading-[1.7] text-foreground">ציפוי דלתות. בדיוק הסגנון שלכם.</span>
+                <span className="mt-3 block fs-16 leading-[1.7] text-foreground">{footer.tagline ?? "ציפוי דלתות. בדיוק הסגנון שלכם."}</span>
                 <div className="mt-5 flex items-center gap-3">
                   {footerSocial.map((social) => (
                     <a
@@ -229,9 +236,9 @@ export function SiteFooter() {
 
               {footerColumns.map((column) => (
                 <div key={column.title} className="text-right">
-                  <span className="block fs-19 font-semibold text-foreground">{column.title}</span>
+                  <span className="block fs-19 font-semibold text-foreground">{nav.label(column.title)}</span>
                   <div className="mt-4 flex flex-col gap-2.5">
-                    {column.links.map((link) => (
+                    {column.links.filter(nav.shown).map((link) => (
                       <FooterLink key={link} label={link} category={column.title === "קטגוריות"} />
                     ))}
                   </div>
@@ -250,16 +257,16 @@ export function SiteFooter() {
                 className="block h-auto w-125 max-w-full"
               />
               <div className="flex flex-wrap items-center justify-center gap-4.5 fs-15 text-foreground">
-                {footerLegal.map(({ label, to }, i) => (
+                {footerLegal.filter(({ label }) => nav.shown(label)).map(({ label, to }, i) => (
                   <Fragment key={label}>
                     {i > 0 && <span className="block h-3 w-px bg-border" />}
                     <Link to={to} className="text-foreground transition-colors duration-160 ease-standard hover:text-clay">
-                      {label}
+                      {nav.label(label)}
                     </Link>
                   </Fragment>
                 ))}
               </div>
-              <span className="text-center fs-15 text-foreground">© 2026 כל הזכויות שמורות לסולודור</span>
+              <span className="text-center fs-15 text-foreground">{footer.copyright ?? "© 2026 כל הזכויות שמורות לסולודור"}</span>
             </div>
           </Container>
         </div>

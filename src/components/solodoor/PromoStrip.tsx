@@ -1,10 +1,11 @@
 import { Icon } from "./Icon";
+import { usePromoItems } from "./content/nav";
 import { promoItems } from "./data";
 
-/** The four messages repeated four times, so the marquee loops without a seam. */
-const loop = [...promoItems, ...promoItems, ...promoItems, ...promoItems];
-
 export function PromoStrip() {
+  // The messages (editable in the admin) repeated four times, so the marquee loops without a seam.
+  const items = usePromoItems(promoItems);
+  const loop = [...items, ...items, ...items, ...items];
   return (
     <div className="flex h-9 items-center justify-center bg-primary text-primary-foreground">
       <div className="group relative h-9 w-full overflow-hidden">

@@ -5,7 +5,7 @@
  *
  * The root route loads all published keys once (server side, for SEO) and hands them to <SiteContentProvider>.
  */
-import { createContext, useContext, type ReactNode } from "react";
+import { Fragment, createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -39,12 +39,49 @@ export async function fetchSiteContent(): Promise<SiteContent> {
 
 const SiteContentContext = createContext<SiteContent>({});
 
-/** Puts the published content in force for everything below it. */
+/** The admin's unsaved-to-site drafts, loaded only with ?preview=1 and only for a signed-in admin (RLS checks it). */
+function usePreviewDrafts(): SiteContent | null {
+  const [drafts, setDrafts] = useState<SiteContent | null>(null);
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has("preview")) return;
+    let alive = true;
+    (async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) return;
+      const { data } = await (supabase as unknown as SupabaseClient).from("site_content_drafts").select("key, data");
+      if (alive && data) setDrafts(Object.fromEntries((data as { key: string; data: unknown }[]).map((row) => [row.key, row.data])));
+    })().catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return drafts;
+}
+
+/** Puts the published content in force for everything below it (plus the drafts, in preview mode). */
 export function SiteContentProvider({ content, children }: { content: SiteContent | undefined; children: ReactNode }) {
-  const effective = effectiveContent(content);
+  const drafts = usePreviewDrafts();
+  const effective = effectiveContent(drafts ? { ...(content ?? {}), ...drafts } : content);
   // Module-level details (phone, WhatsApp...) are read by many components at render time; set them first.
   applyBusiness(effective[BUSINESS_KEY]);
-  return <SiteContentContext.Provider value={effective}>{children}</SiteContentContext.Provider>;
+  return (
+    <SiteContentContext.Provider value={effective}>
+      {drafts ? (
+        // A new key remounts the page, so everything re-reads the draft values.
+        <Fragment key="preview">
+          {children}
+          <div dir="rtl" className="fixed bottom-4 left-4 z-50 flex items-center gap-3 rounded-full bg-foreground px-4 py-2.5 font-sans fs-14 text-background shadow-menu">
+            <span>תצוגה מקדימה של טיוטות ({Object.keys(drafts).length})</span>
+            <a href={window.location.pathname} className="border-b border-background/60">
+              יציאה
+            </a>
+          </div>
+        </Fragment>
+      ) : (
+        children
+      )}
+    </SiteContentContext.Provider>
+  );
 }
 
 /** The override of one key, or undefined when the code default applies. */

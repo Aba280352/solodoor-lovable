@@ -12,6 +12,7 @@ import { useQuiz } from "./quiz-context";
 import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { MenuLink } from "./shop/MenuLink";
 import { STYLE_HUB_PATH } from "./shop/styles";
+import { useNav } from "./content/nav";
 
 type MenuKey = "style" | "use" | null;
 
@@ -28,25 +29,27 @@ interface AllLink {
 }
 
 function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[]; allLink?: AllLink }) {
+  const nav = useNav();
+  const shownItems = items.filter((item) => nav.shown(item.name));
   return (
     <div className="absolute inset-x-0 top-full z-20 border-y border-border bg-card shadow-menu">
       <div className="mx-auto max-w-330 px-12 pt-7 pb-8">
         <div className="mb-4.5 flex items-center justify-between gap-4">
-          <span className="fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{title}</span>
+          <span className="fs-15 font-semibold tracking-[0.16em] text-foreground uppercase">{nav.label(title)}</span>
           {allLink && (
             <Link to={allLink.to} className="inline-flex items-center gap-2 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay">
-              <span>{allLink.label}</span>
+              <span>{nav.label(allLink.label)}</span>
               <Icon name="AngleLeft" size={12} />
             </Link>
           )}
         </div>
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.max(7, items.length)}, minmax(0, 1fr))` }}>
-          {items.map((item) => (
+        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.max(7, shownItems.length)}, minmax(0, 1fr))` }}>
+          {shownItems.map((item) => (
             <MenuLink key={item.name} name={item.name} className="group block">
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-muted transition-colors duration-240 ease-standard group-hover:border-foreground">
-                <img src={item.img} alt={item.name} className="block size-full object-cover" />
+                <img src={nav.img(item.name, item.img)} alt={nav.label(item.name)} className="block size-full object-cover" />
               </div>
-              <div className="mt-2.5 fs-16 font-medium text-foreground">{item.name}</div>
+              <div className="mt-2.5 fs-16 font-medium text-foreground">{nav.label(item.name)}</div>
             </MenuLink>
           ))}
         </div>
@@ -57,6 +60,7 @@ function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[];
 
 /** A nav entry that opens its mega menu on hover or focus, and goes to the main archive when clicked. */
 function MenuButton({ label, to, onOpen, onClose }: { label: string; to: ArchivePath; onOpen: () => void; onClose: () => void }) {
+  const nav = useNav();
   return (
     <Link
       to={to}
@@ -65,7 +69,7 @@ function MenuButton({ label, to, onOpen, onClose }: { label: string; to: Archive
       onClick={onClose}
       className="inline-flex cursor-pointer items-center gap-1.5 border-b-2 border-transparent py-1.5 fs-14 whitespace-nowrap text-foreground hover:text-clay"
     >
-      <span>{label}</span>
+      <span>{nav.label(label)}</span>
       <span className="inline-flex transition-transform duration-160 ease-standard hover:translate-y-px">
         <Icon name="AngleDown" size={14} />
       </span>
@@ -91,13 +95,14 @@ const mobileLinkClass = "border-b border-border py-3.5 fs-18 font-medium text-fo
 
 /** Real pages and in-page jumps close the menu; placeholders do nothing yet. */
 function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
+  const nav = useNav();
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
   if (label === RUGS_LABEL) {
     return (
       <DialogClose asChild>
         <Link to="/חנות" search={{ cat: "pvc_rug" }} className={mobileLinkClass} activeProps={{ className: "text-clay" }}>
-          {label}
+          {nav.label(label)}
         </Link>
       </DialogClose>
     );
@@ -112,7 +117,7 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
           onClick={() => window.setTimeout(scrollToAboutOnHome, 150)}
           className={mobileLinkClass}
         >
-          {label}
+          {nav.label(label)}
         </Link>
       </DialogClose>
     );
@@ -127,7 +132,7 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
           onClick={() => window.setTimeout(() => scrollToFooterAnchor(anchor), 150)}
           className={mobileLinkClass}
         >
-          {label}
+          {nav.label(label)}
         </a>
       </DialogClose>
     );
@@ -136,7 +141,7 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
     return (
       <DialogClose asChild>
         <Link to="/" hash="diy" className={mobileLinkClass}>
-          {label}
+          {nav.label(label)}
         </Link>
       </DialogClose>
     );
@@ -145,26 +150,27 @@ function MobileNavLink({ label, diy }: { label: string; diy?: boolean }) {
     return (
       <DialogClose asChild>
         <Link to={to} className={mobileLinkClass} activeProps={{ className: "text-clay" }} activeOptions={{ exact: true }}>
-          {label}
+          {nav.label(label)}
         </Link>
       </DialogClose>
     );
   }
   return (
     <a href="#" className={mobileLinkClass}>
-      {label}
+      {nav.label(label)}
     </a>
   );
 }
 
 /** Desktop nav item; the current page gets the clay underline. */
 function NavItem({ label }: { label: string }) {
+  const nav = useNav();
   const to = PAGE_PATHS[label];
   const anchor = FOOTER_ANCHORS[label];
   if (label === RUGS_LABEL) {
     return (
       <Link to="/חנות" search={{ cat: "pvc_rug" }} className={navLinkClass} activeProps={{ className: "border-b-2 border-primary" }}>
-        {label}
+        {nav.label(label)}
       </Link>
     );
   }
@@ -178,7 +184,7 @@ function NavItem({ label }: { label: string }) {
         }}
         className={navLinkClass}
       >
-        {label}
+        {nav.label(label)}
       </Link>
     );
   }
@@ -192,14 +198,14 @@ function NavItem({ label }: { label: string }) {
         }}
         className={navLinkClass}
       >
-        {label}
+        {nav.label(label)}
       </a>
     );
   }
   if (!to) {
     return (
       <a href="#" className={navLinkClass}>
-        {label}
+        {nav.label(label)}
       </a>
     );
   }
@@ -210,7 +216,7 @@ function NavItem({ label }: { label: string }) {
       activeProps={{ className: "border-b-2 border-primary" }}
       activeOptions={{ exact: true }}
     >
-      {label}
+      {nav.label(label)}
     </Link>
   );
 }
@@ -218,18 +224,19 @@ function NavItem({ label }: { label: string }) {
 /** Collapsed by default; opens only when its row is tapped. */
 function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: ArchivePath; items: MenuItem[]; allLink?: AllLink }) {
   const [open, setOpen] = useState(false);
+  const nav = useNav();
   return (
     <div className="border-b border-border">
       <div className="flex items-center justify-between">
         <DialogClose asChild>
           <Link to={to} className="flex-auto py-3.5 text-right fs-18 font-medium text-foreground">
-            {title}
+            {nav.label(title)}
           </Link>
         </DialogClose>
         <button
           type="button"
           aria-expanded={open}
-          aria-label={`${title}, הצגת הרשימה`}
+          aria-label={`${nav.label(title)}, הצגת הרשימה`}
           onClick={() => setOpen((o) => !o)}
           className="inline-flex size-11 flex-none cursor-pointer items-center justify-center text-foreground"
         >
@@ -243,17 +250,17 @@ function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: Arc
           {allLink && (
             <DialogClose asChild>
               <Link to={allLink.to} className="fs-16 font-medium text-clay">
-                {allLink.label}
+                {nav.label(allLink.label)}
               </Link>
             </DialogClose>
           )}
-          {items.map((item) => (
+          {items.filter((item) => nav.shown(item.name)).map((item) => (
             <DialogClose key={item.name} asChild>
               <MenuLink name={item.name} className="flex items-center gap-4">
               <div className="size-20 flex-none overflow-hidden rounded-md border border-border bg-muted">
-                <img src={item.img} alt={item.name} className="block size-full object-cover" />
+                <img src={nav.img(item.name, item.img)} alt={nav.label(item.name)} className="block size-full object-cover" />
               </div>
-              <div className="fs-16 font-medium text-foreground">{item.name}</div>
+              <div className="fs-16 font-medium text-foreground">{nav.label(item.name)}</div>
               </MenuLink>
             </DialogClose>
           ))}
@@ -266,6 +273,7 @@ function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: Arc
 /** Below lg the nav collapses into a full-screen sheet. */
 function MobileMenu() {
   const { openQuiz } = useQuiz();
+  const nav = useNav();
   return (
     <Dialog>
       <DialogTrigger
@@ -291,14 +299,14 @@ function MobileMenu() {
           </DialogClose>
         </div>
         <nav className="mt-4 flex flex-col">
-          {mobileNavBefore.map((label) => (
+          {mobileNavBefore.filter(nav.shown).map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
-          <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} />
-          <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />
-          <MobileNavLink label="צפייה בכל החנות" />
-          <MobileNavLink label="עשה זאת בעצמך" diy />
-          {mobileNavAfter.map((label) => (
+          {nav.shown("טפט לפי שימוש") && <MobileMenuGroup title="טפט לפי שימוש" to="/חנות" items={useMenu} />}
+          {nav.shown("טפט לפי סגנון") && <MobileMenuGroup title="טפט לפי סגנון" to={STYLE_HUB_PATH} items={styleMenu} allLink={{ label: "לכל הסגנונות", to: STYLE_HUB_PATH }} />}
+          {nav.shown("צפייה בכל החנות") && <MobileNavLink label="צפייה בכל החנות" />}
+          {nav.shown("עשה זאת בעצמך") && <MobileNavLink label="עשה זאת בעצמך" diy />}
+          {mobileNavAfter.filter(nav.shown).map((label) => (
             <MobileNavLink key={label} label={label} />
           ))}
         </nav>
@@ -315,6 +323,7 @@ function MobileMenu() {
 
 export function SiteHeader() {
   const [menu, setMenu] = useState<MenuKey>(null);
+  const nav = useNav();
 
   return (
     <header
@@ -345,18 +354,18 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden min-w-0 flex-nowrap items-center justify-center gap-2 lg:flex">
-          {navLinks.map((label, i) => (
+          {navLinks.filter(nav.shown).map((label, i) => (
             <Fragment key={label}>
               <NavItem label={label} />
-              {i === 0 && (
+              {i === 0 && nav.shown("עשה זאת בעצמך") && (
                 <Link to="/" hash="diy" className={navLinkClass}>
-                  עשה זאת בעצמך
+                  {nav.label("עשה זאת בעצמך")}
                 </Link>
               )}
             </Fragment>
           ))}
-          <MenuButton label="טפט לפי סגנון" to={STYLE_HUB_PATH} onOpen={() => setMenu("style")} onClose={() => setMenu(null)} />
-          <MenuButton label="טפט לפי שימוש" to="/חנות" onOpen={() => setMenu("use")} onClose={() => setMenu(null)} />
+          {nav.shown("טפט לפי סגנון") && <MenuButton label="טפט לפי סגנון" to={STYLE_HUB_PATH} onOpen={() => setMenu("style")} onClose={() => setMenu(null)} />}
+          {nav.shown("טפט לפי שימוש") && <MenuButton label="טפט לפי שימוש" to="/חנות" onOpen={() => setMenu("use")} onClose={() => setMenu(null)} />}
         </nav>
 
         <div className="col-start-3 flex items-center gap-3.5">
@@ -364,7 +373,7 @@ export function SiteHeader() {
           <span className="block h-5 w-px bg-border" />
           <SearchButton />
           <Button asChild size="sm" className="hidden border border-primary lg:inline-flex">
-            <Link to="/חנות">צפייה בכל החנות</Link>
+            <Link to="/חנות">{nav.label("צפייה בכל החנות")}</Link>
           </Button>
           <MobileMenu />
         </div>
