@@ -12,6 +12,7 @@ import { DOORS_PHONE, DOORS_PHONE_HREF } from "../doors/data";
 import { ArticleCard } from "./ArticleCard";
 import { AUTHOR, articleImage, articleUrl, formatDate, prepareContent, readingMinutes, type Article, type ArticleSummary, type TocItem } from "./articles";
 import { whatsappHref } from "../whatsapp";
+import { formValues, submitLead } from "../leads";
 
 interface BlogPostProps {
   article: Article;
@@ -54,12 +55,24 @@ function TableOfContents({ items }: { items: TocItem[] }) {
   );
 }
 
-/** Lead form in the sidebar. Not wired to a backend yet; submitting shows the thank-you state. */
-function LeadCard() {
+/** Lead form in the sidebar; the article's title goes with the lead. */
+function LeadCard({ article }: { article: string }) {
   const [sent, setSent] = useState(false);
-  const submit = (e: FormEvent) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    const v = formValues(e.currentTarget);
+    setBusy(true);
+    setError(null);
+    try {
+      await submitLead({ source: "article", name: v.name, phone: v.phone, website: v.website, details: { article } });
+      setSent(true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
   return (
     <div className="rounded-lg bg-foreground px-5 py-6 text-right text-background lg:px-6 lg:py-7">
@@ -76,8 +89,10 @@ function LeadCard() {
         <form onSubmit={submit} className="mt-5 flex flex-col gap-3">
           <Input type="text" name="name" required placeholder="שם מלא" autoComplete="name" className="border-background/30 bg-background text-foreground fs-16" />
           <Input type="tel" name="phone" required placeholder="טלפון" autoComplete="tel" className="border-background/30 bg-background text-foreground fs-16" />
-          <Button type="submit" className="w-full py-3.5">
-            <span>שלחו לי הצעה</span>
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+          {error && <p role="alert" className="fs-15 font-medium text-clay">{error}</p>}
+          <Button type="submit" disabled={busy} className="w-full py-3.5">
+            <span>{busy ? "שולחים…" : "שלחו לי הצעה"}</span>
             <Icon name="ArrowLeft" size={16} />
           </Button>
         </form>
@@ -243,7 +258,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
           </article>
 
           <aside className="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start">
-            <LeadCard />
+            <LeadCard article={article.title} />
             <div className="rounded-lg border border-border bg-card px-5 py-5 text-right lg:px-6">
               <span className="block fs-18 font-bold text-foreground">מה אפשר לחדש?</span>
               <ul className="mt-3 flex flex-col">

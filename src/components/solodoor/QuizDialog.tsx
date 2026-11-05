@@ -13,6 +13,7 @@ import { quizAreas, quizStyles, type QuizArea, type QuizStyle } from "./data";
 import { quizModels } from "./shop/featured";
 import { useShop } from "./shop/useShop";
 import { useQuiz } from "./quiz-context";
+import { submitLead } from "./leads";
 
 /** 1 area -> 2 style -> 3 matching models -> 4 contact form (reached only on request). */
 type Step = 1 | 2 | 3 | 4;
@@ -69,8 +70,46 @@ export function QuizDialog() {
   const setField = (key: keyof typeof emptyForm) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  /** The last step sends the answers and the contact details as a lead. */
+  const send = async () => {
+    if (!form.phone.trim() && !form.mail.trim()) {
+      setError("צריך טלפון או אימייל כדי שנוכל לחזור אליכם.");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      await submitLead({
+        source: "quiz",
+        name: form.name,
+        phone: form.phone,
+        email: form.mail,
+        city: form.city,
+        message: form.msg,
+        details: {
+          area,
+          style,
+          width: form.w,
+          height: form.h,
+          quantity: form.qty,
+          image_note: fileName ? `הלקוח בחר תמונה (${fileName}) אבל היא לא נשלחת דרך האתר; כדאי לבקש אותה בוואטסאפ` : undefined,
+        },
+      });
+      setDone(true);
+      setForm(emptyForm);
+      setFileName("");
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const next = () => {
-    if (step === STEP_COUNT) setDone(true);
+    if (step === STEP_COUNT) void send();
     else setStep((s) => (s + 1) as Step);
   };
 
@@ -255,10 +294,16 @@ export function QuizDialog() {
                 </div>
               )}
 
+              {step === 4 && error && (
+                <p role="alert" className="mt-6 text-center fs-16 font-medium text-clay">
+                  {error}
+                </p>
+              )}
+
               <div className="mt-11 flex items-center justify-center gap-3">
                 {step !== 3 && (
-                  <Button type="button" onClick={next} className="px-10 leading-[normal] lg:px-16">
-                    <span>{step === STEP_COUNT ? "שליחת הפרטים" : "לשלב הבא"}</span>
+                  <Button type="button" onClick={next} disabled={busy} className="px-10 leading-[normal] lg:px-16">
+                    <span>{step === STEP_COUNT ? (busy ? "שולחים…" : "שליחת הפרטים") : "לשלב הבא"}</span>
                     <Icon name="ArrowLeft" size={16} />
                   </Button>
                 )}

@@ -8,6 +8,7 @@ import { Icon } from "../Icon";
 import { Pill } from "../primitives";
 import { DOORS_PHONE, DOORS_PHONE_HREF, doorTypes, quoteSteps } from "./data";
 import { whatsappHref } from "../whatsapp";
+import { formValues, submitLead } from "../leads";
 
 /**
  * The page's conversion block, on the single black band: how it works in three
@@ -16,11 +17,22 @@ import { whatsappHref } from "../whatsapp";
  */
 export function DoorsQuote() {
   const [doorType, setDoorType] = useState(doorTypes[0]);
-  // Not wired to a backend yet; submitting only shows the thank-you state.
   const [sent, setSent] = useState(false);
-  const submit = (e: FormEvent) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    const v = formValues(e.currentTarget);
+    setBusy(true);
+    setError(null);
+    try {
+      await submitLead({ source: "door_quote", name: v.name, phone: v.phone, website: v.website, details: { door_type: doorType } });
+      setSent(true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -96,8 +108,11 @@ export function DoorsQuote() {
                 </div>
               </fieldset>
 
-              <Button type="submit" className="mt-6 w-full py-4">
-                <span>קבלו הצעת מחיר</span>
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+              {error && <p role="alert" className="mt-4 fs-15 font-medium text-clay">{error}</p>}
+
+              <Button type="submit" disabled={busy} className="mt-6 w-full py-4">
+                <span>{busy ? "שולחים…" : "קבלו הצעת מחיר"}</span>
                 <Icon name="ArrowLeft" size={16} />
               </Button>
             </form>

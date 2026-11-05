@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport } from './routes/טפט-לפי-סגנון.index'
@@ -126,6 +127,11 @@ const AdminFaqRoute = AdminFaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPricesRoute = AdminPricesRouteImport.update({
   id: '/prices',
   path: '/prices',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -202,6 +209,7 @@ export interface FileRoutesByTo {
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
+  '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
+    | '/admin/leads'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
+    | '/admin/leads'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
+    | '/admin/leads'
     | '/admin/prices'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
@@ -441,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFaqRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/prices': {
       id: '/admin/prices'
       path: '/prices'
@@ -490,6 +509,7 @@ interface AdminRouteChildren {
   AdminIdRoute: typeof AdminIdRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminFaqRoute: typeof AdminFaqRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
   AdminPricesRoute: typeof AdminPricesRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductsHandleRoute: typeof AdminProductsHandleRoute
@@ -500,6 +520,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIdRoute: AdminIdRoute,
   AdminContentRoute: AdminContentRoute,
   AdminFaqRoute: AdminFaqRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
   AdminPricesRoute: AdminPricesRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProductsHandleRoute: AdminProductsHandleRoute,

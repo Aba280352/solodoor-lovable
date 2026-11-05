@@ -1,10 +1,11 @@
-import { Fragment } from "react";
+import { Fragment, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Icon } from "./Icon";
+import { formValues, submitLead } from "./leads";
 import { Container } from "./primitives";
 import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./shop/footer-anchors";
 import { shopSearchFor } from "./shop/links";
@@ -100,6 +101,65 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
   );
 }
 
+/** The footer's contact form: name, phone, email and the privacy consent. */
+function FooterLeadForm() {
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const v = formValues(e.currentTarget);
+    setBusy(true);
+    setError(null);
+    try {
+      await submitLead({ source: "footer", name: v.name, phone: v.phone, email: v.email, website: v.website });
+      setSent(true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submit} className="rounded-[0.5rem] border border-border bg-card px-5 pt-7 pb-7.5 text-right lg:px-7.5">
+      <span className="block fs-28 font-medium text-foreground">השאירו פרטים</span>
+      <span className="mt-1.5 block fs-16 text-foreground">ואנחנו נחזור אליכם בהקדם</span>
+      {sent ? (
+        <div role="status" className="mt-5 flex items-center gap-3 rounded-md bg-muted px-4 py-3.5">
+          <span className="inline-flex text-clay">
+            <Icon name="CheckCircle" size={22} />
+          </span>
+          <span className="fs-16 font-medium text-foreground">קיבלנו, נחזור אליכם בהקדם.</span>
+        </div>
+      ) : (
+        <>
+          <div className="mt-5 flex flex-col gap-3">
+            <Input type="text" name="name" required autoComplete="name" placeholder="שם מלא" className="bg-background fs-16" />
+            <Input type="tel" name="phone" required autoComplete="tel" placeholder="טלפון" className="bg-background fs-16" />
+            <Input type="email" name="email" autoComplete="email" placeholder="אימייל" className="bg-background fs-16" />
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+            {error && <p role="alert" className="fs-15 font-medium text-clay">{error}</p>}
+            <Button type="submit" disabled={busy} className="px-5 py-[0.9375rem]">
+              <span>{busy ? "שולחים…" : "שלחו פרטים"}</span>
+              <Icon name="ArrowLeft" size={15} />
+            </Button>
+          </div>
+          <label className="mt-4 flex cursor-pointer items-center gap-2.5 fs-15 text-foreground">
+            <input type="checkbox" name="privacy" required className="m-0 size-4 cursor-pointer accent-primary" />
+            <span>
+              אני מאשר/ת את{" "}
+              <Link to="/privacy-policy" target="_blank" className="border-b border-primary text-foreground">
+                מדיניות הפרטיות
+              </Link>
+            </span>
+          </label>
+        </>
+      )}
+    </form>
+  );
+}
+
 export function SiteFooter() {
   return (
     <footer data-reveal>
@@ -170,31 +230,7 @@ export function SiteFooter() {
               ))}
 
               <div id="contact" className="col-span-full flex scroll-mt-24 flex-col lg:col-span-1">
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="rounded-[0.5rem] border border-border bg-card px-5 pt-7 pb-7.5 text-right lg:px-7.5"
-                >
-                  <span className="block fs-28 font-medium text-foreground">השאירו פרטים</span>
-                  <span className="mt-1.5 block fs-16 text-foreground">ואנחנו נחזור אליכם בהקדם</span>
-                  <div className="mt-5 flex flex-col gap-3">
-                    <Input type="text" placeholder="שם מלא" className="bg-background fs-16" />
-                    <Input type="tel" placeholder="טלפון" className="bg-background fs-16" />
-                    <Input type="email" placeholder="אימייל" className="bg-background fs-16" />
-                    <Button type="submit" className="px-5 py-[0.9375rem]">
-                      <span>שלחו פרטים</span>
-                      <Icon name="ArrowLeft" size={15} />
-                    </Button>
-                  </div>
-                  <label className="mt-4 flex cursor-pointer items-center gap-2.5 fs-15 text-foreground">
-                    <input type="checkbox" className="m-0 size-4 cursor-pointer accent-primary" />
-                    <span>
-                      אני מאשר/ת את{" "}
-                      <Link to="/privacy-policy" target="_blank" className="border-b border-primary text-foreground">
-                        מדיניות הפרטיות
-                      </Link>
-                    </span>
-                  </label>
-                </form>
+                <FooterLeadForm />
               </div>
             </div>
 
