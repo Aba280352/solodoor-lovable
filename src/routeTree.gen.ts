@@ -32,6 +32,7 @@ import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char14
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport } from './routes/טפט-לפי-סגנון.$style'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin.products.index'
 import { Route as AdminProductsHandleRouteImport } from './routes/admin.products.$handle'
+import { Route as ApiPublicSubmitLeadRouteImport } from './routes/api/public/submit-lead'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -168,6 +169,11 @@ const AdminProductsHandleRoute = AdminProductsHandleRouteImport.update({
   path: '/products/$handle',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSubmitLeadRoute = ApiPublicSubmitLeadRouteImport.update({
+  id: '/api/public/submit-lead',
+  path: '/api/public/submit-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/טפט-לפי-סגנון': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products': typeof AdminProductsIndexRoute
 }
 export interface FileRoutesById {
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
 export interface FileRouteTypes {
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/טפט-לפי-סגנון/'
     | '/admin/products/$handle'
+    | '/api/public/submit-lead'
     | '/admin/products/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/טפט-לפי-סגנון'
     | '/admin/products/$handle'
+    | '/api/public/submit-lead'
     | '/admin/products'
   id:
     | '__root__'
@@ -318,6 +329,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/טפט-לפי-סגנון/'
     | '/admin/products/$handle'
+    | '/api/public/submit-lead'
     | '/admin/products/'
   fileRoutesById: FileRoutesById
 }
@@ -337,6 +349,7 @@ export interface RootRouteChildren {
   ProductSlugRoute: typeof ProductSlugRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
+  ApiPublicSubmitLeadRoute: typeof ApiPublicSubmitLeadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -502,6 +515,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsHandleRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/submit-lead': {
+      id: '/api/public/submit-lead'
+      path: '/api/public/submit-lead'
+      fullPath: '/api/public/submit-lead'
+      preLoaderRoute: typeof ApiPublicSubmitLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -552,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute,
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute:
     Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute,
+  ApiPublicSubmitLeadRoute: ApiPublicSubmitLeadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

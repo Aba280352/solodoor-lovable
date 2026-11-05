@@ -1,9 +1,7 @@
 /**
- * Sends a contact form to the edge function submit-lead, which stores it (table leads, shown at
- * /admin/leads) and emails the business. Every form on the site goes through here.
+ * Sends a contact form to the server route /api/public/submit-lead (src/lib/leads.server.ts), which stores
+ * it (table leads, shown at /admin/leads) and emails the business. Every form on the site goes through here.
  */
-import { supabase } from "@/integrations/supabase/client";
-
 export type LeadSource = "door_quote" | "quiz" | "article" | "footer";
 
 export interface LeadInput {
@@ -25,17 +23,20 @@ export const LEAD_ERROR = "השליחה לא הצליחה. אפשר לנסות �
 /** Sends one form. Throws an Error with a Hebrew message the form can show as is. */
 export async function submitLead(input: LeadInput): Promise<void> {
   const details = Object.fromEntries(Object.entries(input.details ?? {}).filter(([, v]) => v && v.trim()));
-  const { data, error } = await supabase.functions.invoke("submit-lead", {
-    body: { ...input, details, page_url: typeof window === "undefined" ? undefined : window.location.href },
-  });
-  if (data?.ok) return;
-  // A 4xx from the function carries a message meant for the visitor.
-  let message: string | undefined = data?.message;
-  const context = (error as { context?: Response } | null)?.context;
-  if (!message && context && typeof context.json === "function") {
-    message = await context.json().then((b: { message?: string }) => b?.message, () => undefined);
+  let result: { ok?: boolean; message?: string } | undefined;
+  try {
+    const res = await fetch("/api/public/submit-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...input, details, page_url: window.location.href }),
+    });
+    result = await res.json().catch(() => undefined);
+  } catch {
+    throw new Error(LEAD_ERROR);
   }
-  throw new Error(message || LEAD_ERROR);
+  if (result?.ok) return;
+  // A refusal carries a message meant for the visitor (bad phone, too many forms).
+  throw new Error(result?.message || LEAD_ERROR);
 }
 
 /** The values of a form element by field name, trimmed. */
