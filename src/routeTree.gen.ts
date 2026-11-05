@@ -20,6 +20,7 @@ import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } 
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501RouteImport } from './routes/ציפוי-מטבחים'
 import { Route as Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport } from './routes/שאלות-נפוצות'
+import { Route as Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501RouteImport } from './routes/שטיחי-pvc-מעוצבים'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
@@ -97,6 +98,14 @@ const Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Ch
       getParentRoute: () => rootRouteImport,
     } as any,
   )
+const Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route =
+  Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501RouteImport.update(
+    {
+      id: '/שטיחי-pvc-מעוצבים',
+      path: '/שטיחי-pvc-מעוצבים',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -166,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
+  '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
@@ -188,6 +198,7 @@ export interface FileRoutesByTo {
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
+  '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
@@ -212,6 +223,7 @@ export interface FileRoutesById {
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   '/ציפוי-מטבחים': typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
+  '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/faq': typeof AdminFaqRoute
@@ -237,6 +249,7 @@ export interface FileRouteTypes {
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
+    | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
@@ -259,6 +272,7 @@ export interface FileRouteTypes {
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
+    | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
@@ -282,6 +296,7 @@ export interface FileRouteTypes {
     | '/ציפוי-דלתות'
     | '/ציפוי-מטבחים'
     | '/שאלות-נפוצות'
+    | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
     | '/admin/faq'
@@ -306,6 +321,7 @@ export interface RootRouteChildren {
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
+  Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route: typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   ProductSlugRoute: typeof ProductSlugRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
@@ -388,6 +404,13 @@ declare module '@tanstack/react-router' {
       path: '/שאלות-נפוצות'
       fullPath: '/שאלות-נפוצות'
       preLoaderRoute: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/שטיחי-pvc-מעוצבים': {
+      id: '/שטיחי-pvc-מעוצבים'
+      path: '/שטיחי-pvc-מעוצבים'
+      fullPath: '/שטיחי-pvc-מעוצבים'
+      preLoaderRoute: typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -501,6 +524,8 @@ const rootRouteChildren: RootRouteChildren = {
     Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route,
   Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route:
     Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route,
+  Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route:
+    Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route,
   ProductSlugRoute: ProductSlugRoute,
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute:
     Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute,

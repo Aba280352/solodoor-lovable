@@ -21,6 +21,7 @@ export const Route = createFileRoute("/ציפוי-דלתות")({
       { property: "og:description", content: doorsSeo.description },
       { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://solodoor.co.il/ציפוי-דלתות" }],
   }),
   component: DoorsPage,
 });
