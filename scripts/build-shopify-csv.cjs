@@ -13,7 +13,7 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const IN = path.join(ROOT, "data", "catalog");
 const OUT = path.join(ROOT, "data", "shopify");
-const IMAGES = "https://solodoor-il.lovable.app/catalog-images/";
+const IMAGES = "https://solodoor.co.il/catalog-images/";
 const VENDOR = "סולודור";
 
 /* ───────────── CSV ───────────── */

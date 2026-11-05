@@ -28,7 +28,7 @@ const ONLINE_STORE_PUBLICATION = "gid://shopify/Publication/232500068510";
 /** Installed variants ship for free: the installer brings the material. */
 const INSTALL_DELIVERY_PROFILE = "gid://shopify/DeliveryProfile/110825963678";
 const VENDOR = "סולודור";
-const SITE = "https://solodoor-il.lovable.app";
+const SITE = "https://solodoor.co.il";
 const INSTALL_ADDON = "installation";
 const INSTALL_HANDLE = "addon-installation";
 
