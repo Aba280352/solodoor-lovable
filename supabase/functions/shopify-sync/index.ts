@@ -261,12 +261,18 @@ Deno.serve(async (req) => {
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-  // Only the owner, signed in on the site, may sync.
+  // Only an admin of the site (a row in admin_users), signed in on the site, may sync.
   const authorization = req.headers.get("Authorization") ?? "";
   const asCaller = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authorization } } });
   const { data: userData } = await asCaller.auth.getUser(authorization.replace(/^Bearer\s+/i, "") || undefined);
-  if (!userData?.user || userData.user.email?.toLowerCase() !== OWNER_EMAIL) {
-    return json(401, { ok: false, message: "יש להתחבר כבעלי האתר כדי לסנכרן." });
+  const callerEmail = userData?.user?.email?.toLowerCase();
+  let isAdmin = callerEmail === OWNER_EMAIL;
+  if (callerEmail && !isAdmin) {
+    const { data: row } = await createClient(supabaseUrl, serviceKey).from("admin_users").select("email").eq("email", callerEmail).maybeSingle();
+    isAdmin = !!row;
+  }
+  if (!isAdmin) {
+    return json(401, { ok: false, message: "יש להתחבר לניהול האתר כדי לסנכרן." });
   }
 
   const clientSecret = Deno.env.get("SHOPIFY_CLIENT_SECRET");

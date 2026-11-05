@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { Link, Navigate, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 
 import { Button } from "@/components/ui/button";
@@ -10,21 +10,21 @@ import { Icon } from "../Icon";
 import { LOGO_SRC } from "../data";
 import { db } from "./db";
 
-/** The site owner. The table admin_users and the database policies hold the same rule. */
+/** The site owner. Kept as a fallback should the table admin_users be unreachable. */
 export const OWNER_EMAIL = "barido101@gmail.com";
 
-/** "owner" sees the whole admin; "editor" (the client) sees the leads. Kept in the table admin_users. */
+/** Everyone listed in the table admin_users gets the same full admin; the database policies check the same list. */
 type Role = "owner" | "editor";
 
-/** The areas of the admin, in the order of the header, and who sees each. */
-const NAV: { to: "/admin/leads" | "/admin" | "/admin/products" | "/admin/prices" | "/admin/faq" | "/admin/content"; label: string; roles: Role[] }[] = [
-  { to: "/admin/leads", label: "פניות", roles: ["owner", "editor"] },
-  { to: "/admin", label: "מאמרים", roles: ["owner"] },
-  { to: "/admin/products", label: "מוצרים", roles: ["owner"] },
-  { to: "/admin/prices", label: "מחירים", roles: ["owner"] },
-  { to: "/admin/faq", label: "שאלות נפוצות", roles: ["owner"] },
-  { to: "/admin/content", label: "לשוניות", roles: ["owner"] },
-];
+/** The areas of the admin, in the order of the header. */
+const NAV = [
+  { to: "/admin/leads", label: "פניות" },
+  { to: "/admin", label: "מאמרים" },
+  { to: "/admin/products", label: "מוצרים" },
+  { to: "/admin/prices", label: "מחירים" },
+  { to: "/admin/faq", label: "שאלות נפוצות" },
+  { to: "/admin/content", label: "לשוניות" },
+] as const;
 
 /** Lets the signed-in user replace their password (a new account starts with a temporary one). */
 function PasswordForm({ onClose }: { onClose: () => void }) {
@@ -95,7 +95,6 @@ export function AdminGate({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [role, setRole] = useState<Role | null | undefined>(undefined);
   const [passwordOpen, setPasswordOpen] = useState(false);
-  const pathname = useLocation({ select: (l) => l.pathname });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -118,8 +117,6 @@ export function AdminGate({ children }: { children: ReactNode }) {
   if (session === undefined) return <div className="min-h-dvh bg-muted" />;
   if (!session) return <LoginForm />;
   if (role === undefined) return <div className="min-h-dvh bg-muted" />;
-  // The client's account only reaches the leads.
-  if (role === "editor" && !pathname.startsWith("/admin/leads")) return <Navigate to="/admin/leads" />;
   if (!role) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-muted px-5 text-center">
@@ -140,7 +137,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
               <img src={LOGO_SRC} alt="SOLODOOR" className="h-8" />
             </Link>
             <nav aria-label="אזורי הניהול" className="flex items-center gap-1">
-              {NAV.filter((item) => item.roles.includes(role)).map((item) => (
+              {NAV.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
