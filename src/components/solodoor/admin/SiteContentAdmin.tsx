@@ -11,6 +11,8 @@ import { BUSINESS_KEY, SETTINGS_KEY, seoKey, type SeoOverride } from "../content
 import { loadStatus } from "./content-db";
 import { ContentEditor, Counter, Field, compact } from "./content-editor";
 import { FooterSection, NavSection, PromoSection } from "./content-sections";
+import { PageSections } from "./section-editor";
+import { HOME_SECTIONS } from "../content/home";
 import { uploadCatalogImage } from "./db";
 
 /* ───────────── Business details ───────────── */
@@ -211,6 +213,7 @@ const TABS = [
   { key: "promo", label: "פס מבצעים" },
   { key: "nav", label: "תפריטים וקישורים" },
   { key: "footer", label: "פוטר" },
+  { key: "home", label: "דף הבית" },
   { key: "seo", label: "קידום בגוגל (SEO)" },
   { key: "settings", label: "מתג ראשי" },
 ] as const;
@@ -243,6 +246,7 @@ export function SiteContentAdmin() {
         {tab === "promo" && <PromoSection />}
         {tab === "nav" && <NavSection />}
         {tab === "footer" && <FooterSection />}
+        {tab === "home" && <PageSections sections={HOME_SECTIONS} />}
         {tab === "seo" && <SeoSection />}
         {tab === "settings" && <SettingsSection />}
       </div>

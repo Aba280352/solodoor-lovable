@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 import { Icon } from "./Icon";
 import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
-import { beforeAfterFigures, beforeAfterPairs } from "./data";
+import { HOME_BEFORE_AFTER, HOME_BEFORE_AFTER_DEFAULTS } from "./content/home";
+import { useSection } from "./content/sections";
 
 export interface BeforeAfterPair {
   name: string;
@@ -239,6 +240,7 @@ export function BeforeAfterCarousel({ pairs }: { pairs: BeforeAfterPair[] }) {
 }
 
 export function BeforeAfter() {
+  const c = useSection(HOME_BEFORE_AFTER, HOME_BEFORE_AFTER_DEFAULTS);
 
   const { ref: statsRef, progress } = useCountUp<HTMLDivElement>();
 
@@ -246,27 +248,27 @@ export function BeforeAfter() {
     <section data-reveal className="overflow-hidden pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <span className="fs-18 font-medium tracking-[0.02em] text-clay lg:fs-22">מה שהיה בעבר כבר לא יחזור...</span>
+          <span className="fs-18 font-medium tracking-[0.02em] text-clay lg:fs-22">{c.kicker}</span>
           <h2 className="mt-4.5 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-58">
-            עבודות סולודור לפני ואחרי
+            {c.title}
           </h2>
           <p className="mt-4 max-w-[66ch] fs-18 leading-[1.7] font-medium text-foreground">
-            פרויקטים אמיתיים של חידוש דלתות, מטבחים ומשטחים, לפני ואחרי תהליך הציפוי וההתקנה.
+            {c.text}
           </p>
         </div>
       </Container>
 
-      <BeforeAfterCarousel pairs={beforeAfterPairs} />
+      <BeforeAfterCarousel pairs={c.pairs} />
 
       <Container>
         <div
           ref={statsRef}
           className="-mx-5 mt-12 grid grid-cols-2 border-y border-border bg-background lg:-mx-27 lg:mt-16 lg:grid-cols-4"
         >
-          {beforeAfterFigures.map((figure) => (
-            <div key={figure.label} className="flex flex-col items-center gap-2 px-4.5 py-6 text-center lg:py-8.5">
+          {c.figures.map((figure, i) => (
+            <div key={i} className="flex flex-col items-center gap-2 px-4.5 py-6 text-center lg:py-8.5">
               <span className="fs-34 leading-none font-bold text-foreground lg:fs-44">
-                {Math.round(figure.to * progress)}
+                {Math.round((Number(figure.to) || 0) * progress)}
                 {figure.suffix}
               </span>
               <span className="fs-16 font-medium text-foreground">{figure.label}</span>
@@ -277,7 +279,7 @@ export function BeforeAfter() {
         <div className="mt-12 flex flex-col items-center gap-4">
           <Button asChild className="w-full px-11 py-4.5 lg:w-auto">
             <Link to="/טפט-לפי-סגנון/$style" params={{ style: "מומלצים" }}>
-              <span>לצפייה בטפטים המומלצים שלנו</span>
+              <span>{c.cta}</span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>

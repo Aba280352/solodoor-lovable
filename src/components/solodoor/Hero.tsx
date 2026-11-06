@@ -8,7 +8,8 @@ import { Icon } from "./Icon";
 import { useMotionStopped } from "./accessibility/a11y";
 import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
-import { heroSlides, heroTrust } from "./data";
+import { HOME_HERO, HOME_HERO_DEFAULTS } from "./content/home";
+import { shownLabel, useSection } from "./content/sections";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
 
@@ -20,8 +21,10 @@ const slideTransition =
 export function Hero() {
   const [slide, setSlide] = useState(0);
   const { openQuiz } = useQuiz();
+  const c = useSection(HOME_HERO, HOME_HERO_DEFAULTS);
+  const heroSlides = c.slides;
   const count = heroSlides.length;
-  const current = heroSlides[slide];
+  const current = heroSlides[slide % count];
 
   // Auto-advance; the timer restarts whenever the slide changes (also by hand).
   // With "stop animations" on, the slides change by hand only.
@@ -38,12 +41,12 @@ export function Hero() {
       <div className="relative h-[52vw] overflow-hidden bg-muted lg:absolute lg:inset-x-0 lg:top-0 lg:h-162.5">
         {heroSlides.map((s, i) => (
           <img
-            key={s.img}
+            key={s.tag}
             src={s.img}
             alt={`${s.l1} ${s.l2}`}
             className={cn(
               "absolute inset-0 block size-full origin-left object-cover object-left will-change-[opacity,transform,filter]",
-              i === slide ? "scale-100 opacity-100 blur-0 brightness-100" : "scale-103 opacity-0 blur-[6px] brightness-104",
+              i === slide % count ? "scale-100 opacity-100 blur-0 brightness-100" : "scale-103 opacity-0 blur-[6px] brightness-104",
             )}
             style={{ transition: slideTransition }}
           />
@@ -52,7 +55,7 @@ export function Hero() {
 
       <div className="relative lg:grid lg:h-162.5 lg:grid-cols-2 lg:items-stretch">
         <div className="flex min-w-0 flex-col items-center justify-center px-5 pt-5 pb-6 text-center lg:px-22 lg:py-12">
-          <Pill className="flex-none tracking-[0.16em] whitespace-nowrap">{current.tag}</Pill>
+          <Pill className="flex-none tracking-[0.16em] whitespace-nowrap">{shownLabel(current, "tag")}</Pill>
 
           <h1 className="mt-3 max-w-[24ch] fs-30 leading-[1.12] font-bold tracking-[-0.02em] text-foreground lg:mt-6.5 lg:fs-54">
             <span className="block">{current.l1}</span>
@@ -60,16 +63,16 @@ export function Hero() {
           </h1>
 
           <p className="mt-3 max-w-[34ch] fs-16 leading-[1.6] text-foreground lg:mt-5.5 lg:fs-18">
-            לא בטוח מה לבחור?{" "}
+            {c.quizPrompt}{" "}
             <a href="#" onClick={openQuiz} className="border-b border-primary pb-px text-foreground">
-              לשאלון הכוונה
+              {c.quizLink}
             </a>
           </p>
 
           <div className="mt-4 flex w-full flex-col items-stretch gap-2 lg:mt-9 lg:w-auto lg:gap-3 lg:flex-row lg:items-center">
             <Button asChild className="flex-none px-7 py-3 lg:py-[0.9375rem]">
               <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                <span>להתייעצות בווצאפ</span>
+                <span>{c.whatsappLabel}</span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
             </Button>
@@ -82,7 +85,7 @@ export function Hero() {
           </div>
 
           <div className="mt-5 flex w-full items-start justify-center gap-3 border-t border-foreground/14 pt-4 lg:mt-14 lg:gap-6 lg:pt-8.5">
-            {heroTrust.map((item) => (
+            {c.trust.map((item) => (
               <div key={item.label} className="flex flex-1 flex-col items-center gap-1.5 lg:gap-2.5">
                 <span className="inline-flex text-foreground [&_svg]:size-7 lg:[&_svg]:size-[2.125rem]!">
                   <Icon name={item.icon} size={34} />
@@ -118,26 +121,26 @@ export function Hero() {
         <div className="mx-auto grid h-13 max-w-330 grid-cols-[1fr_auto_1fr] items-center px-5 lg:px-12">
           <div className="flex items-center justify-start gap-3 text-foreground">
             <span dir="ltr" className="hidden fs-15 font-medium tracking-[0.18em] whitespace-nowrap lg:inline">
-              MORE THAN A DOOR
+              {c.barEnglish}
             </span>
           </div>
           <div className="flex items-center gap-[0.5625rem]">
             {heroSlides.map((s, i) => (
               <button
-                key={s.img}
+                key={s.tag}
                 type="button"
                 aria-label={`באנר ${i + 1}`}
                 onClick={() => setSlide(i)}
                 className={cn(
                   "h-[0.4375rem] cursor-pointer rounded-full p-0 transition-[width,background-color] duration-240 ease-standard",
-                  i === slide ? "w-[1.375rem] bg-primary" : "w-[0.4375rem] bg-sand-deep",
+                  i === slide % count ? "w-[1.375rem] bg-primary" : "w-[0.4375rem] bg-sand-deep",
                 )}
               />
             ))}
           </div>
           <div className="flex items-center justify-end gap-3">
             <span className="hidden fs-15 font-medium tracking-[0.18em] whitespace-nowrap text-foreground lg:inline">
-              ציפוי חדש. התחלה יפה יותר.
+              {c.barHebrew}
             </span>
           </div>
         </div>

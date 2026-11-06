@@ -10,6 +10,8 @@ import type { Product } from "./data";
 import { bestSellerTabs } from "./shop/featured";
 import { useShop } from "./shop/useShop";
 import { useQuiz } from "./quiz-context";
+import { HOME_BEST_SELLERS, HOME_BEST_SELLERS_DEFAULTS } from "./content/home";
+import { useSection } from "./content/sections";
 
 export function BestSellers() {
   const { shop } = useShop();
@@ -17,6 +19,7 @@ export function BestSellers() {
   const [tab, setTab] = useState<string>();
   const [zoomed, setZoomed] = useState<Product | null>(null);
   const { openQuiz } = useQuiz();
+  const c = useSection(HOME_BEST_SELLERS, HOME_BEST_SELLERS_DEFAULTS);
   const active = bestSellers.find((group) => group.tab === tab) ?? bestSellers[0];
   if (!active) return null;
 
@@ -24,12 +27,12 @@ export function BestSellers() {
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <Pill className="px-5.5 py-[0.5625rem] tracking-[0.14em] whitespace-nowrap">המובחרים ביותר אצלנו</Pill>
+          <Pill className="px-5.5 py-[0.5625rem] tracking-[0.14em] whitespace-nowrap">{c.pill}</Pill>
           <h2 className="mt-5.5 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-58">
-            הדגמים הכי נמכרים של שנת 2026
+            {c.title}
           </h2>
           <p className="mt-4 max-w-[70ch] fs-18 leading-[1.7] font-medium text-foreground">
-            עיצובים שמשדרגים כל חלל באיכות בלתי מתפשרת ומתאמים בדיוק לסגנון החיים שלכם.
+            {c.text}
           </p>
         </div>
 
@@ -56,13 +59,13 @@ export function BestSellers() {
         <div className="mt-10 flex flex-col items-stretch justify-center gap-3.5 lg:mt-13 lg:flex-row lg:items-center">
           <Button asChild variant="secondary" className="py-4.5">
             <Link to="/חנות">
-              <span>צפייה בכל החנות</span>
+              <span>{c.shopCta}</span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>
           <Button asChild className="px-5 py-4.5 whitespace-normal lg:px-10 lg:whitespace-nowrap">
             <a href="#" onClick={openQuiz}>
-              <span>לשאלון הכוונה לבחירת הטפט שלכם</span>
+              <span>{c.quizCta}</span>
               <Icon name="ArrowLeft" size={16} />
             </a>
           </Button>

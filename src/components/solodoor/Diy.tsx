@@ -7,11 +7,8 @@ import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { QuantityCalculator } from "./QuantityCalculator";
 import { YouTubePlayer } from "./shop/YouTubePlayer";
-import { DIY_BG, DIY_VIDEO, KITCHEN_DOOR_VIDEO, diySteps, diyTools } from "./data";
-
-/** The kitchen installation video, the same one the kitchen product pages open. */
-const KITCHEN_VIDEO_ID = "HfiHdxP-eRI";
-const KITCHEN_VIDEO_TITLE = "איך להדביק טפט על מטבח";
+import { HOME_DIY, HOME_DIY_DEFAULTS } from "./content/home";
+import { useSection } from "./content/sections";
 
 /** A pill on the section's photo that opens a video in a pop-up. */
 function VideoButton({ label, id, title }: { label: string; id: string; title: string }) {
@@ -47,29 +44,32 @@ function VideoButton({ label, id, title }: { label: string; id: string; title: s
 }
 
 export function Diy() {
+  const c = useSection(HOME_DIY, HOME_DIY_DEFAULTS);
+  const diySteps = c.steps;
+  const diyTools = c.tools;
   return (
     <section
       id="diy"
       data-reveal
       className="scroll-mt-16 bg-secondary bg-cover bg-center bg-no-repeat pt-14 pb-16 lg:pt-24 lg:scroll-mt-20 lg:pb-26"
-      style={{ backgroundImage: `url(${DIY_BG})` }}
+      style={{ backgroundImage: `url(${c.background})` }}
     >
       <div className="mx-auto flex max-w-330 flex-col gap-6 px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-stretch lg:gap-14 lg:px-12">
         <div className="contents text-right lg:flex lg:flex-col lg:items-start lg:justify-between lg:gap-10">
           <div className="order-1 flex flex-col items-start">
-            <Pill className="px-5.5 py-[0.5625rem] fs-16">DIY · טפטים להדבקה עצמית</Pill>
+            <Pill className="px-5.5 py-[0.5625rem] fs-16">{c.pill}</Pill>
             <h2 className="mt-6.5 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-background lg:fs-62">
-              מראה חדש לבית.
+              {c.title1}
               <br />
-              עם הידיים שלכם.
+              {c.title2}
             </h2>
             <p className="mt-5.5 max-w-[44ch] fs-18 leading-[1.8] font-light text-background">
-              טפטים להדבקה עצמית לחידוש דלתות, ארונות ורהיטים. בוחרים את הסגנון שלכם ומתחילים ליצור.
+              {c.text}
             </p>
             <div className="mt-8 hidden items-center gap-3.5 lg:flex">
               <Button asChild size="xl" className="gap-3 py-5">
                 <Link to="/חנות">
-                  <span>לבחירת הטפט שלכם</span>
+                  <span>{c.cta}</span>
                   <Icon name="ArrowLeft" size={18} />
                 </Link>
               </Button>
@@ -80,7 +80,7 @@ export function Diy() {
           <div className="order-5 mx-auto flex w-full justify-between border-t border-background/55 pt-7 lg:w-fit lg:justify-start">
             {diySteps.map((step, i) => (
               <div
-                key={step.num}
+                key={i}
                 className={cn(
                   "flex flex-1 flex-col items-center gap-3 px-2 py-1 lg:flex-none lg:px-8",
                   i === 0 && "ps-0 lg:ps-0",
@@ -88,7 +88,7 @@ export function Diy() {
                 )}
               >
                 <span className="inline-flex size-11 items-center justify-center rounded-full bg-background fs-16 font-bold text-foreground">
-                  {step.num}
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="mt-1 inline-flex text-background">
                   <Icon name={step.icon} size={38} />
@@ -101,21 +101,21 @@ export function Diy() {
 
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-5">
           <div className="relative order-2 aspect-[878/490] overflow-hidden rounded-xl bg-muted">
-            <img src={DIY_VIDEO} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
+            <img src={c.videoImage} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
             <div className="absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5 lg:inset-x-5.5 lg:bottom-5.5 lg:gap-3">
-              <VideoButton label="צפו איך זה עובד" id={KITCHEN_VIDEO_ID} title={KITCHEN_VIDEO_TITLE} />
-              <VideoButton label="השיטה הארוכה" id={KITCHEN_DOOR_VIDEO.id} title={KITCHEN_DOOR_VIDEO.title} />
+              <VideoButton label={c.video1Label} id={c.video1.id} title={c.video1.title} />
+              <VideoButton label={c.video2Label} id={c.video2.id} title={c.video2.title} />
             </div>
           </div>
 
           <div className="order-3 rounded-xl bg-background px-4 pt-5.5 pb-6 lg:px-6">
             <span className="block text-right fs-18 font-bold text-foreground lg:fs-22">
-              הציוד שצריך להתקנת טפטים מושלמת בבית שלכם
+              {c.toolsTitle}
             </span>
             <div className="mt-3.5 flex items-start">
               {diyTools.map((tool, i) => (
                 <div
-                  key={tool.name}
+                  key={i}
                   className={cn(
                     "flex flex-[1_1_0] flex-col items-center gap-2.5 px-2 lg:px-4",
                     i < diyTools.length - 1 && "border-e border-border",
@@ -131,7 +131,7 @@ export function Diy() {
         <QuantityCalculator className="order-4 w-full lg:hidden" />
         <Button asChild size="xl" className="order-6 mt-2 w-full gap-3 py-5 lg:hidden">
           <Link to="/חנות">
-            <span>לבחירת הטפט שלכם</span>
+            <span>{c.cta}</span>
             <Icon name="ArrowLeft" size={18} />
           </Link>
         </Button>

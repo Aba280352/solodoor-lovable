@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { Link } from "@tanstack/react-router";
 
@@ -7,15 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "./Icon";
 import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
-import { processSteps } from "./data";
-
-/** Three copies of the steps, so the track can loop endlessly in both directions. */
-const loop = [...processSteps, ...processSteps, ...processSteps];
+import { HOME_PROCESS, HOME_PROCESS_DEFAULTS } from "./content/home";
+import { useSection } from "./content/sections";
 
 /** Auto-scroll speed, in design pixels per second. */
 const SPEED = 30;
 
 export function Process() {
+  const c = useSection(HOME_PROCESS, HOME_PROCESS_DEFAULTS);
+  const processSteps = c.steps;
+  /** Three copies of the steps, so the track can loop endlessly in both directions. */
+  const loop = useMemo(() => [...processSteps, ...processSteps, ...processSteps], [processSteps]);
+  const stepCount = useRef(processSteps.length);
+  stepCount.current = processSteps.length;
   const trackRef = useRef<HTMLDivElement>(null);
   const hover = useRef(false);
   const jumping = useRef(false);
@@ -26,7 +30,7 @@ export function Process() {
     const cards = trackRef.current?.querySelectorAll<HTMLElement>("[data-step]");
     if (!cards || cards.length < 2) return { step: 0, set: 0 };
     const step = Math.abs(cards[1].offsetLeft - cards[0].offsetLeft);
-    return { step, set: step * processSteps.length };
+    return { step, set: step * stepCount.current };
   };
 
   // The track scrolls right-to-left, so scrollLeft runs from 0 down to negative
@@ -111,22 +115,22 @@ export function Process() {
               <span className="inline-flex text-clay">
                 <Icon name="Award" size={38} />
               </span>
-              <span className="fs-30 leading-none font-bold text-foreground">200+</span>
-              <span className="fs-15 font-bold whitespace-nowrap text-foreground">עיצובים ייחודיים</span>
+              <span className="fs-30 leading-none font-bold text-foreground">{c.badgeNumber}</span>
+              <span className="fs-15 font-bold whitespace-nowrap text-foreground">{c.badgeLabel}</span>
             </div>
             <div className="flex flex-col gap-2.5 text-center lg:text-right">
-              <span className="fs-15 font-bold tracking-[0.16em] text-clay">תקן העבודה של סולודור</span>
+              <span className="fs-15 font-bold tracking-[0.16em] text-clay">{c.standardTitle}</span>
               <span className="max-w-[34ch] fs-18 leading-[1.7] font-medium text-foreground">
-                התקנה מקצועית בפריסה רחבה · ייעוץ ללא התחייבות · ליווי עד לתוצאה בבית.
+                {c.standardText}
               </span>
             </div>
           </div>
 
           <div className="order-1 flex flex-col items-start text-right">
-            <h2 className="fs-36 leading-[1.05] font-bold tracking-[-0.02em] text-foreground lg:fs-62">איך זה עובד?</h2>
-            <p className="mt-3 fs-20 font-medium text-foreground lg:fs-22">מהבחירה הראשונה ועד החידוש בבית</p>
+            <h2 className="fs-36 leading-[1.05] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{c.title}</h2>
+            <p className="mt-3 fs-20 font-medium text-foreground lg:fs-22">{c.subtitle}</p>
             <p className="mt-3.5 max-w-[60ch] fs-18 leading-[1.7] text-foreground lg:h-[3.1875rem] lg:w-98">
-              תהליך פשוט, ברור ומדויק לחידוש דלתות ומשטחים בעזרת חיפוי דקורטיבי בהדבקה עצמית.
+              {c.text}
             </p>
           </div>
         </div>
@@ -151,7 +155,7 @@ export function Process() {
                 <CoverImage src={step.img} alt={step.name} />
               </div>
               <span className="mt-6.5 inline-flex size-9.5 items-center justify-center rounded-full bg-primary fs-16 font-bold tracking-[0.04em] text-primary-foreground">
-                {step.num}
+                {String((i % processSteps.length) + 1).padStart(2, "0")}
               </span>
               <span className="mt-5.5 fs-20 font-medium text-foreground">{step.name}</span>
               <span className="mt-2.5 fs-16 leading-[1.6] text-foreground">{step.desc}</span>
@@ -173,7 +177,7 @@ export function Process() {
           </div>
           <Button asChild className="order-2 px-6 py-4.5 lg:order-1 lg:px-17">
             <Link to="/שאלות-נפוצות">
-              <span>לשאלות ותשובות על התהליך</span>
+              <span>{c.cta}</span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>

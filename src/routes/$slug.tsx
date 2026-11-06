@@ -1,15 +1,21 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+
+import { encodeTarget, oldSiteRedirect } from "@/components/solodoor/content/old-site";
 
 import { PageShell } from "@/components/solodoor/PageShell";
 import { BlogPost } from "@/components/solodoor/blog/BlogPost";
 import { AUTHOR, SITE, articleImage, articleUrl, fetchArticle, fetchLatestArticles } from "@/components/solodoor/blog/articles";
 
 // Articles live at the site root, exactly like on the old site (solodoor.co.il/<slug>).
-// Fixed pages are matched first; anything else that is not an article is a 404.
+// Fixed pages are matched first; an old-site address (/thanks, /feed...) moves to its new page; anything else is a 404.
 export const Route = createFileRoute("/$slug")({
   loader: async ({ params }) => {
     const article = await fetchArticle(params.slug);
-    if (!article) throw notFound();
+    if (!article) {
+      const target = oldSiteRedirect(`/${params.slug}`);
+      if (target) throw redirect({ href: encodeTarget(target), statusCode: 301 });
+      throw notFound();
+    }
     const latest = await fetchLatestArticles(4);
     return { article, related: latest.filter((a) => a.id !== article.id).slice(0, 3) };
   },
