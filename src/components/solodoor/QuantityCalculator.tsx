@@ -46,7 +46,21 @@ const units_: { value: Unit; label: string }[] = [
  * "How much do I need?" The covered surface is cut into vertical strips of one
  * roll width, so the order length is strips × height × quantity (+ waste).
  */
-export function QuantityCalculator({ className }: { className?: string }) {
+export function QuantityCalculator({
+  className,
+  rollWidthCm,
+  minMeters,
+  onApply,
+}: {
+  className?: string;
+  /** The real roll width of the product (the product page knows it); the general default otherwise. */
+  rollWidthCm?: number | null;
+  /** The smallest order, so the applied quantity is never below it. */
+  minMeters?: number;
+  /** On a product page: the result goes straight into the quantity, and the trigger is a small link. */
+  onApply?: (meters: number) => void;
+}) {
+  const ROLL = rollWidthCm && rollWidthCm > 0 ? rollWidthCm : ROLL_WIDTH_CM;
   // A standard door to start with, so the answer shows at once; the fields are real values, not hints.
   const [width, setWidth] = useState("90");
   const [height, setHeight] = useState("210");
@@ -62,7 +76,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
   const units = Math.max(1, Math.round(toNumber(qty)) || 1);
 
   const ready = w > 0 && h > 0;
-  const strips = ready ? Math.ceil(w / ROLL_WIDTH_CM) * units : 0;
+  const strips = ready ? Math.ceil(w / ROLL) * units : 0;
   const netMeters = (strips * h * HEIGHT_FACTOR) / 100;
   const orderMeters = ready ? roundUpTenth(netMeters * (waste ? 1 + WASTE_RATE : 1)) : 0;
 
@@ -87,10 +101,17 @@ export function QuantityCalculator({ className }: { className?: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button" variant="light" size="xl" className={cn("gap-3 py-5", className)}>
-          <Icon name="Expand" size={18} />
-          <span>מחשבון כמות</span>
-        </Button>
+        {onApply ? (
+          <button type="button" className={cn("inline-flex w-fit cursor-pointer items-center gap-2 border-b border-primary pb-0.5 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay", className)}>
+            <Icon name="Expand" size={15} />
+            <span>לא בטוחים כמה מטר צריך? למחשבון הכמות</span>
+          </button>
+        ) : (
+          <Button type="button" variant="light" size="xl" className={cn("gap-3 py-5", className)}>
+            <Icon name="Expand" size={18} />
+            <span>מחשבון כמות</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
@@ -161,7 +182,7 @@ export function QuantityCalculator({ className }: { className?: string }) {
                 {formatMeters(orderMeters)} <span className="fs-20 font-medium">מטר אורך</span>
               </span>
               <span className="mt-2 block fs-15 leading-[1.6] text-foreground">
-                {strips} {strips === 1 ? "פס" : "פסים"} ברוחב {ROLL_WIDTH_CM} ס"מ, {formatMeters(netMeters, 2)} מטר נטו
+                {strips} {strips === 1 ? "פס" : "פסים"} ברוחב {ROLL} ס"מ, {formatMeters(netMeters, 2)} מטר נטו
                 {waste ? " + תוספת לחיתוכים" : ""}
               </span>
             </>
@@ -170,14 +191,23 @@ export function QuantityCalculator({ className }: { className?: string }) {
           )}
         </div>
 
-        <DialogClose asChild>
-          <Button asChild className="mt-5 w-full py-4">
-            <Link to="/חנות" search={{ cat: "door" }}>
-              <span>לכל סוגי הטפטים שלנו</span>
+        {onApply ? (
+          <DialogClose asChild>
+            <Button type="button" disabled={!ready} onClick={() => onApply(Math.max(minMeters ?? 0, orderMeters))} className="mt-5 w-full py-4">
+              <span>{ready ? `להזמנת ${formatMeters(Math.max(minMeters ?? 0, orderMeters))} מטר` : "הזינו מידות"}</span>
               <Icon name="ArrowLeft" size={16} />
-            </Link>
-          </Button>
-        </DialogClose>
+            </Button>
+          </DialogClose>
+        ) : (
+          <DialogClose asChild>
+            <Button asChild className="mt-5 w-full py-4">
+              <Link to="/חנות" search={{ cat: "door" }}>
+                <span>לכל סוגי הטפטים שלנו</span>
+                <Icon name="ArrowLeft" size={16} />
+              </Link>
+            </Button>
+          </DialogClose>
+        )}
         <Button asChild variant="secondary" className="mt-3 w-full py-4">
           <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
             <span>להתייעצות איתנו בווצאפ</span>

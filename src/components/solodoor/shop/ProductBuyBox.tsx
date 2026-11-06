@@ -11,6 +11,7 @@ import { INSTALL_SKU, installPrices, splitSides } from "./install-pricing";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
 import { TermsDialog } from "../legal/TermsDialog";
+import { QuantityCalculator } from "../QuantityCalculator";
 
 /** Metres are sold to the nearest ten centimetres. */
 const METRE_PRECISION = 0.1;
@@ -342,6 +343,16 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             </span>
           )}
         </div>
+        {perMeter && (
+          <QuantityCalculator
+            rollWidthCm={application?.roll_width_cm}
+            minMeters={min}
+            onApply={(meters) => {
+              setQty(meters);
+              setDoubleChoice(null);
+            }}
+          />
+        )}
         {isWallpaper && application?.measuring_tip && (
           <span className="flex items-start gap-2 fs-15 leading-[1.6] text-foreground">
             <span className="mt-0.5 inline-flex text-clay">
