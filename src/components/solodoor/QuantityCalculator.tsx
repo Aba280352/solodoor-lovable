@@ -102,10 +102,10 @@ export function QuantityCalculator({
     <Dialog>
       <DialogTrigger asChild>
         {onApply ? (
-          <button type="button" className={cn("inline-flex w-fit cursor-pointer items-center gap-2 border-b border-primary pb-0.5 fs-15 font-medium text-foreground transition-colors duration-160 ease-standard hover:text-clay", className)}>
-            <Icon name="Expand" size={15} />
-            <span>לא בטוחים כמה מטר צריך? למחשבון הכמות</span>
-          </button>
+          <Button type="button" variant="secondary" className={cn("w-full gap-2.5 py-3 fs-16 font-semibold lg:w-fit lg:px-6", className)}>
+            <Icon name="Expand" size={18} />
+            <span>מחשבון כמות: כמה מטר אני צריך?</span>
+          </Button>
         ) : (
           <Button type="button" variant="light" size="xl" className={cn("gap-3 py-5", className)}>
             <Icon name="Expand" size={18} />
