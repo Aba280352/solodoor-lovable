@@ -16,7 +16,7 @@ export const DOORS_HERO: SectionDef = {
   page: PAGE,
   fields: [
     T("pill", "תגית"),
-    T("title", "כותרת ראשית (H1)"),
+    { name: "title", label: "כותרת ראשית (H1)", type: "text", hint: "זו הכותרת שגוגל קורא ראשונה. כדאי שתמיד יופיעו בה המילים 'ציפוי דלתות' או 'הדלת'." },
     A("text", "פסקה"),
     T("quoteCta", "כפתור הצעת מחיר"),
     T("whatsappLabel", "כפתור וואטסאפ"),

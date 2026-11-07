@@ -432,7 +432,7 @@ export function SectionEditor({
                   const main = p === element.field;
                   return (
                     <div key={p} data-leaf={p} className={cn(main && paths.length > 1 && "rounded-md ring-2 ring-secondary ring-offset-4 ring-offset-card")}>
-                      <Field label={paths.length > 1 ? r.field.label : r.label}>
+                      <Field label={paths.length > 1 ? r.field.label : r.label} hint={"hint" in r.field ? r.field.hint : undefined}>
                         <FieldInput field={r.field} value={r.get(value)} original={r.original} big={main} onChange={(x) => set(r.set(value, x))} />
                       </Field>
                     </div>

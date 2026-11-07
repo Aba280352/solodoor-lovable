@@ -147,7 +147,7 @@ function NavigatorPanel({ path, sections, selected, onPick, onLive }: { path: st
     <ContentEditor<LayoutOverride>
       contentKey={layoutKey(path)}
       title="ניווט: סדר האזורים"
-      intro="לחיצה על שם קופצת לאזור. החיצים משנים סדר, והתיבות מסתירות אזור בטלפון או במחשב (אזור מוסתר מוצג בעורך חלש)."
+      intro="לחיצה על שם קופצת לאזור. החיצים משנים סדר, והתיבות מסתירות אזור בטלפון או במחשב (אזור מוסתר מוצג בעורך חלש). שימו לב: גוגל קורא את גרסת הטלפון, אז טקסט חשוב לא כדאי להסתיר בטלפון."
       onLiveChange={onLive}
       compact
       prepare={(value) => ({ data: { order: value.order, hide: value.hide } })}

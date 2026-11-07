@@ -17,7 +17,7 @@ export const KITCHEN_HERO: SectionDef = {
   page: PAGE,
   fields: [
     T("pill", "תגית"),
-    T("title", "כותרת ראשית (H1)"),
+    { name: "title", label: "כותרת ראשית (H1)", type: "text", hint: "הדף הזה מדורג ראשון בגוגל על 'ציפוי מטבחים'. מומלץ לא לשנות את הכותרת הזו." },
     T("subtitle", "כותרת משנה"),
     T("whatsappLabel", "כפתור וואטסאפ"),
     T("catalogCta", "כפתור לקטלוג"),
