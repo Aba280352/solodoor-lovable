@@ -10,6 +10,9 @@ import { Container, Pill } from "../primitives";
 import { surfaceProducts } from "../shop/featured";
 import { useShop } from "../shop/useShop";
 import { KITCHEN_CATALOG_PDF } from "./data";
+import { KITCHEN_CATALOG, KITCHEN_CATALOG_DEFAULTS } from "../content/kitchen";
+import { useSection } from "../content/sections";
+import { EF, useEditMark } from "../content/layout";
 
 /**
  * "קטלוג הציפויים של סולודור למטבח": the catalogue pitch, then sample kitchen
@@ -19,6 +22,7 @@ import { KITCHEN_CATALOG_PDF } from "./data";
 export function KitchenCatalog() {
   const [zoomed, setZoomed] = useState<Product | null>(null);
   const { shop } = useShop();
+  const c = useSection(KITCHEN_CATALOG, KITCHEN_CATALOG_DEFAULTS);
   const kitchenProducts = useMemo(() => (shop ? surfaceProducts(shop, "kitchen") : []), [shop]);
 
   return (
@@ -26,30 +30,26 @@ export function KitchenCatalog() {
       <Container>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20">
           <div className="text-right">
-            <Pill className="px-5 py-2 fs-16">מכניסים אתכם בדרך חדשה.</Pill>
+            <Pill className="px-5 py-2 fs-16"><EF f="pill">{c.pill}</EF></Pill>
             <h2 className="mt-4 fs-34 leading-[1.08] font-bold tracking-[-0.02em] text-balance text-foreground lg:mt-5 lg:fs-62">
-              קטלוג הציפויים של סולודור למטבח
+              <EF f="title">{c.title}</EF>
             </h2>
           </div>
 
           <div className="text-right">
-            <h3 className="fs-24 leading-[1.2] font-bold text-foreground lg:fs-30">קטלוג ציפויי מטבחים</h3>
+            <h3 className="fs-24 leading-[1.2] font-bold text-foreground lg:fs-30"><EF f="subtitle">{c.subtitle}</EF></h3>
             <p className="mt-4 fs-20 leading-[1.6] font-medium text-pretty text-foreground lg:mt-5 lg:fs-22">
-              ציפויי המטבח של סולודור הם הדרך הקלה, האסתטית והמהירה לרענן את מראה המטבח, מבלי לשבור קירות או
-              להחליף ארונות.
+              <EF f="lead">{c.lead}</EF>
             </p>
             <p className="mt-4 fs-18 leading-[1.85] text-pretty text-foreground">
-              הקטלוג שלנו כולל מגוון עשיר של ציפויים במגוון טקסטורות, צבעים וסגנונות: מודרני, קלאסי, תעשייתי,
-              נקי או צבעוני. הציפויים מותאמים אישית ומיוצרים מחומרים איכותיים ועמידים במיוחד לחום, רטיבות
-              ושימוש יומיומי.
+              <EF f="p1">{c.p1}</EF>
             </p>
             <p className="mt-4 fs-18 leading-[1.85] text-pretty text-foreground">
-              בחרו את הסגנון שהכי מדבר אליכם, והתאימו את הציפוי לאווירה שאתם רוצים ליצור בבית. שדרוג המטבח
-              שלכם מתחיל כאן.
+              <EF f="p2">{c.p2}</EF>
             </p>
             <Button asChild className="mt-7 w-full px-12 lg:w-auto">
               <a href={KITCHEN_CATALOG_PDF} target="_blank" rel="noopener">
-                <span>צפייה בקטלוג</span>
+                <span><EF f="cta">{c.cta}</EF></span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
             </Button>
@@ -67,7 +67,7 @@ export function KitchenCatalog() {
       <div className="mt-10 flex justify-center px-5 lg:mt-14">
         <Button asChild variant="secondary" className="w-full px-12 lg:w-auto">
           <Link to="/חנות" search={{ cat: "kitchen" }}>
-            <span>לכל ציפויי המטבח</span>
+            <span><EF f="allCta">{c.allCta}</EF></span>
             <Icon name="ArrowLeft" size={16} />
           </Link>
         </Button>

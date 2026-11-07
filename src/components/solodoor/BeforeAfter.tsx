@@ -10,7 +10,7 @@ import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { HOME_BEFORE_AFTER, HOME_BEFORE_AFTER_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 
 export interface BeforeAfterPair {
   name: string;
@@ -71,7 +71,9 @@ function useCountUp<T extends HTMLElement>(duration = 1600) {
   return { ref, progress };
 }
 
-function CompareCard({ pair }: { pair: BeforeAfterPair }) {
+function CompareCard({ pair, field }: { pair: BeforeAfterPair; field?: string }) {
+  const mark = useEditMark();
+  const f = (name: string) => (field ? `${field}.${name}` : "");
   // Share of the frame (measured from the right edge) that shows the "before" photo.
   const [pct, setPct] = useState(50);
 
@@ -80,9 +82,10 @@ function CompareCard({ pair }: { pair: BeforeAfterPair }) {
       <div
         className="relative h-72 overflow-hidden bg-muted select-none lg:h-105"
       >
-        <CoverImage src={pair.after} alt={`${pair.name}, אחרי`} />
+        <CoverImage {...(field ? mark(f("after")) : {})} src={pair.after} alt={`${pair.name}, אחרי`} />
         <span className="absolute inset-y-0 right-0 overflow-hidden" style={{ width: `${pct}%` }}>
           <img
+            {...(field ? mark(f("before")) : {})}
             src={pair.before}
             alt={`${pair.name}, לפני`}
             draggable={false}
@@ -117,15 +120,16 @@ function CompareCard({ pair }: { pair: BeforeAfterPair }) {
         </span>
       </div>
       <div className="px-6 pt-5.5 pb-6.5 text-center">
-        <span className="block fs-20 font-medium text-foreground lg:fs-22">{pair.name}</span>
-        <span className="mt-2 block fs-16 leading-[1.6] text-foreground">{pair.desc}</span>
+        <span className="block fs-20 font-medium text-foreground lg:fs-22">{field ? <EF f={f("name")}>{pair.name}</EF> : pair.name}</span>
+        <span className="mt-2 block fs-16 leading-[1.6] text-foreground">{field ? <EF f={f("desc")}>{pair.desc}</EF> : pair.desc}</span>
       </div>
     </div>
   );
 }
 
 /** Looping carousel: scrolls by itself, and can be swiped (touch) or dragged (mouse) at any time. */
-export function BeforeAfterCarousel({ pairs }: { pairs: BeforeAfterPair[] }) {
+/** `field` names the list in the editor ("pairs"), so a card's texts and pictures can be clicked there. */
+export function BeforeAfterCarousel({ pairs, field }: { pairs: BeforeAfterPair[]; field?: string }) {
   // Three copies of the pairs, so the track can loop endlessly in both directions.
   const items = [...pairs, ...pairs, ...pairs];
   const ref = useRef<HTMLDivElement>(null);
@@ -233,7 +237,7 @@ export function BeforeAfterCarousel({ pairs }: { pairs: BeforeAfterPair[] }) {
     >
       <div className="flex w-max items-stretch">
         {items.map((pair, i) => (
-          <CompareCard key={i} pair={pair} />
+          <CompareCard key={i} pair={pair} field={field && `${field}.${i % pairs.length}`} />
         ))}
       </div>
     </div>
@@ -259,7 +263,7 @@ export function BeforeAfter() {
         </div>
       </Container>
 
-      <BeforeAfterCarousel pairs={c.pairs} />
+      <BeforeAfterCarousel pairs={c.pairs} field="pairs" />
 
       <Container>
         <div
@@ -272,7 +276,7 @@ export function BeforeAfter() {
                 {Math.round((Number(figure.to) || 0) * progress)}
                 {figure.suffix}
               </span>
-              <span className="fs-16 font-medium text-foreground">{figure.label}</span>
+              <span className="fs-16 font-medium text-foreground"><EF f={`figures.${i}.label`}>{figure.label}</EF></span>
             </div>
           ))}
         </div>

@@ -86,6 +86,20 @@ export const SECTION_LABELS: Record<string, string> = {
   "home.reviews": "ביקורות",
   "home.faq": "שאלות נפוצות",
   "home.articles": "מדריכים ומאמרים",
+  "doors.hero": "באנר ראשי",
+  "doors.quote": "הצעת מחיר",
+  "doors.process": "איך זה עובד",
+  "doors.beforeAfter": "לפני ואחרי",
+  "doors.reviews": "ביקורות",
+  "doors.shop": "ציפויים לקנייה",
+  "doors.about": "קצת עלינו",
+  "doors.faq": "שאלות נפוצות",
+  "kitchen.hero": "באנר ראשי",
+  "kitchen.intro": "רוצים טפט חדש למטבח?",
+  "kitchen.values": "מה תקבלו מאיתנו",
+  "kitchen.catalog": "קטלוג",
+  "kitchen.reviews": "ביקורות",
+  "kitchen.beforeAfter": "לפני ואחרי",
 };
 
 /**
@@ -125,4 +139,15 @@ export function EF({ f, inline = true, children }: { f: string; inline?: boolean
       {children}
     </span>
   );
+}
+
+/**
+ * Marks for pictures and other elements that are not plain text. In the editor it returns the attributes the page
+ * selects by (a click selects the picture, a double click opens its replacement); outside the editor it returns
+ * nothing, so visitors get exactly the same markup.
+ */
+export function useEditMark() {
+  const editing = useEditMode();
+  return (f: string, kind: "image" | "field" = "image"): Record<string, string> =>
+    !editing ? {} : kind === "image" ? { "data-edit-field": f, "data-edit-image": "", title: "לחיצה בוחרת, לחיצה כפולה מחליפה את התמונה" } : { "data-edit-field": f };
 }

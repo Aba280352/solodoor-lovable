@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { useMotionStopped } from "../accessibility/a11y";
-import { kitchenModels } from "./data";
+import { EF, useEditMark } from "../content/layout";
+import type { kitchenModels as Models } from "./data";
 
 /** How long each model stays, and how many vertical panels the curtain has. */
 const SLIDE_MS = 4200;
@@ -14,10 +15,11 @@ const PANELS = 8;
  * a curtain: vertical panels that drop and fade in one after the other, from
  * right to left, over the previous model.
  */
-export function KitchenShowcase() {
+export function KitchenShowcase({ models: kitchenModels }: { models: typeof Models }) {
+  const mark = useEditMark();
   const [index, setIndex] = useState(0);
   const count = kitchenModels.length;
-  const current = kitchenModels[index];
+  const current = kitchenModels[index % count];
   const previous = kitchenModels[(index + count - 1) % count];
 
   // A horizontal flick of 40px or more changes the model; vertical drags still scroll the page.
@@ -50,7 +52,7 @@ export function KitchenShowcase() {
       <img src={previous.img} alt="" className="absolute inset-0 block size-full object-cover" />
 
       {/* Keyed by model so the curtain animation replays on every change. */}
-      <div key={index} dir="ltr" className="absolute inset-0">
+      <div key={index} dir="ltr" className="absolute inset-0" {...mark(`models.${index % count}.img`)}>
         {Array.from({ length: PANELS }, (_, i) => (
           <div
             key={i}
@@ -74,13 +76,13 @@ export function KitchenShowcase() {
 
       <div className="absolute start-3 top-3 flex items-center gap-2 rounded-full bg-background/92 py-1.5 ps-3 pe-3.5 lg:start-5 lg:top-5 lg:gap-2.5 lg:py-2 lg:ps-4 lg:pe-5">
         <span className="block size-2 flex-none rounded-full bg-primary" />
-        <span className="fs-13 font-semibold text-foreground lg:fs-16">{current.name}</span>
+        <span className="fs-13 font-semibold text-foreground lg:fs-16"><EF f={`models.${index % count}.name`}>{current.name}</EF></span>
       </div>
 
       <div className="absolute end-3 top-3 flex items-center gap-1.5 rounded-full bg-background/92 px-2.5 py-2 lg:end-5 lg:top-5 lg:gap-2 lg:px-3.5 lg:py-3">
         {kitchenModels.map((model, i) => (
           <button
-            key={model.name}
+            key={i}
             type="button"
             aria-label={`דגם ${model.name}`}
             onClick={() => setIndex(i)}
@@ -94,8 +96,8 @@ export function KitchenShowcase() {
 
       {/* Loads the other models ahead of time so the curtain never opens on a blank panel. */}
       <div hidden>
-        {kitchenModels.map((model) => (
-          <img key={model.img} src={model.img} alt="" />
+        {kitchenModels.map((model, i) => (
+          <img key={i} src={model.img} alt="" />
         ))}
       </div>
     </div>

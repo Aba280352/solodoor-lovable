@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { Pill } from "../primitives";
-import { doorTypes, quoteSteps } from "./data";
+import { DOORS_QUOTE, DOORS_QUOTE_DEFAULTS } from "../content/doors";
+import { useSection } from "../content/sections";
+import { EF, useEditMark } from "../content/layout";
 import { business, phoneHref } from "../content/business";
 import { whatsappHref } from "../whatsapp";
 import { formValues, submitLead } from "../leads";
@@ -17,7 +19,10 @@ import { formValues, submitLead } from "../leads";
  * Every "קבלו הצעת מחיר" button on the page scrolls here (#quote).
  */
 export function DoorsQuote() {
-  const [doorType, setDoorType] = useState(doorTypes[0]);
+  const c = useSection(DOORS_QUOTE, DOORS_QUOTE_DEFAULTS);
+  const doorTypes = c.doorTypes.map((t) => t.label);
+  const [picked, setDoorType] = useState<string | null>(null);
+  const doorType = picked && doorTypes.includes(picked) ? picked : doorTypes[0];
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,23 +45,23 @@ export function DoorsQuote() {
     <section id="quote" data-reveal className="scroll-mt-16 bg-foreground text-background lg:scroll-mt-20">
       <div className="mx-auto grid max-w-330 grid-cols-1 items-center gap-10 px-5 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-20 lg:px-12 lg:py-24">
         <div className="text-right">
-          <Pill className="px-5 py-2 fs-16">ייעוץ חינם וללא התחייבות</Pill>
+          <Pill className="px-5 py-2 fs-16"><EF f="pill">{c.pill}</EF></Pill>
           <h2 className="mt-5 fs-34 leading-[1.08] font-bold tracking-[-0.02em] text-balance lg:fs-58">
-            הצעת מחיר לדלת שלכם, בשלושה צעדים
+            <EF f="title">{c.title}</EF>
           </h2>
 
           <ol className="mt-8 lg:mt-12">
-            {quoteSteps.map((step, i) => (
+            {c.steps.map((step, i) => (
               <li
-                key={step.title}
+                key={i}
                 className="flex gap-5 border-t border-background/20 py-5 first:border-t-0 first:pt-0 lg:gap-8 lg:py-7"
               >
                 <span dir="ltr" className="w-10 flex-none fs-30 leading-none font-light text-clay lg:w-14 lg:fs-44">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="flex flex-col gap-1.5">
-                  <span className="fs-20 leading-[1.3] font-bold lg:fs-24">{step.title}</span>
-                  <span className="max-w-[44ch] fs-16 leading-[1.7] font-light lg:fs-18">{step.text}</span>
+                  <span className="fs-20 leading-[1.3] font-bold lg:fs-24"><EF f={`steps.${i}.title`}>{step.title}</EF></span>
+                  <span className="max-w-[44ch] fs-16 leading-[1.7] font-light lg:fs-18"><EF f={`steps.${i}.text`}>{step.text}</EF></span>
                 </span>
               </li>
             ))}
@@ -69,13 +74,13 @@ export function DoorsQuote() {
               <span className="inline-flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Icon name="Check" size={26} />
               </span>
-              <span className="fs-28 leading-[1.2] font-bold">קיבלנו את הפרטים</span>
-              <span className="max-w-[32ch] fs-18 leading-[1.6]">נחזור אליכם בהקדם עם הצעת מחיר לדלת שלכם.</span>
+              <span className="fs-28 leading-[1.2] font-bold"><EF f="sentTitle">{c.sentTitle}</EF></span>
+              <span className="max-w-[32ch] fs-18 leading-[1.6]"><EF f="sentText">{c.sentText}</EF></span>
             </div>
           ) : (
             <form onSubmit={submit}>
-              <span className="block fs-26 leading-[1.2] font-bold lg:fs-32">קבלו הצעת מחיר</span>
-              <span className="mt-2 block fs-16 leading-[1.6] lg:fs-18">השאירו פרטים ונחזור אליכם בהקדם.</span>
+              <span className="block fs-26 leading-[1.2] font-bold lg:fs-32"><EF f="formTitle">{c.formTitle}</EF></span>
+              <span className="mt-2 block fs-16 leading-[1.6] lg:fs-18"><EF f="formText">{c.formText}</EF></span>
 
               <div className="mt-6 flex flex-col gap-3">
                 <Input type="text" name="name" required placeholder="שם מלא" autoComplete="name" className="bg-background fs-16 lg:fs-18" />
@@ -85,7 +90,7 @@ export function DoorsQuote() {
               <fieldset className="mt-5">
                 <legend className="fs-16 font-medium">איזו דלת מחדשים?</legend>
                 <div className="mt-2.5 flex flex-col gap-2 lg:flex-row lg:flex-wrap">
-                  {doorTypes.map((type) => (
+                  {doorTypes.map((type, i) => (
                     <label
                       key={type}
                       className={cn(
@@ -103,7 +108,7 @@ export function DoorsQuote() {
                         onChange={() => setDoorType(type)}
                         className="sr-only"
                       />
-                      {type}
+                      <EF f={`doorTypes.${i}.label`}>{type}</EF>
                     </label>
                   ))}
                 </div>
@@ -113,18 +118,18 @@ export function DoorsQuote() {
               {error && <p role="alert" className="mt-4 fs-15 font-medium text-clay">{error}</p>}
 
               <Button type="submit" disabled={busy} className="mt-6 w-full py-4">
-                <span>{busy ? "שולחים…" : "קבלו הצעת מחיר"}</span>
+                <span>{busy ? "שולחים…" : <EF f="cta">{c.cta}</EF>}</span>
                 <Icon name="ArrowLeft" size={16} />
               </Button>
             </form>
           )}
 
           <div className="mt-6 border-t border-border pt-5">
-            <span className="block text-center fs-15 font-medium lg:fs-16">מעדיפים לדבר איתנו ישירות?</span>
+            <span className="block text-center fs-15 font-medium lg:fs-16"><EF f="directTitle">{c.directTitle}</EF></span>
             <div className="mt-3 grid grid-cols-2 gap-2.5">
               <Button asChild variant="secondary" className="px-3 py-3.5 fs-15 lg:fs-17">
                 <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                  <span>ווצאפ</span>
+                  <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
                   <Icon name="ChatDots" size={17} />
                 </a>
               </Button>

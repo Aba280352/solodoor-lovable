@@ -9,13 +9,14 @@ import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { HOME_PROCESS, HOME_PROCESS_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 
 /** Auto-scroll speed, in design pixels per second. */
 const SPEED = 30;
 
 export function Process() {
   const c = useSection(HOME_PROCESS, HOME_PROCESS_DEFAULTS);
+  const mark = useEditMark();
   const processSteps = c.steps;
   /** Three copies of the steps, so the track can loop endlessly in both directions. */
   const loop = useMemo(() => [...processSteps, ...processSteps, ...processSteps], [processSteps]);
@@ -153,13 +154,13 @@ export function Process() {
               className="relative z-1 flex w-64 flex-none flex-col items-center text-center lg:w-86"
             >
               <div className="relative h-56 w-64 overflow-hidden rounded-lg bg-muted lg:h-75 lg:w-86">
-                <CoverImage src={step.img} alt={step.name} />
+                <CoverImage {...mark(`steps.${i % processSteps.length}.img`)} src={step.img} alt={step.name} />
               </div>
               <span className="mt-6.5 inline-flex size-9.5 items-center justify-center rounded-full bg-primary fs-16 font-bold tracking-[0.04em] text-primary-foreground">
                 {String((i % processSteps.length) + 1).padStart(2, "0")}
               </span>
-              <span className="mt-5.5 fs-20 font-medium text-foreground">{step.name}</span>
-              <span className="mt-2.5 fs-16 leading-[1.6] text-foreground">{step.desc}</span>
+              <span className="mt-5.5 fs-20 font-medium text-foreground"><EF f={`steps.${i % processSteps.length}.name`}>{step.name}</EF></span>
+              <span className="mt-2.5 fs-16 leading-[1.6] text-foreground"><EF f={`steps.${i % processSteps.length}.desc`}>{step.desc}</EF></span>
             </div>
           ))}
         </div>

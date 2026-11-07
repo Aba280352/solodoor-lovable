@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
@@ -11,6 +12,7 @@ import { DoorsQuote } from "@/components/solodoor/doors/DoorsQuote";
 import { DoorsShop } from "@/components/solodoor/doors/DoorsShop";
 import { doorsSeo } from "@/components/solodoor/doors/data";
 import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
+import { EditableSection, useLayout } from "@/components/solodoor/content/layout";
 
 // Landing page for paid search traffic on "ציפוי דלתות".
 export const Route = createFileRoute("/ציפוי-דלתות")({
@@ -28,17 +30,28 @@ export const Route = createFileRoute("/ציפוי-דלתות")({
   component: DoorsPage,
 });
 
+/** The page's sections, in their original order. The admin can reorder them and hide them per device. */
+const DOORS_ORDER = ["doors.hero", "doors.quote", "doors.process", "doors.beforeAfter", "doors.reviews", "doors.shop", "doors.about", "doors.faq"];
+const RENDER: Record<string, () => ReactNode> = {
+  "doors.hero": () => <DoorsHero />,
+  "doors.quote": () => <DoorsQuote />,
+  "doors.process": () => <DoorsProcess />,
+  "doors.beforeAfter": () => <DoorsBeforeAfter />,
+  "doors.reviews": () => <Reviews page="doors.reviews" />,
+  "doors.shop": () => <DoorsShop />,
+  "doors.about": () => <DoorsAbout />,
+  "doors.faq": () => <Faq />,
+};
+
 function DoorsPage() {
+  const layout = useLayout("/ציפוי-דלתות", DOORS_ORDER);
   return (
     <PageShell>
-      <DoorsHero />
-      <DoorsQuote />
-      <DoorsProcess />
-      <DoorsBeforeAfter />
-      <Reviews pill="אם עד עכשיו לא התקשרתם, תראו מה רושמים עלינו החברים!" />
-      <DoorsShop />
-      <DoorsAbout />
-      <Faq />
+      {layout.order.map((key) => (
+        <EditableSection key={key} id={key} hide={layout.hide(key)}>
+          {RENDER[key]()}
+        </EditableSection>
+      ))}
     </PageShell>
   );
 }

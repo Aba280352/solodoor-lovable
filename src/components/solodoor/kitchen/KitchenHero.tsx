@@ -7,14 +7,10 @@ import { Icon } from "../Icon";
 import type { IconName } from "../icon-data";
 import { Pill } from "../primitives";
 import { KitchenShowcase } from "./KitchenShowcase";
+import { KITCHEN_HERO, KITCHEN_HERO_DEFAULTS } from "../content/kitchen";
+import { useSection } from "../content/sections";
+import { EF, useEditMark } from "../content/layout";
 import { whatsappHref } from "../whatsapp";
-
-/** The three promises the old page made, kept word for word. */
-const trust: { icon: IconName; label: string }[] = [
-  { icon: "Clock", label: "ביום עבודה אחד בלבד" },
-  { icon: "Home", label: "בלי לכלוך, בלי אבק, בלי רעש" },
-  { icon: "ShieldCheck", label: "עמידות גבוהה לחום, אדים ולחות" },
-];
 
 /**
  * Opening screen of the kitchen-coating page: the copy centred on the page ground,
@@ -23,6 +19,7 @@ const trust: { icon: IconName; label: string }[] = [
  * Holds the page's single H1 — the phrase the page ranks for.
  */
 export function KitchenHero() {
+  const c = useSection(KITCHEN_HERO, KITCHEN_HERO_DEFAULTS);
   return (
     <section className="border-b border-border pb-10 lg:pb-16">
       <div className="flex flex-col items-center px-5 pt-6 text-center lg:px-12 lg:pt-10">
@@ -36,26 +33,26 @@ export function KitchenHero() {
           </span>
         </nav>
 
-        <Pill className="mt-3 flex-none tracking-[0.16em] whitespace-nowrap lg:mt-4">סולודור · חידוש מטבחים</Pill>
+        <Pill className="mt-3 flex-none tracking-[0.16em] whitespace-nowrap lg:mt-4"><EF f="pill">{c.pill}</EF></Pill>
 
         <h1 className="mt-3 fs-44 leading-[1.05] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-92">
-          ציפוי מטבחים
+          <EF f="title">{c.title}</EF>
         </h1>
 
         <h2 className="mt-2 fs-20 leading-[1.3] font-medium text-foreground lg:mt-3 lg:fs-30">
-          הדבקת טפט על מטבחים בפריסה רחבה
+          <EF f="subtitle">{c.subtitle}</EF>
         </h2>
 
         <div className="mt-5 flex w-full flex-col items-stretch gap-2 lg:mt-7 lg:w-auto lg:flex-row lg:items-center lg:gap-3">
           <Button asChild className="flex-none px-7 py-3 lg:px-10 lg:py-[0.9375rem]">
             <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-              <span>להתייעצות בווצאפ</span>
+              <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </a>
           </Button>
           <Button asChild variant="secondary" className="flex-none px-7 py-3 lg:px-10 lg:py-[0.9375rem]">
             <a href="#catalog">
-              <span>לקטלוג ציפויי המטבח</span>
+              <span><EF f="catalogCta">{c.catalogCta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </a>
           </Button>
@@ -63,21 +60,21 @@ export function KitchenHero() {
       </div>
 
       <div className="mx-auto mt-7 w-full max-w-275 px-5 lg:mt-10 lg:px-12">
-        <KitchenShowcase />
+        <KitchenShowcase models={c.models} />
 
         <ul className="relative mx-3 -mt-5 grid grid-cols-3 rounded-lg border border-border bg-card shadow-menu lg:mx-auto lg:-mt-12 lg:max-w-200">
-          {trust.map((item, i) => (
+          {c.trust.map((item, i) => (
             <li
-              key={item.label}
+              key={i}
               className={cn(
                 "flex flex-col items-center gap-1.5 px-2 py-4 text-center lg:flex-row lg:justify-center lg:gap-3.5 lg:px-5 lg:py-6 lg:text-right",
                 i > 0 && "border-s border-border",
               )}
             >
               <span className="inline-flex flex-none text-clay [&_svg]:size-6 lg:[&_svg]:size-[1.875rem]!">
-                <Icon name={item.icon} size={30} />
+                <Icon name={item.icon as IconName} size={30} />
               </span>
-              <span className="fs-12 leading-[1.4] font-medium text-balance text-foreground lg:fs-16">{item.label}</span>
+              <span className="fs-12 leading-[1.4] font-medium text-balance text-foreground lg:fs-16"><EF f={`trust.${i}.label`}>{item.label}</EF></span>
             </li>
           ))}
         </ul>

@@ -22,14 +22,16 @@ interface EditorProps<T> {
   /** Called with the prepared value on every change (the visual editor shows it on the page at once). */
   onLiveChange?: (data: T) => void;
   /** A change made elsewhere (the visual editor's in-place typing), applied as if typed in the form. */
-  patch?: { data: Partial<T>; nonce: number } | null;
+  patch?: { data?: Partial<T>; apply?: (value: T) => Partial<T>; nonce: number } | null;
+  /** Hides the intro line (the visual editor's narrow panel). */
+  compact?: boolean;
 }
 
 /**
  * Loads a key, lets the form edit it, and offers: save as draft, publish, discard the draft, back to the code
  * default, and the publish history with "restore to draft". Nothing reaches visitors before "פרסום".
  */
-export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath, onLiveChange, patch }: EditorProps<T>) {
+export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath, onLiveChange, patch, compact }: EditorProps<T>) {
   const [entry, setEntry] = useState<ContentEntry<T> | null>(null);
   const [value, setValue] = useState<T>({} as T);
   const [dirty, setDirty] = useState(false);
@@ -37,9 +39,13 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
   const [message, setMessage] = useState<string | null>(null);
   const [history, setHistory] = useState<ContentVersion[] | null>(null);
 
+  // Only the latest load counts: an older answer arriving late must not overwrite what was typed since.
+  const loadSeq = useRef(0);
   const load = async () => {
+    const seq = ++loadSeq.current;
     try {
       const e = await loadEntry<T>(contentKey);
+      if (seq !== loadSeq.current) return;
       setEntry(e);
       setValue((e.draft?.data ?? e.published ?? {}) as T);
       setDirty(false);
@@ -61,7 +67,7 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
   useEffect(() => {
     if (!patch || !entry || appliedPatch.current === patch.nonce) return;
     appliedPatch.current = patch.nonce;
-    setValue((v) => ({ ...v, ...patch.data }));
+    setValue((v) => ({ ...v, ...(patch.apply ? patch.apply(v) : patch.data) }));
     setDirty(true);
   }, [patch, entry]);
 
@@ -108,11 +114,11 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
       : "באתר מוצג התוכן המקורי (ברירת מחדל)";
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
+    <section className={cn("flex flex-col gap-4 rounded-lg border border-border bg-card", compact ? "p-4" : "p-5")}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="fs-22 font-bold text-foreground">{title}</h2>
-          {intro && <p className="mt-1 fs-15 text-foreground/70">{intro}</p>}
+          {intro && !compact && <p className="mt-1 fs-15 text-foreground/70">{intro}</p>}
         </div>
         <span className={cn("rounded-full px-3 py-1 fs-13 font-semibold", entry.draft ? "bg-primary text-primary-foreground" : "bg-muted text-foreground")}>{status}</span>
       </div>
@@ -121,7 +127,7 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
 
       {message && <p className="rounded-md border border-border bg-muted px-4 py-3 fs-15 font-semibold text-foreground">{message}</p>}
 
-      <div className="sticky bottom-0 -mx-5 -mb-5 flex flex-wrap items-center gap-2 rounded-b-lg border-t border-border bg-card px-5 py-3">
+      <div className={cn("sticky bottom-0 z-10 flex flex-wrap items-center gap-2 rounded-b-lg border-t border-border bg-card py-3", compact ? "-mx-4 -mb-4 px-4" : "-mx-5 -mb-5 px-5")}>
         <Button type="button" size="sm" variant="outline" disabled={busy || !dirty} onClick={() => run(async () => void (await save()), "נשמר כטיוטה. באתר עוד לא השתנה כלום.")}>
           שמירת טיוטה
         </Button>

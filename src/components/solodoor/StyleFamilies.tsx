@@ -8,7 +8,7 @@ import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
 import { HOME_STYLES, HOME_STYLES_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 
 type Family = (typeof HOME_STYLES_DEFAULTS)["families"][number];
 import { STYLE_HUB_PATH, stylePageForName } from "./shop/styles";
@@ -18,13 +18,15 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
   const [hovered, setHovered] = useState<number | null>(null);
   const current = family.swatches[hovered ?? 0];
   const page = stylePageForName(family.name);
+  const mark = useEditMark();
+  const f = (name: string) => `families.~${family.name}.${name}`;
 
   return (
     <div className="flex flex-col-reverse overflow-hidden rounded-lg border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground lg:grid lg:grid-cols-[minmax(0,1fr)_16.25rem]">
       <div className="flex flex-col items-start justify-center gap-4.5 px-5 py-6 lg:px-8 lg:py-7">
         <div className="flex flex-col gap-2">
-          <span className="fs-24 leading-[1.2] font-medium text-foreground lg:fs-28">{shownLabel(family, "name")}</span>
-          <span className="fs-16 leading-[1.55] text-foreground">{family.desc}</span>
+          <span className="fs-24 leading-[1.2] font-medium text-foreground lg:fs-28"><EF f={f("name")}>{shownLabel(family, "name")}</EF></span>
+          <span className="fs-16 leading-[1.55] text-foreground"><EF f={f("desc")}>{family.desc}</EF></span>
         </div>
         <div className="flex items-center gap-2.5">
           {family.swatches.map((src, i) => (
@@ -37,7 +39,7 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
                 hovered === i && "shadow-swatch",
               )}
             >
-              <img src={src} alt="" className="block size-full object-cover" />
+              <img {...mark(f(`swatches.${i}`))} src={src} alt="" className="block size-full object-cover" />
             </span>
           ))}
         </div>
@@ -45,7 +47,7 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
           {...(page ? { to: "/טפט-לפי-סגנון/$style", params: { style: page.slug } } : { to: STYLE_HUB_PATH })}
           className="inline-flex items-center gap-2.5 fs-19 font-semibold text-foreground transition-[gap,color] duration-240 ease-standard hover:gap-4 hover:text-clay"
         >
-          <span>{cta}</span>
+          <span><EF f="cardCta">{cta}</EF></span>
           <Icon name="ArrowLeft" size={22} />
         </Link>
       </div>
@@ -53,6 +55,7 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
         {family.swatches.map((src, i) => (
           <CoverImage
             key={i}
+            {...(src === current ? mark(f(`swatches.${i}`)) : {})}
             src={src}
             alt={shownLabel(family, "name")}
             className={cn("transition-opacity duration-420 ease-standard", src === current ? "opacity-100" : "opacity-0")}

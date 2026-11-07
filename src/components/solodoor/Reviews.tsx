@@ -1,13 +1,14 @@
 import { cn } from "@/lib/utils";
 
 import { Container, Pill } from "./primitives";
-import { GOOGLE_MARK, GOOGLE_WORDMARK, reviews } from "./data";
+import { GOOGLE_MARK, GOOGLE_WORDMARK } from "./data";
 import { business } from "./content/business";
+import { EF } from "./content/layout";
+import { REVIEWS_HEADINGS, REVIEWS_LIST, REVIEWS_LIST_DEFAULTS, REVIEW_COLORS, type ReviewsKey } from "./content/reviews";
+import { useSection } from "./content/sections";
 
-type Review = (typeof reviews)[number];
-
-const rowA = [...reviews, ...reviews];
-const rowB = [...reviews].reverse().concat([...reviews].reverse());
+/** A review and its place in the admin's list (the editor's mark). */
+type Review = { name: string; date: string; text: string; color?: string; i: number };
 
 function Stars({ className }: { className?: string }) {
   return (
@@ -22,6 +23,7 @@ function Stars({ className }: { className?: string }) {
 }
 
 function ReviewCard({ review }: { review: Review }) {
+  const f = (name: string) => `items.${review.i}.${name}`;
   return (
     <div
       dir="rtl"
@@ -31,21 +33,21 @@ function ReviewCard({ review }: { review: Review }) {
         <div className="flex items-center gap-3">
           <span
             className="inline-flex size-12 flex-none items-center justify-center rounded-full fs-19 font-bold text-card"
-            style={{ backgroundColor: review.color }}
+            style={{ backgroundColor: review.color ?? REVIEW_COLORS[review.i % REVIEW_COLORS.length] }}
           >
             {review.name.charAt(0)}
           </span>
           <span className="flex flex-col gap-0.5 text-right">
-            <span className="fs-16 font-semibold text-foreground">{review.name}</span>
+            <span className="fs-16 font-semibold text-foreground"><EF f={f("name")}>{review.name}</EF></span>
             <span dir="ltr" className="text-right fs-15 text-foreground">
-              {review.date}
+              <EF f={f("date")}>{review.date}</EF>
             </span>
           </span>
         </div>
         <img src={GOOGLE_MARK} alt="Google" className="block size-5.5" />
       </div>
       <Stars className="gap-0.5 fs-20" />
-      <p className="text-right fs-18 leading-[1.8] text-foreground">{review.text}</p>
+      <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
     </div>
   );
 }
@@ -65,16 +67,22 @@ function ReviewRow({ items, className }: { items: Review[]; className: string })
   );
 }
 
-export function Reviews({ pill = "אם עוד לא קניתם, בואו תראו מה רושמים עלינו!" }: { pill?: string }) {
+/** The reviews block. `page` picks the heading; the reviews themselves are the same on every page. */
+export function Reviews({ page = "home.reviews" }: { page?: ReviewsKey }) {
+  const heading = REVIEWS_HEADINGS[page];
+  const h = useSection(heading.def, heading.defaults);
+  const list = useSection(REVIEWS_LIST, REVIEWS_LIST_DEFAULTS).items.map((r, i) => ({ ...(r as Omit<Review, "i">), i }));
+  const rowA = [...list, ...list];
+  const rowB = [...list].reverse().concat([...list].reverse());
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
           <Pill className="px-5 py-2 fs-14 tracking-[0.04em] lg:fs-16 lg:whitespace-nowrap">
-            {pill}
+            <EF f="pill">{h.pill}</EF>
           </Pill>
           <h2 className="mt-5 fs-40 leading-[1.05] font-bold tracking-[-0.03em] text-foreground lg:fs-76">
-            מספרים עלינו
+            <EF f="title">{h.title}</EF>
           </h2>
         </div>
 

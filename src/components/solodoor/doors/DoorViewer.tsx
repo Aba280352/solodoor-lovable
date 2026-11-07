@@ -3,13 +3,15 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
-import { doorFinishes, doorHotspots } from "./data";
+import { useEditMark } from "../content/layout";
+import type { doorFinishes as Finishes, doorHotspots as Hotspots } from "./data";
 
 /**
  * Interactive door: pick a coating and the door changes, tap a hotspot to read
  * what happens at that spot. Capped in width on desktop so the hero fits one screen.
  */
-export function DoorViewer() {
+export function DoorViewer({ finishes: doorFinishes, hotspots: doorHotspots }: { finishes: typeof Finishes; hotspots: typeof Hotspots }) {
+  const mark = useEditMark();
   const [finish, setFinish] = useState(0);
   const [spot, setSpot] = useState<number | null>(null);
   const active = spot === null ? null : doorHotspots[spot];
@@ -22,6 +24,7 @@ export function DoorViewer() {
             {doorFinishes.map((item, i) => (
               <img
                 key={item.img}
+                {...(i === finish ? mark(`finishes.${i}.img`) : {})}
                 src={item.img}
                 alt={i === finish ? `ציפוי דלתות, דלת כניסה בגוון ${item.name}` : ""}
                 className={cn(

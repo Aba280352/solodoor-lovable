@@ -9,6 +9,9 @@ import type { Product } from "../data";
 import { Container, Pill } from "../primitives";
 import { surfaceProducts } from "../shop/featured";
 import { useShop } from "../shop/useShop";
+import { DOORS_SHOP, DOORS_SHOP_DEFAULTS } from "../content/doors";
+import { useSection } from "../content/sections";
+import { EF, useEditMark } from "../content/layout";
 
 /**
  * Door coatings to buy on the site, in a grid that runs the full width of the
@@ -17,18 +20,19 @@ import { useShop } from "../shop/useShop";
 export function DoorsShop() {
   const [zoomed, setZoomed] = useState<Product | null>(null);
   const { shop } = useShop();
+  const c = useSection(DOORS_SHOP, DOORS_SHOP_DEFAULTS);
   const doorProducts = useMemo(() => (shop ? surfaceProducts(shop, "door") : []), [shop]);
 
   return (
     <section id="shop" data-reveal className="scroll-mt-16 pt-14 pb-16 lg:scroll-mt-20 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <Pill className="px-5 py-2 fs-16">מעדיפים לעשות את זה בעצמכם?</Pill>
+          <Pill className="px-5 py-2 fs-16"><EF f="pill">{c.pill}</EF></Pill>
           <h2 className="mt-4.5 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-58">
-            ציפויים לדלת, לקנייה באתר
+            <EF f="title">{c.title}</EF>
           </h2>
           <p className="mt-4 max-w-[60ch] fs-18 leading-[1.7] font-medium text-foreground">
-            בוחרים עיצוב, מזמינים באתר ומקבלים את הציפוי עד הבית. רוצים שנתקין בשבילכם? השאירו פרטים ונחזור אליכם.
+            <EF f="text">{c.text}</EF>
           </p>
         </div>
       </Container>
@@ -43,13 +47,13 @@ export function DoorsShop() {
       <div className="mt-10 flex flex-col items-stretch justify-center gap-3.5 px-5 lg:mt-14 lg:flex-row lg:items-center">
         <Button asChild variant="secondary" className="px-12">
           <Link to="/חנות" search={{ cat: "door" }}>
-            <span>לכל ציפויי הדלתות</span>
+            <span><EF f="allCta">{c.allCta}</EF></span>
             <Icon name="ArrowLeft" size={16} />
           </Link>
         </Button>
         <Button asChild className="px-12">
           <a href="#quote">
-            <span>קבלו הצעת מחיר להתקנה</span>
+            <span><EF f="quoteCta">{c.quoteCta}</EF></span>
             <Icon name="ArrowLeft" size={16} />
           </a>
         </Button>

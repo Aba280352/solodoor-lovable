@@ -15,6 +15,7 @@ export function PromoSection({ onLiveChange }: { onLiveChange?: (data: unknown) 
     <ContentEditor<PromoOverride>
       contentKey={PROMO_KEY}
       onLiveChange={onLiveChange}
+      compact={!!onLiveChange}
       title="פס המבצעים העליון"
       intro="ההודעות שרצות בפס הצבעוני בראש כל דף. עד 8 הודעות."
       previewPath="/"
@@ -26,7 +27,7 @@ export function PromoSection({ onLiveChange }: { onLiveChange?: (data: unknown) 
       {(value, set) => {
         const items = value.items ?? promoItems.map((i) => ({ icon: i.icon as string, label: i.label }));
         return (
-          <ListEditor items={items} onChange={(next) => set({ items: next })} newItem={() => ({ icon: "CheckCircle", label: "" })} max={8} addLabel="הודעה">
+          <ListEditor items={items} onChange={(next) => set({ items: next })} newItem={() => ({ icon: "CheckCircle", label: "" })} max={8} addLabel="הודעה" summary={(item) => item.label ?? ""}>
             {(item, setItem) => (
               <div className="flex flex-col gap-2">
                 <Input value={item.label ?? ""} onChange={(e) => setItem({ label: e.target.value })} placeholder="טקסט ההודעה" className="fs-16" />
@@ -72,6 +73,7 @@ export function NavSection({ onLiveChange }: { onLiveChange?: (data: unknown) =>
     <ContentEditor<NavOverride>
       contentKey={NAV_KEY}
       onLiveChange={onLiveChange}
+      compact={!!onLiveChange}
       title="תפריטים וקישורים"
       intro="שינוי שם משנה רק את הטקסט שמוצג. הקישור נשאר לאותו מקום, כך שאי אפשר לשבור אותו. אותו שם מתעדכן בכל מקום שהוא מופיע (תפריט עליון, תפריט טלפון ופוטר)."
       previewPath="/"
@@ -85,8 +87,12 @@ export function NavSection({ onLiveChange }: { onLiveChange?: (data: unknown) =>
       {(value, set) => (
         <div className="flex flex-col gap-6">
           {NAV_GROUPS.map((group) => (
-            <div key={group.title} className="flex flex-col gap-2">
-              <h3 className="fs-17 font-bold text-foreground">{group.title}</h3>
+            // Folded groups, like Elementor's panels: one menu open at a time keeps the panel readable.
+            <details key={group.title} className="group/menu flex flex-col gap-2 rounded-md border border-border [&[open]>div]:mt-2">
+              <summary className="cursor-pointer list-none bg-muted/60 px-3 py-2.5 fs-15 font-bold text-foreground">
+                {group.title} <span className="fs-13 font-medium text-foreground/60">({group.keys.length})</span>
+              </summary>
+              <div className="flex flex-col gap-2 p-3 pt-0">
               {group.keys.map((key) => {
                 const hidden = (value.hidden ?? []).includes(key);
                 const image = group.images?.find((i) => i.name === key);
@@ -121,7 +127,8 @@ export function NavSection({ onLiveChange }: { onLiveChange?: (data: unknown) =>
                   </div>
                 );
               })}
-            </div>
+              </div>
+            </details>
           ))}
         </div>
       )}
@@ -134,11 +141,14 @@ export function NavSection({ onLiveChange }: { onLiveChange?: (data: unknown) =>
 const BANNER_LINES = ["דלת חדשה,", "אותו בית,", "הרגשה אחרת"];
 const BANNER_ENGLISH = ["Small Change", "Big Difference"];
 
-export function FooterSection({ onLiveChange }: { onLiveChange?: (data: unknown) => void } = {}) {
+/** `only` shows one field (the footer text clicked in the visual editor); `onBack` returns to all of them. */
+export function FooterSection({ onLiveChange, only, onBack }: { onLiveChange?: (data: unknown) => void; only?: string; onBack?: () => void } = {}) {
+  const show = (key: string) => !only || only === key;
   return (
     <ContentEditor<FooterOverride>
       contentKey={FOOTER_KEY}
       onLiveChange={onLiveChange}
+      compact={!!onLiveChange}
       title="פוטר (תחתית האתר)"
       intro="התמונה והמשפטים מעל הפוטר, השורה מתחת ללוגו, טופס יצירת הקשר וזכויות היוצרים. שדה ריק משאיר את המקור. הקישורים עצמם נערכים ב'תפריטים וקישורים'."
       previewPath="/"
@@ -176,29 +186,47 @@ export function FooterSection({ onLiveChange }: { onLiveChange?: (data: unknown)
         );
         return (
           <div className="flex flex-col gap-4">
+            {only && onBack && (
+              <button type="button" onClick={onBack} className="inline-flex w-fit cursor-pointer items-center gap-1.5 fs-14 font-medium text-foreground/70 hover:text-clay">
+                <Icon name="AngleRight" size={12} />
+                כל השדות של הפוטר
+              </button>
+            )}
+            {show("bannerImage") && (
             <Field label="תמונת הבאנר">
               <ImageField value={value.bannerImage} original={FOOTER_BANNER} folder="site-footer" onChange={(url) => set({ bannerImage: url })} />
             </Field>
+            )}
+            {show("bannerLines") && (
             <Field label="שלוש השורות על התמונה">
-              <div className="grid grid-cols-1 gap-2 lg:grid-cols-3">{BANNER_LINES.map((l, i) => line("bannerLines", i, l))}</div>
+              <div className="flex flex-col gap-2">{BANNER_LINES.map((l, i) => line("bannerLines", i, l))}</div>
             </Field>
-            <Field label="שתי השורות באנגלית">
-              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">{BANNER_ENGLISH.map((l, i) => line("bannerEnglish", i, l, true))}</div>
+            )}
+            {show("bannerEnglish") && (
+            <Field label="השורות באנגלית">
+              <div className="flex flex-col gap-2">{BANNER_ENGLISH.map((l, i) => line("bannerEnglish", i, l, true))}</div>
             </Field>
+            )}
+            {show("tagline") && (
             <Field label="השורה מתחת ללוגו">
               <Input value={value.tagline ?? ""} placeholder="ציפוי דלתות. בדיוק הסגנון שלכם." onChange={(e) => set({ tagline: e.target.value })} className="fs-16" />
             </Field>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            )}
+            {show("formTitle") && (
               <Field label="כותרת הטופס">
                 <Input value={value.formTitle ?? ""} placeholder="השאירו פרטים" onChange={(e) => set({ formTitle: e.target.value })} className="fs-16" />
               </Field>
+            )}
+            {show("formSubtitle") && (
               <Field label="שורה מתחת לכותרת הטופס">
                 <Input value={value.formSubtitle ?? ""} placeholder="ואנחנו נחזור אליכם בהקדם" onChange={(e) => set({ formSubtitle: e.target.value })} className="fs-16" />
               </Field>
-            </div>
+            )}
+            {show("copyright") && (
             <Field label="זכויות יוצרים">
               <Input value={value.copyright ?? ""} placeholder="© 2026 כל הזכויות שמורות לסולודור" onChange={(e) => set({ copyright: e.target.value })} className="fs-16" />
             </Field>
+            )}
           </div>
         );
       }}

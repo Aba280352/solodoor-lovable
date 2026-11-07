@@ -7,7 +7,7 @@ import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { HOME_ABOUT, HOME_ABOUT_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
 
@@ -17,6 +17,7 @@ export function About() {
   const aboutSurfaces = c.surfaces.map((s) => s.label);
   const aboutStats = c.stats;
   const aboutGallery = c.gallery;
+  const mark = useEditMark();
 
   return (
     <section id="about" data-reveal className="scroll-mt-16 lg:scroll-mt-20">
@@ -43,7 +44,7 @@ export function About() {
                   {group.map((surface, i) => (
                     <Fragment key={i}>
                       {i > 0 && <span className="h-4 w-px flex-none bg-foreground opacity-35" />}
-                      <span className="fs-16 font-medium text-foreground lg:fs-18">{surface}</span>
+                      <span className="fs-16 font-medium text-foreground lg:fs-18"><EF f={`surfaces.${g * 3 + i}.label`}>{surface}</EF></span>
                     </Fragment>
                   ))}
                 </div>
@@ -62,7 +63,7 @@ export function About() {
                 <span className="inline-flex text-clay">
                   <Icon name={stat.icon} size={32} />
                 </span>
-                <span className="fs-18 font-bold text-foreground lg:fs-20">{stat.label}</span>
+                <span className="fs-18 font-bold text-foreground lg:fs-20"><EF f={`stats.${i}.label`}>{stat.label}</EF></span>
               </div>
             ))}
           </div>
@@ -90,6 +91,7 @@ export function About() {
               className={cn("relative min-h-0 overflow-hidden rounded-lg bg-muted", i === 0 && "col-span-full")}
             >
               <img
+                {...mark(`gallery.${i}.src`)}
                 src={shot.src}
                 alt={shot.alt}
                 className="absolute inset-0 block size-full object-cover object-left transition-transform duration-420 ease-standard hover:scale-103"

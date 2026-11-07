@@ -13,6 +13,9 @@ import { ContentEditor, Counter, Field, compact } from "./content-editor";
 import { FooterSection, NavSection, PromoSection } from "./content-sections";
 import { PageSections } from "./section-editor";
 import { HOME_SECTIONS } from "../content/home";
+import { DOORS_SECTIONS } from "../content/doors";
+import { KITCHEN_SECTIONS } from "../content/kitchen";
+import { REVIEWS_HEADINGS, REVIEWS_LIST, REVIEWS_LIST_DEFAULTS } from "../content/reviews";
 import { uploadCatalogImage } from "./db";
 
 /* ───────────── Business details ───────────── */
@@ -214,6 +217,9 @@ const TABS = [
   { key: "nav", label: "תפריטים וקישורים" },
   { key: "footer", label: "פוטר" },
   { key: "home", label: "דף הבית" },
+  { key: "doors", label: "דף דלתות" },
+  { key: "kitchen", label: "דף מטבחים" },
+  { key: "reviews", label: "ביקורות" },
   { key: "seo", label: "קידום בגוגל (SEO)" },
   { key: "settings", label: "מתג ראשי" },
 ] as const;
@@ -247,6 +253,16 @@ export function SiteContentAdmin() {
         {tab === "nav" && <NavSection />}
         {tab === "footer" && <FooterSection />}
         {tab === "home" && <PageSections sections={HOME_SECTIONS} />}
+        {tab === "doors" && <PageSections sections={DOORS_SECTIONS} />}
+        {tab === "kitchen" && <PageSections sections={KITCHEN_SECTIONS} />}
+        {tab === "reviews" && (
+          <PageSections
+            sections={[
+              { def: REVIEWS_LIST, defaults: REVIEWS_LIST_DEFAULTS },
+              ...Object.values(REVIEWS_HEADINGS).map((h) => ({ def: { ...h.def, title: `כותרת הביקורות: ${h.def.page === "/" ? "דף הבית" : h.def.page === "/ציפוי-דלתות" ? "דף דלתות" : "דף מטבחים"}` }, defaults: h.defaults })),
+            ]}
+          />
+        )}
         {tab === "seo" && <SeoSection />}
         {tab === "settings" && <SettingsSection />}
       </div>

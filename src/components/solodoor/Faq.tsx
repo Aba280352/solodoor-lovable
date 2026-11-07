@@ -8,7 +8,7 @@ import { Icon } from "./Icon";
 import { Container, CoverImage, Pill } from "./primitives";
 import { HOME_FAQ, HOME_FAQ_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 import { whatsappHref } from "./whatsapp";
 
 export function Faq() {
@@ -18,6 +18,7 @@ export function Faq() {
   const c = useSection(HOME_FAQ, HOME_FAQ_DEFAULTS);
   const faqItems = c.items;
   const faqImages = c.items.map((item) => item.img);
+  const mark = useEditMark();
 
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
@@ -35,6 +36,7 @@ export function Faq() {
               {faqImages.map((src, i) => (
                 <CoverImage
                   key={i}
+                  {...(i === image ? mark(`items.${i}.img`) : {})}
                   src={src}
                   className={cn("transition-opacity duration-700 ease-grow", i === image ? "opacity-100" : "opacity-0")}
                 />
@@ -59,14 +61,14 @@ export function Faq() {
                     }}
                     className="flex w-full cursor-pointer items-center gap-4 px-5 py-5 text-right lg:px-7 lg:py-6"
                   >
-                    <span className="flex-auto fs-18 leading-[1.4] font-semibold text-foreground">{item.q}</span>
+                    <span className="flex-auto fs-18 leading-[1.4] font-semibold text-foreground"><EF f={`items.${i}.q`}>{item.q}</EF></span>
                     <span className="inline-flex size-9 flex-none items-center justify-center rounded-full border border-foreground text-foreground">
                       <Icon name={isOpen ? "Minus" : "Plus"} size={16} />
                     </span>
                   </button>
                   {isOpen && (
                     <div className="flex items-center gap-4 px-5 pb-6 text-right lg:px-7 lg:pb-7">
-                      <span className="block flex-auto fs-18 leading-[1.8] text-foreground">{item.a}</span>
+                      <span className="block flex-auto fs-18 leading-[1.8] text-foreground"><EF f={`items.${i}.a`}>{item.a}</EF></span>
                     </div>
                   )}
                 </div>

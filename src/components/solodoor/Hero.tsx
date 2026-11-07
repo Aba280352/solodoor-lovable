@@ -10,7 +10,7 @@ import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
 import { HOME_HERO, HOME_HERO_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
 
@@ -23,6 +23,7 @@ export function Hero() {
   const [slide, setSlide] = useState(0);
   const { openQuiz } = useQuiz();
   const c = useSection(HOME_HERO, HOME_HERO_DEFAULTS);
+  const mark = useEditMark();
   const heroSlides = c.slides;
   const count = heroSlides.length;
   const current = heroSlides[slide % count];
@@ -43,6 +44,7 @@ export function Hero() {
         {heroSlides.map((s, i) => (
           <img
             key={s.tag}
+            {...(i === slide % count ? mark(`slides.~${s.tag}.img`) : {})}
             src={s.img}
             alt={`${s.l1} ${s.l2}`}
             className={cn(
@@ -56,11 +58,11 @@ export function Hero() {
 
       <div className="relative lg:grid lg:h-162.5 lg:grid-cols-2 lg:items-stretch">
         <div className="flex min-w-0 flex-col items-center justify-center px-5 pt-5 pb-6 text-center lg:px-22 lg:py-12">
-          <Pill className="flex-none tracking-[0.16em] whitespace-nowrap">{shownLabel(current, "tag")}</Pill>
+          <Pill className="flex-none tracking-[0.16em] whitespace-nowrap"><EF f={`slides.~${current.tag}.tag`}>{shownLabel(current, "tag")}</EF></Pill>
 
           <h1 className="mt-3 max-w-[24ch] fs-30 leading-[1.12] font-bold tracking-[-0.02em] text-foreground lg:mt-6.5 lg:fs-54">
-            <span className="block">{current.l1}</span>
-            <span className="block">{current.l2}</span>
+            <span className="block"><EF f={`slides.~${current.tag}.l1`}>{current.l1}</EF></span>
+            <span className="block"><EF f={`slides.~${current.tag}.l2`}>{current.l2}</EF></span>
           </h1>
 
           <p className="mt-3 max-w-[34ch] fs-16 leading-[1.6] text-foreground lg:mt-5.5 lg:fs-18">
@@ -79,20 +81,20 @@ export function Hero() {
             </Button>
             <Button asChild variant="secondary" className="flex-none px-7 py-3 lg:py-[0.9375rem]">
               <Link to="/חנות" search={shopSearchFor(current.tag)}>
-                <span>{current.cta}</span>
+                <span><EF f={`slides.~${current.tag}.cta`}>{current.cta}</EF></span>
                 <Icon name="ArrowLeft" size={16} />
               </Link>
             </Button>
           </div>
 
           <div className="mt-5 flex w-full items-start justify-center gap-3 border-t border-foreground/14 pt-4 lg:mt-14 lg:gap-6 lg:pt-8.5">
-            {c.trust.map((item) => (
+            {c.trust.map((item, ti) => (
               <div key={item.label} className="flex flex-1 flex-col items-center gap-1.5 lg:gap-2.5">
                 <span className="inline-flex text-foreground [&_svg]:size-7 lg:[&_svg]:size-[2.125rem]!">
                   <Icon name={item.icon} size={34} />
                 </span>
                 <span className="fs-13 leading-[1.45] font-medium text-balance text-foreground lg:fs-15">
-                  {item.label}
+                  <EF f={`trust.${ti}.label`}>{item.label}</EF>
                 </span>
               </div>
             ))}

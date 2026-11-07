@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageShell } from "@/components/solodoor/PageShell";
@@ -9,6 +10,7 @@ import { KitchenIntro } from "@/components/solodoor/kitchen/KitchenIntro";
 import { KitchenValues } from "@/components/solodoor/kitchen/KitchenValues";
 import { kitchenSeo } from "@/components/solodoor/kitchen/data";
 import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
+import { EditableSection, useLayout } from "@/components/solodoor/content/layout";
 
 const CANONICAL = "https://solodoor.co.il/ציפוי-מטבחים/";
 
@@ -43,15 +45,26 @@ export const Route = createFileRoute("/ציפוי-מטבחים")({
   component: KitchenPage,
 });
 
+/** The page's sections, in their original order. The admin can reorder them and hide them per device. */
+const KITCHEN_ORDER = ["kitchen.hero", "kitchen.intro", "kitchen.values", "kitchen.catalog", "kitchen.reviews", "kitchen.beforeAfter"];
+const RENDER: Record<string, () => ReactNode> = {
+  "kitchen.hero": () => <KitchenHero />,
+  "kitchen.intro": () => <KitchenIntro />,
+  "kitchen.values": () => <KitchenValues />,
+  "kitchen.catalog": () => <KitchenCatalog />,
+  "kitchen.reviews": () => <Reviews page="kitchen.reviews" />,
+  "kitchen.beforeAfter": () => <KitchenBeforeAfter />,
+};
+
 function KitchenPage() {
+  const layout = useLayout("/ציפוי-מטבחים", KITCHEN_ORDER);
   return (
     <PageShell>
-      <KitchenHero />
-      <KitchenIntro />
-      <KitchenValues />
-      <KitchenCatalog />
-      <Reviews pill="אם עד עכשיו לא התקשרתם, תראו מה רושמים עלינו החברים!" />
-      <KitchenBeforeAfter />
+      {layout.order.map((key) => (
+        <EditableSection key={key} id={key} hide={layout.hide(key)}>
+          {RENDER[key]()}
+        </EditableSection>
+      ))}
     </PageShell>
   );
 }

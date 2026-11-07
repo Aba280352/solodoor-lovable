@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Icon } from "./Icon";
 import { business } from "./content/business";
 import { useFooterContent, useNav } from "./content/nav";
+import { useEditMark } from "./content/layout";
 import { formValues, submitLead } from "./leads";
 import { whatsappHref } from "./whatsapp";
 import { Container } from "./primitives";
@@ -115,6 +116,7 @@ function FooterLink({ label, category }: { label: string; category: boolean }) {
 /** The footer's contact form: name, phone, email and the privacy consent. */
 function FooterLeadForm() {
   const footer = useFooterContent();
+  const mark = useEditMark();
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -135,8 +137,8 @@ function FooterLeadForm() {
 
   return (
     <form onSubmit={submit} className="rounded-[0.5rem] border border-border bg-card px-5 pt-7 pb-7.5 text-right lg:px-7.5">
-      <span className="block fs-28 font-medium text-foreground">{footer.formTitle ?? "השאירו פרטים"}</span>
-      <span className="mt-1.5 block fs-16 text-foreground">{footer.formSubtitle ?? "ואנחנו נחזור אליכם בהקדם"}</span>
+      <span {...mark("formTitle", "field")} className="block fs-28 font-medium text-foreground">{footer.formTitle ?? "השאירו פרטים"}</span>
+      <span {...mark("formSubtitle", "field")} className="mt-1.5 block fs-16 text-foreground">{footer.formSubtitle ?? "ואנחנו נחזור אליכם בהקדם"}</span>
       {sent ? (
         <div role="status" className="mt-5 flex items-center gap-3 rounded-md bg-muted px-4 py-3.5">
           <span className="inline-flex text-clay">
@@ -175,16 +177,17 @@ function FooterLeadForm() {
 export function SiteFooter() {
   const nav = useNav();
   const footer = useFooterContent();
+  const mark = useEditMark();
   const bannerLines = ["דלת חדשה,", "אותו בית,", "הרגשה אחרת"].map((line, i) => footer.bannerLines[i] ?? line);
   const bannerEnglish = ["Small Change", "Big Difference"].map((line, i) => footer.bannerEnglish[i] ?? line);
   return (
     <footer data-reveal data-edit-section="footer" data-edit-label="פוטר">
       <div className="relative">
         <div className="relative h-96 overflow-hidden bg-muted lg:h-130">
-          <img src={footer.bannerImage ?? FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
+          <img {...mark("bannerImage")} src={footer.bannerImage ?? FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
           <div className="absolute inset-0 bg-footer-scrim" />
           <div className="absolute inset-y-0 right-0 flex w-full flex-col items-start justify-center gap-5.5 px-5 text-right lg:w-[52%] lg:px-27">
-            <span className="fs-36 leading-[1.08] font-medium text-background lg:fs-52">
+            <span {...mark("bannerLines", "field")} className="fs-36 leading-[1.08] font-medium text-background lg:fs-52">
               {bannerLines[0]}
               <br />
               {bannerLines[1]}
@@ -192,7 +195,7 @@ export function SiteFooter() {
               {bannerLines[2]}
             </span>
             <span className="block h-0.5 w-18 bg-primary" />
-            <span dir="ltr" className="fs-20 leading-[1.45] font-medium text-clay lg:fs-24">
+            <span {...mark("bannerEnglish", "field")} dir="ltr" className="fs-20 leading-[1.45] font-medium text-clay lg:fs-24">
               {bannerEnglish[0]}
               <br />
               {bannerEnglish[1]}
@@ -205,7 +208,7 @@ export function SiteFooter() {
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-10 lg:grid-cols-[1.15fr_0.85fr_1fr_1.5fr] lg:gap-9">
               <div className="col-span-full text-right lg:col-span-1">
                 <img src={LOGO_SRC} alt="SOLODOOR" className="block h-11 w-37.5" />
-                <span className="mt-3 block fs-16 leading-[1.7] text-foreground">{footer.tagline ?? "ציפוי דלתות. בדיוק הסגנון שלכם."}</span>
+                <span {...mark("tagline", "field")} className="mt-3 block fs-16 leading-[1.7] text-foreground">{footer.tagline ?? "ציפוי דלתות. בדיוק הסגנון שלכם."}</span>
                 <div className="mt-5 flex items-center gap-3">
                   {footerSocial.map((social) => (
                     <a
@@ -266,7 +269,7 @@ export function SiteFooter() {
                   </Fragment>
                 ))}
               </div>
-              <span className="text-center fs-15 text-foreground">{footer.copyright ?? "© 2026 כל הזכויות שמורות לסולודור"}</span>
+              <span {...mark("copyright", "field")} className="text-center fs-15 text-foreground">{footer.copyright ?? "© 2026 כל הזכויות שמורות לסולודור"}</span>
             </div>
           </Container>
         </div>

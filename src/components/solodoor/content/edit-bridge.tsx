@@ -1,8 +1,9 @@
 /**
  * The page side of the visual editor. When the site runs inside the editor's frame with ?edit=1:
  * a click only selects (links, buttons, forms and pop-ups do nothing): the section, and the field under the pointer
- * when it is marked; a double click on a marked text edits it in place on the page; hovering outlines what is under
- * the pointer; the editor's unsaved values arrive by postMessage and show at once. Same origin only.
+ * when it is marked; a double click on a marked text edits it in place on the page, a double click on a marked image
+ * opens its replacement; hovering outlines what is under the pointer; the editor's unsaved values arrive by
+ * postMessage and show at once. Same origin only.
  */
 import { useEffect } from "react";
 
@@ -13,7 +14,7 @@ export type EditorMessage =
 
 export type PageMessage =
   | { type: "ready"; sections: string[] }
-  | { type: "select"; key: string; field?: string }
+  | { type: "select"; key: string; field?: string; open?: boolean }
   | { type: "inline"; key: string; field: string; value: string };
 
 /** True when this page is the editor's preview (?edit=1 inside a frame of the same site). */
@@ -35,6 +36,7 @@ const STYLE = `
 [data-edit-section][data-edit-selected]::before,[data-edit-section]:hover::before{content:attr(data-edit-label);position:absolute;top:0;right:0;z-index:60;background:#C96F61;color:#fff;font:600 13px/1 system-ui,sans-serif;padding:5px 9px;border-radius:0 0 0 6px;pointer-events:none}
 [data-edit-field]:hover{outline:1px solid #7D958B;outline-offset:2px;border-radius:2px}
 [data-edit-field][data-edit-inline]:hover{cursor:text}
+[data-edit-image]:hover{outline:3px solid #7D958B!important;outline-offset:-3px;cursor:pointer}
 [data-edit-field][contenteditable]{outline:2px solid #7D958B!important;outline-offset:3px;background:rgba(125,149,139,.12);cursor:text}
 img{pointer-events:auto!important}
 `;
@@ -60,10 +62,21 @@ export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: 
       if (scroll) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    const target = (e: Event) => {
+    // The marked element under the pointer: the clicked element's own mark, or else the first marked element at that
+    // point (a picture under a gradient, a slider handle or a link overlay still counts as the picture).
+    const target = (e: MouseEvent) => {
       const t = e.target as Element | null;
       const section = t?.closest?.("[data-edit-section]");
-      const field = t?.closest?.("[data-edit-field]");
+      let field = t?.closest?.("[data-edit-field]") ?? null;
+      if (!field && section) {
+        for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
+          const f = el.closest("[data-edit-field]");
+          if (f && section.contains(f)) {
+            field = f;
+            break;
+          }
+        }
+      }
       return {
         key: section?.getAttribute("data-edit-section") ?? null,
         field: field && section?.contains(field) ? field.getAttribute("data-edit-field") ?? undefined : undefined,
@@ -80,10 +93,8 @@ export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: 
       }
       el.removeAttribute("contenteditable");
       editing = null;
-      if (held.has(key)) {
-        onLive(key, held.get(key));
-        held.delete(key);
-      }
+      for (const [k, data] of held) onLive(k, data);
+      held.clear();
       // The browser edited the text nodes React rendered; drawing the page afresh puts React back in charge.
       onRemount();
     };
@@ -109,6 +120,14 @@ export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: 
     // A double click on a marked text turns it into an editable text, right on the page.
     const onDblClick = (e: MouseEvent) => {
       const { key, field, fieldEl } = target(e);
+      if (key && field && fieldEl?.hasAttribute("data-edit-image")) {
+        // A picture: the panel opens its replacement (the double click lets it open the file picker).
+        e.preventDefault();
+        e.stopPropagation();
+        if (editing) endEditing(true);
+        post({ type: "select", key, field, open: true });
+        return;
+      }
       if (!key || !field || !fieldEl?.hasAttribute("data-edit-inline")) return;
       e.preventDefault();
       e.stopPropagation();
@@ -155,7 +174,8 @@ export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: 
     // Menus and pop-ups that open on pointer-down (not on click) stay closed too.
     const onPointerDown = (e: PointerEvent) => {
       if (editing && editing.el.contains(e.target as Node)) return;
-      if ((e.target as Element | null)?.closest?.("a,button,[role=button],input,textarea,select,summary")) e.stopPropagation();
+      // Carousels and sliders inside a section would grab the pointer, so a click there could not select anything.
+      if ((e.target as Element | null)?.closest?.("a,button,[role=button],input,textarea,select,summary,[data-edit-section]")) e.stopPropagation();
     };
     window.addEventListener("click", onClick, true);
     window.addEventListener("dblclick", onDblClick, true);
@@ -169,7 +189,8 @@ export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: 
     const onMessage = (e: MessageEvent<EditorMessage>) => {
       if (e.origin !== window.location.origin || !e.data || typeof e.data !== "object") return;
       if (e.data.type === "live") {
-        if (editing && editing.key === e.data.key) held.set(e.data.key, e.data.data);
+        // Nothing on the page is redrawn under the caret (a shared list may arrive under another key).
+        if (editing) held.set(e.data.key, e.data.data);
         else onLive(e.data.key, e.data.data);
       }
       if (e.data.type === "select") select(e.data.key, true);

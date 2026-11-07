@@ -64,6 +64,7 @@ export function ListEditor<T>({
   newItem,
   max = 30,
   addLabel = "הוספה",
+  summary,
   children,
 }: {
   items: T[];
@@ -71,8 +72,11 @@ export function ListEditor<T>({
   newItem: () => T;
   max?: number;
   addLabel?: string;
+  /** When given, rows are folded to this one line and open one at a time (like Elementor's repeater). */
+  summary?: (item: T, index: number) => string;
   children: (item: T, set: (patch: Partial<T>) => void, index: number) => ReactNode;
 }) {
+  const [open, setOpen] = useState<number | null>(null);
   const move = (i: number, d: number) => {
     const next = [...items];
     const [x] = next.splice(i, 1);
@@ -83,8 +87,16 @@ export function ListEditor<T>({
   return (
     <div className="flex flex-col gap-3">
       {items.map((item, i) => (
-        <div key={i} className="flex gap-3 rounded-md border border-border bg-background p-3">
-          <div className="min-w-0 flex-1">{children(item, (patch) => onChange(items.map((x, j) => (j === i ? { ...x, ...patch } : x))), i)}</div>
+        <div key={i} data-item={i} className="flex gap-3 rounded-md border border-border bg-background p-3">
+          <div className="min-w-0 flex-1">
+            {summary && (
+              <button type="button" onClick={() => setOpen(open === i ? null : i)} className="flex w-full cursor-pointer items-center justify-between gap-2 text-right fs-15 font-medium text-foreground">
+                <span className="min-w-0 truncate">{summary(item, i) || `${addLabel} ${i + 1}`}</span>
+                <span aria-hidden="true" className="flex-none text-foreground/50">{open === i ? "▴" : "▾"}</span>
+              </button>
+            )}
+            {(!summary || open === i) && <div className={summary ? "mt-3" : ""}>{children(item, (patch) => onChange(items.map((x, j) => (j === i ? { ...x, ...patch } : x))), i)}</div>}
+          </div>
           <div className="flex flex-none flex-col gap-1.5">
             <button type="button" aria-label="למעלה" disabled={i === 0} onClick={() => move(i, -1)} className={btn}>
               ↑
@@ -99,7 +111,7 @@ export function ListEditor<T>({
         </div>
       ))}
       {items.length < max && (
-        <button type="button" onClick={() => onChange([...items, newItem()])} className="cursor-pointer self-start rounded-md border border-dashed border-primary px-4 py-2 fs-14 font-medium text-foreground hover:bg-muted">
+        <button type="button" onClick={() => { onChange([...items, newItem()]); setOpen(items.length); }} className="cursor-pointer self-start rounded-md border border-dashed border-primary px-4 py-2 fs-14 font-medium text-foreground hover:bg-muted">
           + {addLabel}
         </button>
       )}

@@ -4,11 +4,12 @@ import { shopSearchFor } from "./shop/links";
 import { Container, CoverImage } from "./primitives";
 import { HOME_CATEGORIES, HOME_CATEGORIES_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 
 export function Categories() {
   const c = useSection(HOME_CATEGORIES, HOME_CATEGORIES_DEFAULTS);
   const rows = [c.items.slice(0, 4), c.items.slice(4)];
+  const mark = useEditMark();
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
@@ -32,12 +33,12 @@ export function Categories() {
                   className="group block min-w-0 overflow-hidden rounded-lg border border-border bg-card [transition:border-color_240ms_var(--ease-standard),flex-grow_1500ms_var(--ease-grow)] hover:border-secondary lg:flex-[1_1_0] lg:hover:grow-[1.4]"
                 >
                   <div className="relative h-36 overflow-hidden bg-muted lg:h-58">
-                    <CoverImage src={cat.img} alt={shownLabel(cat, "name")} className="transition-opacity duration-700 ease-standard group-hover:opacity-0" />
-                    <CoverImage src={cat.variant} alt={shownLabel(cat, "name")} className="opacity-0 transition-opacity duration-700 ease-standard group-hover:opacity-100" />
+                    <CoverImage {...mark(`items.~${cat.name}.img`)} src={cat.img} alt={shownLabel(cat, "name")} className="transition-opacity duration-700 ease-standard group-hover:opacity-0" />
+                    <CoverImage {...mark(`items.~${cat.name}.variant`)} src={cat.variant} alt={shownLabel(cat, "name")} className="opacity-0 transition-opacity duration-700 ease-standard group-hover:opacity-100" />
                   </div>
                   <div className="flex items-center justify-between gap-1.5 bg-card px-2.5 py-3 text-foreground transition-colors duration-420 ease-standard group-hover:bg-secondary group-hover:text-secondary-foreground lg:gap-4 lg:px-5 lg:py-4.5">
                     <span className="min-w-0 text-[clamp(0.6875rem,3.4vw,0.9375rem)] font-medium whitespace-nowrap lg:fs-18">
-                      {shownLabel(cat, "name")}
+                      <EF f={`items.~${cat.name}.name`}>{shownLabel(cat, "name")}</EF>
                     </span>
                     <span className="inline-flex size-6 flex-none items-center justify-center rounded-full border border-primary text-primary transition-[background-color,color,transform,border-color] duration-420 ease-standard group-hover:-translate-x-1.5 group-hover:border-background group-hover:bg-background group-hover:text-secondary lg:size-8 lg:[&_svg]:size-[0.9375rem]!">
                       <Icon name="ArrowLeft" size={12} />

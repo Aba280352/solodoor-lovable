@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { Pill } from "../primitives";
-import { PROCESS_FRAME_COUNT, processFrame, processSteps } from "./data";
+import { PROCESS_FRAME_COUNT, processFrame } from "./data";
+import { DOORS_PROCESS, DOORS_PROCESS_DEFAULTS } from "../content/doors";
+import { useSection } from "../content/sections";
+import { EF, useEditMark } from "../content/layout";
 
 const clamp = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -13,6 +16,11 @@ const clamp = (n: number) => Math.min(1, Math.max(0, n));
  * a door being coated, and the step beside it follows along.
  */
 export function DoorsProcess() {
+  const c = useSection(DOORS_PROCESS, DOORS_PROCESS_DEFAULTS);
+  const processSteps = c.steps;
+  // The scroll handler reads the steps' thresholds from here, so it is set up once.
+  const stepsRef = useRef(processSteps);
+  stepsRef.current = processSteps;
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [active, setActive] = useState(0);
@@ -78,7 +86,7 @@ export function DoorsProcess() {
       section.style.setProperty("--progress", current.toFixed(4));
 
       let step = 0;
-      processSteps.forEach((s, i) => {
+      stepsRef.current.forEach((s, i) => {
         if (current >= s.from) step = i;
       });
       setActive(step);
@@ -121,9 +129,9 @@ export function DoorsProcess() {
     <section ref={sectionRef} className="relative h-[340svh] bg-muted lg:h-[420svh]">
       <div className="sticky top-16 flex h-[calc(100svh-4rem)] flex-col overflow-hidden lg:top-20 lg:block lg:h-[calc(100svh-5rem)]">
         <div className="relative z-10 px-5 pt-7 text-right lg:absolute lg:inset-y-0 lg:start-12 lg:flex lg:w-120 lg:flex-col lg:items-start lg:justify-center lg:p-0">
-          <Pill className="px-5 py-2 fs-16">איך זה עובד</Pill>
+          <Pill className="px-5 py-2 fs-16"><EF f="pill">{c.pill}</EF></Pill>
           <h2 className="mt-4 fs-30 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:mt-5 lg:fs-46">
-            מדלת ישנה לדלת חדשה, בארבעה צעדים
+            <EF f="title">{c.title}</EF>
           </h2>
 
         {/* Desktop: all four steps beside the door, the current one lit. */}
@@ -133,7 +141,7 @@ export function DoorsProcess() {
           </span>
           {processSteps.map((step, i) => (
             <li
-              key={step.title}
+              key={i}
               className={cn(
                 "flex gap-6 py-4 transition-opacity duration-300 ease-standard",
                 active === i ? "opacity-100" : "opacity-35",
@@ -143,14 +151,14 @@ export function DoorsProcess() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="flex flex-col gap-1.5">
-                <span className="fs-22 leading-[1.25] font-bold text-foreground">{step.title}</span>
+                <span className="fs-22 leading-[1.25] font-bold text-foreground"><EF f={`steps.${i}.title`}>{step.title}</EF></span>
                 <span
                   className={cn(
                     "grid transition-[grid-template-rows] duration-300 ease-standard",
                     active === i ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                   )}
                 >
-                  <span className="overflow-hidden fs-17 leading-[1.65] text-foreground">{step.text}</span>
+                  <span className="overflow-hidden fs-17 leading-[1.65] text-foreground"><EF f={`steps.${i}.text`}>{step.text}</EF></span>
                 </span>
               </span>
             </li>
@@ -169,7 +177,7 @@ export function DoorsProcess() {
           </span>
           {processSteps.map((step, i) => (
             <div
-              key={step.title}
+              key={i}
               aria-hidden={active !== i}
               className={cn(
                 "absolute inset-x-5 top-7 flex gap-4 transition-opacity duration-300 ease-standard",
@@ -180,8 +188,8 @@ export function DoorsProcess() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="flex flex-col gap-1.5">
-                <span className="fs-20 leading-[1.25] font-bold text-foreground">{step.title}</span>
-                <span className="fs-16 leading-[1.6] text-foreground">{step.text}</span>
+                <span className="fs-20 leading-[1.25] font-bold text-foreground"><EF f={`steps.${i}.title`}>{step.title}</EF></span>
+                <span className="fs-16 leading-[1.6] text-foreground"><EF f={`steps.${i}.text`}>{step.text}</EF></span>
               </span>
             </div>
           ))}

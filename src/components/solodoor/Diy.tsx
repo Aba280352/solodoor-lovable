@@ -9,7 +9,7 @@ import { QuantityCalculator } from "./QuantityCalculator";
 import { YouTubePlayer } from "./shop/YouTubePlayer";
 import { HOME_DIY, HOME_DIY_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
-import { EF } from "./content/layout";
+import { EF, useEditMark } from "./content/layout";
 
 /** A pill on the section's photo that opens a video in a pop-up. */
 function VideoButton({ label, id, title }: { label: string; id: string; title: string }) {
@@ -48,6 +48,7 @@ export function Diy() {
   const c = useSection(HOME_DIY, HOME_DIY_DEFAULTS);
   const diySteps = c.steps;
   const diyTools = c.tools;
+  const mark = useEditMark();
   return (
     <section
       id="diy"
@@ -94,7 +95,7 @@ export function Diy() {
                 <span className="mt-1 inline-flex text-background">
                   <Icon name={step.icon} size={38} />
                 </span>
-                <span className="text-center fs-15 font-medium text-background lg:fs-20">{step.label}</span>
+                <span className="text-center fs-15 font-medium text-background lg:fs-20"><EF f={`steps.${i}.label`}>{step.label}</EF></span>
               </div>
             ))}
           </div>
@@ -102,7 +103,7 @@ export function Diy() {
 
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-5">
           <div className="relative order-2 aspect-[878/490] overflow-hidden rounded-xl bg-muted">
-            <img src={c.videoImage} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
+            <img {...mark("videoImage")} src={c.videoImage} alt="הדבקת טפט על חזית ארון" className="absolute inset-0 block size-full object-cover" />
             <div className="absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5 lg:inset-x-5.5 lg:bottom-5.5 lg:gap-3">
               <VideoButton label={c.video1Label} id={c.video1.id} title={c.video1.title} />
               <VideoButton label={c.video2Label} id={c.video2.id} title={c.video2.title} />
@@ -122,8 +123,8 @@ export function Diy() {
                     i < diyTools.length - 1 && "border-e border-border",
                   )}
                 >
-                  <img src={tool.img} alt={tool.name} className="block size-20 rounded-lg object-contain mix-blend-multiply lg:size-30" />
-                  <span className="text-center fs-14 font-medium text-foreground lg:fs-18">{tool.name}</span>
+                  <img {...mark(`tools.${i}.img`)} src={tool.img} alt={tool.name} className="block size-20 rounded-lg object-contain mix-blend-multiply lg:size-30" />
+                  <span className="text-center fs-14 font-medium text-foreground lg:fs-18"><EF f={`tools.${i}.name`}>{tool.name}</EF></span>
                 </div>
               ))}
             </div>

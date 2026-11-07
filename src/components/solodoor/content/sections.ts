@@ -44,7 +44,8 @@ export interface Video {
 const ICON_NAMES = new Set(Object.keys(ICON_DATA));
 
 const cleanText = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
-const cleanUrl = (v: unknown) => (typeof v === "string" && /^https:\/\/[^\s"'<>]+$/.test(v.trim()) ? v.trim() : undefined);
+/** An https address, or one of the site's own files ("/images/…"), which a list item keeps when it moves. */
+const cleanUrl = (v: unknown) => (typeof v === "string" && /^(?:https:\/\/|\/(?!\/))[^\s"'<>]+$/.test(v.trim()) ? v.trim() : undefined);
 const cleanIcon = (v: unknown) => (typeof v === "string" && ICON_NAMES.has(v) ? (v as IconName) : undefined);
 function cleanVideo(v: unknown): Video | undefined {
   if (!v || typeof v !== "object") return undefined;
