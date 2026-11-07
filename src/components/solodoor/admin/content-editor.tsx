@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -21,13 +21,15 @@ interface EditorProps<T> {
   previewPath?: string;
   /** Called with the prepared value on every change (the visual editor shows it on the page at once). */
   onLiveChange?: (data: T) => void;
+  /** A change made elsewhere (the visual editor's in-place typing), applied as if typed in the form. */
+  patch?: { data: Partial<T>; nonce: number } | null;
 }
 
 /**
  * Loads a key, lets the form edit it, and offers: save as draft, publish, discard the draft, back to the code
  * default, and the publish history with "restore to draft". Nothing reaches visitors before "פרסום".
  */
-export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath, onLiveChange }: EditorProps<T>) {
+export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath, onLiveChange, patch }: EditorProps<T>) {
   const [entry, setEntry] = useState<ContentEntry<T> | null>(null);
   const [value, setValue] = useState<T>({} as T);
   const [dirty, setDirty] = useState(false);
@@ -53,6 +55,15 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
     if ("data" in prepared) onLiveChange(prepared.data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, entry]);
+
+  // Each outside change is applied once, as soon as the entry has loaded.
+  const appliedPatch = useRef(0);
+  useEffect(() => {
+    if (!patch || !entry || appliedPatch.current === patch.nonce) return;
+    appliedPatch.current = patch.nonce;
+    setValue((v) => ({ ...v, ...patch.data }));
+    setDirty(true);
+  }, [patch, entry]);
 
   useEffect(() => {
     setEntry(null);

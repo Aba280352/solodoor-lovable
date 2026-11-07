@@ -12,6 +12,7 @@ import { useShop } from "./shop/useShop";
 import { useQuiz } from "./quiz-context";
 import { HOME_BEST_SELLERS, HOME_BEST_SELLERS_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 export function BestSellers() {
   const { shop } = useShop();
@@ -27,12 +28,12 @@ export function BestSellers() {
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <Pill className="px-5.5 py-[0.5625rem] tracking-[0.14em] whitespace-nowrap">{c.pill}</Pill>
+          <Pill className="px-5.5 py-[0.5625rem] tracking-[0.14em] whitespace-nowrap"><EF f="pill">{c.pill}</EF></Pill>
           <h2 className="mt-5.5 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-58">
-            {c.title}
+            <EF f="title">{c.title}</EF>
           </h2>
           <p className="mt-4 max-w-[70ch] fs-18 leading-[1.7] font-medium text-foreground">
-            {c.text}
+            <EF f="text">{c.text}</EF>
           </p>
         </div>
 
@@ -59,13 +60,13 @@ export function BestSellers() {
         <div className="mt-10 flex flex-col items-stretch justify-center gap-3.5 lg:mt-13 lg:flex-row lg:items-center">
           <Button asChild variant="secondary" className="py-4.5">
             <Link to="/חנות">
-              <span>{c.shopCta}</span>
+              <span><EF f="shopCta">{c.shopCta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>
           <Button asChild className="px-5 py-4.5 whitespace-normal lg:px-10 lg:whitespace-nowrap">
             <a href="#" onClick={openQuiz}>
-              <span>{c.quizCta}</span>
+              <span><EF f="quizCta">{c.quizCta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </a>
           </Button>

@@ -8,6 +8,7 @@ import { Icon } from "./Icon";
 import { Container, CoverImage, Pill } from "./primitives";
 import { HOME_FAQ, HOME_FAQ_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 import { whatsappHref } from "./whatsapp";
 
 export function Faq() {
@@ -23,12 +24,12 @@ export function Faq() {
       <Container>
         <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-18">
           <div className="flex min-w-0 flex-col items-start text-right">
-            <Pill className="tracking-[0.04em]">{c.pill}</Pill>
+            <Pill className="tracking-[0.04em]"><EF f="pill">{c.pill}</EF></Pill>
             <h2 className="mt-5 fs-36 leading-[1.1] font-bold tracking-[-0.02em] whitespace-nowrap text-foreground lg:fs-52">
-              {c.title}
+              <EF f="title">{c.title}</EF>
             </h2>
             <p className="mt-5 max-w-[40ch] fs-18 leading-[1.75] font-medium text-foreground">
-              {c.text}
+              <EF f="text">{c.text}</EF>
             </p>
             <div className="relative mt-8 min-h-56 w-full flex-auto overflow-hidden rounded-[0.75rem] bg-muted lg:min-h-105">
               {faqImages.map((src, i) => (
@@ -79,25 +80,25 @@ export function Faq() {
             to="/שאלות-נפוצות"
             className="inline-flex items-center gap-2 border-b border-primary pb-0.5 fs-17 font-medium text-foreground transition-[gap] duration-240 ease-standard hover:gap-3.5"
           >
-            <span>{c.allLink}</span>
+            <span><EF f="allLink">{c.allLink}</EF></span>
             <Icon name="AngleLeft" size={13} />
           </Link>
         </div>
 
         <div className="mt-13 flex flex-col items-center gap-5.5">
           <span className="text-center fs-28 leading-[1.15] font-medium tracking-[-0.02em] text-foreground lg:fs-44">
-            {c.moreTitle}
+            <EF f="moreTitle">{c.moreTitle}</EF>
           </span>
           <div className="flex w-full flex-col items-stretch justify-center gap-3.5 lg:w-auto lg:flex-row lg:items-center">
             <Button asChild className="border border-primary py-4.5">
               <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                <span>{c.whatsappLabel}</span>
+                <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
                 <Icon name="ChatDots" size={17} />
               </a>
             </Button>
             <Button asChild variant="secondary" className="py-4.5">
               <Link to="/חנות">
-                <span>{c.shopCta}</span>
+                <span><EF f="shopCta">{c.shopCta}</EF></span>
                 <Icon name="ArrowLeft" size={16} />
               </Link>
             </Button>

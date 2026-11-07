@@ -10,6 +10,7 @@ import { shopSearchFor } from "./shop/links";
 import { Pill } from "./primitives";
 import { HOME_HERO, HOME_HERO_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
+import { EF } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
 
@@ -63,16 +64,16 @@ export function Hero() {
           </h1>
 
           <p className="mt-3 max-w-[34ch] fs-16 leading-[1.6] text-foreground lg:mt-5.5 lg:fs-18">
-            {c.quizPrompt}{" "}
+            <EF f="quizPrompt">{c.quizPrompt}</EF>{" "}
             <a href="#" onClick={openQuiz} className="border-b border-primary pb-px text-foreground">
-              {c.quizLink}
+              <EF f="quizLink">{c.quizLink}</EF>
             </a>
           </p>
 
           <div className="mt-4 flex w-full flex-col items-stretch gap-2 lg:mt-9 lg:w-auto lg:gap-3 lg:flex-row lg:items-center">
             <Button asChild className="flex-none px-7 py-3 lg:py-[0.9375rem]">
               <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                <span>{c.whatsappLabel}</span>
+                <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
             </Button>
@@ -121,7 +122,7 @@ export function Hero() {
         <div className="mx-auto grid h-13 max-w-330 grid-cols-[1fr_auto_1fr] items-center px-5 lg:px-12">
           <div className="flex items-center justify-start gap-3 text-foreground">
             <span dir="ltr" className="hidden fs-15 font-medium tracking-[0.18em] whitespace-nowrap lg:inline">
-              {c.barEnglish}
+              <EF f="barEnglish">{c.barEnglish}</EF>
             </span>
           </div>
           <div className="flex items-center gap-[0.5625rem]">
@@ -140,7 +141,7 @@ export function Hero() {
           </div>
           <div className="flex items-center justify-end gap-3">
             <span className="hidden fs-15 font-medium tracking-[0.18em] whitespace-nowrap text-foreground lg:inline">
-              {c.barHebrew}
+              <EF f="barHebrew">{c.barHebrew}</EF>
             </span>
           </div>
         </div>

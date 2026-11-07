@@ -2,7 +2,7 @@
  * The admin form of one page section, built from its description (content/sections.ts): texts, images, icons,
  * YouTube videos and lists. What it stores is the override; the site merges it over the code's content.
  */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -170,26 +170,59 @@ function prepareOverride(def: SectionDef, value: Obj): Obj {
   return out;
 }
 
-export function SectionEditor({ def, defaults, onLiveChange }: { def: SectionDef; defaults: Obj; onLiveChange?: (data: Obj) => void }) {
+export function SectionEditor({
+  def,
+  defaults,
+  onLiveChange,
+  patch,
+  focus,
+}: {
+  def: SectionDef;
+  defaults: Obj;
+  onLiveChange?: (data: Obj) => void;
+  /** In-place typing on the page, applied to the form. */
+  patch?: { data: Obj; nonce: number } | null;
+  /** A field clicked on the page: scroll to it and highlight it ("title", or "items.3.img" for a list item). */
+  focus?: { field: string; nonce: number } | null;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!focus) return;
+    const t = window.setTimeout(() => {
+      const [top] = focus.field.split(".");
+      const el = boxRef.current?.querySelector<HTMLElement>(`[data-field="${CSS.escape(top)}"]`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.add("ring-2", "ring-secondary", "rounded-md");
+      window.setTimeout(() => el.classList.remove("ring-2", "ring-secondary", "rounded-md"), 1800);
+      el.querySelector<HTMLElement>("input:not([type=checkbox]),textarea")?.focus({ preventScroll: true });
+    }, 150);
+    return () => window.clearTimeout(t);
+  }, [focus?.nonce]);
   return (
+    <div ref={boxRef}>
     <ContentEditor<Obj>
       contentKey={def.key}
       title={def.title}
       intro="שדה ריק משאיר את התוכן המקורי (מוצג באפור). שום דבר לא משתנה באתר לפני 'פרסום'."
       previewPath={def.page}
       onLiveChange={onLiveChange}
+      patch={patch}
       prepare={(value) => ({ data: prepareOverride(def, value) })}
     >
       {(value, set) => (
         <div className="flex flex-col gap-5">
           {def.fields.map((f) => (
-            <Field key={f.name} label={f.label} hint={"hint" in f ? f.hint : undefined}>
-              <FieldInput field={f} value={value[f.name]} original={defaults[f.name]} onChange={(v) => set({ [f.name]: v })} />
-            </Field>
+            <div key={f.name} data-field={f.name} className="transition-shadow">
+              <Field label={f.label} hint={"hint" in f ? f.hint : undefined}>
+                <FieldInput field={f} value={value[f.name]} original={defaults[f.name]} onChange={(v) => set({ [f.name]: v })} />
+              </Field>
+            </div>
           ))}
         </div>
       )}
     </ContentEditor>
+    </div>
   );
 }
 

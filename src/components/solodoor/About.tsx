@@ -7,6 +7,7 @@ import { Icon } from "./Icon";
 import { Pill } from "./primitives";
 import { HOME_ABOUT, HOME_ABOUT_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
 
@@ -21,16 +22,16 @@ export function About() {
     <section id="about" data-reveal className="scroll-mt-16 lg:scroll-mt-20">
       <div className="grid grid-cols-1 items-stretch gap-10 px-5 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-14 lg:px-27 lg:py-24">
         <div className="flex min-w-0 flex-col items-start justify-center text-right">
-          <Pill className="tracking-[0.16em]">{c.pill}</Pill>
+          <Pill className="tracking-[0.16em]"><EF f="pill">{c.pill}</EF></Pill>
           <h2 className="mt-6 fs-32 leading-[1.12] font-bold tracking-[-0.02em] text-foreground lg:fs-52">
-            <span className="block">{c.title1}</span>
-            <span className="block">{c.title2}</span>
+            <span className="block"><EF f="title1">{c.title1}</EF></span>
+            <span className="block"><EF f="title2">{c.title2}</EF></span>
           </h2>
           <p className="mt-7 max-w-[48ch] fs-18 leading-[1.85] text-pretty text-foreground">
-            {c.p1}
+            <EF f="p1">{c.p1}</EF>
           </p>
           <p className="mt-4 max-w-[48ch] fs-18 leading-[1.85] text-pretty text-foreground">
-            {c.p2}
+            <EF f="p2">{c.p2}</EF>
           </p>
 
           {/* Two even rows of three on mobile; one row on desktop. */}
@@ -69,14 +70,14 @@ export function About() {
           <div className="mt-8 flex w-full flex-col items-center gap-4 lg:flex-row lg:gap-7">
             <Button asChild className="w-full flex-auto px-9 lg:w-auto">
               <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                <span>{c.whatsappLabel}</span>
+                <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
                 <Icon name="ArrowLeft" size={16} />
               </a>
             </Button>
             <p className="fs-18 whitespace-nowrap text-foreground">
-              {c.quizPrompt}{" "}
+              <EF f="quizPrompt">{c.quizPrompt}</EF>{" "}
               <a href="#" onClick={openQuiz} className="border-b border-primary pb-0.5 font-medium text-foreground">
-                {c.quizLink}
+                <EF f="quizLink">{c.quizLink}</EF>
               </a>
             </p>
           </div>

@@ -9,6 +9,7 @@ import { QuantityCalculator } from "./QuantityCalculator";
 import { YouTubePlayer } from "./shop/YouTubePlayer";
 import { HOME_DIY, HOME_DIY_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 /** A pill on the section's photo that opens a video in a pop-up. */
 function VideoButton({ label, id, title }: { label: string; id: string; title: string }) {
@@ -57,19 +58,19 @@ export function Diy() {
       <div className="mx-auto flex max-w-330 flex-col gap-6 px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:items-stretch lg:gap-14 lg:px-12">
         <div className="contents text-right lg:flex lg:flex-col lg:items-start lg:justify-between lg:gap-10">
           <div className="order-1 flex flex-col items-start">
-            <Pill className="px-5.5 py-[0.5625rem] fs-16">{c.pill}</Pill>
+            <Pill className="px-5.5 py-[0.5625rem] fs-16"><EF f="pill">{c.pill}</EF></Pill>
             <h2 className="mt-6.5 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-background lg:fs-62">
-              {c.title1}
+              <EF f="title1">{c.title1}</EF>
               <br />
-              {c.title2}
+              <EF f="title2">{c.title2}</EF>
             </h2>
             <p className="mt-5.5 max-w-[44ch] fs-18 leading-[1.8] font-light text-background">
-              {c.text}
+              <EF f="text">{c.text}</EF>
             </p>
             <div className="mt-8 hidden items-center gap-3.5 lg:flex">
               <Button asChild size="xl" className="gap-3 py-5">
                 <Link to="/חנות">
-                  <span>{c.cta}</span>
+                  <span><EF f="cta">{c.cta}</EF></span>
                   <Icon name="ArrowLeft" size={18} />
                 </Link>
               </Button>
@@ -110,7 +111,7 @@ export function Diy() {
 
           <div className="order-3 rounded-xl bg-background px-4 pt-5.5 pb-6 lg:px-6">
             <span className="block text-right fs-18 font-bold text-foreground lg:fs-22">
-              {c.toolsTitle}
+              <EF f="toolsTitle">{c.toolsTitle}</EF>
             </span>
             <div className="mt-3.5 flex items-start">
               {diyTools.map((tool, i) => (
@@ -131,7 +132,7 @@ export function Diy() {
         <QuantityCalculator className="order-4 w-full lg:hidden" />
         <Button asChild size="xl" className="order-6 mt-2 w-full gap-3 py-5 lg:hidden">
           <Link to="/חנות">
-            <span>{c.cta}</span>
+            <span><EF f="cta">{c.cta}</EF></span>
             <Icon name="ArrowLeft" size={18} />
           </Link>
         </Button>

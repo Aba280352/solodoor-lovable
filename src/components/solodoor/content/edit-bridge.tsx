@@ -1,7 +1,8 @@
 /**
  * The page side of the visual editor. When the site runs inside the editor's frame with ?edit=1:
- * a click only selects (links, buttons, forms and pop-ups do nothing), hovering outlines the section under the
- * pointer, and the editor's unsaved values arrive by postMessage and show at once. Same origin only.
+ * a click only selects (links, buttons, forms and pop-ups do nothing): the section, and the field under the pointer
+ * when it is marked; a double click on a marked text edits it in place on the page; hovering outlines what is under
+ * the pointer; the editor's unsaved values arrive by postMessage and show at once. Same origin only.
  */
 import { useEffect } from "react";
 
@@ -10,7 +11,10 @@ export type EditorMessage =
   | { type: "select"; key: string | null }
   | { type: "reload" };
 
-export type PageMessage = { type: "ready"; sections: string[] } | { type: "select"; key: string };
+export type PageMessage =
+  | { type: "ready"; sections: string[] }
+  | { type: "select"; key: string; field?: string }
+  | { type: "inline"; key: string; field: string; value: string };
 
 /** True when this page is the editor's preview (?edit=1 inside a frame of the same site). */
 export function isEditFrame(): boolean {
@@ -29,15 +33,23 @@ const STYLE = `
 [data-edit-section]:hover{outline:2px dashed #C96F61;outline-offset:-2px;cursor:pointer}
 [data-edit-section][data-edit-selected]{outline:3px solid #C96F61;outline-offset:-3px}
 [data-edit-section][data-edit-selected]::before,[data-edit-section]:hover::before{content:attr(data-edit-label);position:absolute;top:0;right:0;z-index:60;background:#C96F61;color:#fff;font:600 13px/1 system-ui,sans-serif;padding:5px 9px;border-radius:0 0 0 6px;pointer-events:none}
+[data-edit-field]:hover{outline:1px solid #7D958B;outline-offset:2px;border-radius:2px}
+[data-edit-field][data-edit-inline]:hover{cursor:text}
+[data-edit-field][contenteditable]{outline:2px solid #7D958B!important;outline-offset:3px;background:rgba(125,149,139,.12);cursor:text}
 img{pointer-events:auto!important}
 `;
 
-/** Wires the page to the editor: selection, blocked interactions, live values. */
-export function EditBridge({ onLive }: { onLive: (key: string, data: unknown) => void }) {
+/** Wires the page to the editor: selection, in-place text editing, blocked interactions, live values. */
+export function EditBridge({ onLive, onRemount }: { onLive: (key: string, data: unknown) => void; onRemount: () => void }) {
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = STYLE;
     document.head.appendChild(style);
+
+    // While a text is being edited on the page, the editor's echo of that section waits, so React does not
+    // replace the text under the caret; it is applied when the editing ends.
+    let editing: { el: HTMLElement; key: string; field: string; original: string } | null = null;
+    const held = new Map<string, unknown>();
 
     const select = (key: string | null, scroll: boolean) => {
       document.querySelectorAll("[data-edit-selected]").forEach((el) => el.removeAttribute("data-edit-selected"));
@@ -48,33 +60,118 @@ export function EditBridge({ onLive }: { onLive: (key: string, data: unknown) =>
       if (scroll) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    // A click selects the section under it; nothing else on the page reacts.
+    const target = (e: Event) => {
+      const t = e.target as Element | null;
+      const section = t?.closest?.("[data-edit-section]");
+      const field = t?.closest?.("[data-edit-field]");
+      return {
+        key: section?.getAttribute("data-edit-section") ?? null,
+        field: field && section?.contains(field) ? field.getAttribute("data-edit-field") ?? undefined : undefined,
+        fieldEl: field as HTMLElement | null,
+      };
+    };
+
+    const endEditing = (keep: boolean) => {
+      if (!editing) return;
+      const { el, key, field, original } = editing;
+      if (!keep) {
+        el.textContent = original;
+        post({ type: "inline", key, field, value: original });
+      }
+      el.removeAttribute("contenteditable");
+      editing = null;
+      if (held.has(key)) {
+        onLive(key, held.get(key));
+        held.delete(key);
+      }
+      // The browser edited the text nodes React rendered; drawing the page afresh puts React back in charge.
+      onRemount();
+    };
+
+    // A click selects; nothing else on the page reacts. Inside the text being edited, the caret moves as usual.
     const onClick = (e: MouseEvent) => {
+      if (editing && editing.el.contains(e.target as Node)) {
+        // Inside the text being edited (it may sit in a link or button): move the caret, nothing else.
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
-      const el = (e.target as Element | null)?.closest?.("[data-edit-section]");
-      const key = el?.getAttribute("data-edit-section");
+      if (editing) endEditing(true);
+      const { key, field } = target(e);
       if (key) {
         select(key, false);
-        post({ type: "select", key });
+        post({ type: "select", key, field });
       }
     };
+
+    // A double click on a marked text turns it into an editable text, right on the page.
+    const onDblClick = (e: MouseEvent) => {
+      const { key, field, fieldEl } = target(e);
+      if (!key || !field || !fieldEl?.hasAttribute("data-edit-inline")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (editing) endEditing(true);
+      editing = { el: fieldEl, key, field, original: fieldEl.textContent ?? "" };
+      try {
+        fieldEl.setAttribute("contenteditable", "plaintext-only");
+      } catch {
+        fieldEl.setAttribute("contenteditable", "true");
+      }
+      fieldEl.focus();
+      const range = document.createRange();
+      range.selectNodeContents(fieldEl);
+      range.collapse(false);
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    };
+
+    const onInput = (e: Event) => {
+      if (!editing || e.target !== editing.el) return;
+      post({ type: "inline", key: editing.key, field: editing.field, value: (editing.el.textContent ?? "").replace(/\s+/g, " ") });
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!editing) return;
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        const el = editing.el;
+        endEditing(true);
+        el.blur();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        endEditing(false);
+      }
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (editing && e.target === editing.el) endEditing(true);
+    };
+
     const block = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
     };
-    window.addEventListener("click", onClick, true);
-    window.addEventListener("auxclick", block, true);
-    window.addEventListener("submit", block, true);
     // Menus and pop-ups that open on pointer-down (not on click) stay closed too.
     const onPointerDown = (e: PointerEvent) => {
+      if (editing && editing.el.contains(e.target as Node)) return;
       if ((e.target as Element | null)?.closest?.("a,button,[role=button],input,textarea,select,summary")) e.stopPropagation();
     };
+    window.addEventListener("click", onClick, true);
+    window.addEventListener("dblclick", onDblClick, true);
+    window.addEventListener("auxclick", block, true);
+    window.addEventListener("submit", block, true);
     window.addEventListener("pointerdown", onPointerDown, true);
+    window.addEventListener("input", onInput, true);
+    window.addEventListener("keydown", onKeyDown, true);
+    window.addEventListener("focusout", onFocusOut, true);
 
     const onMessage = (e: MessageEvent<EditorMessage>) => {
       if (e.origin !== window.location.origin || !e.data || typeof e.data !== "object") return;
-      if (e.data.type === "live") onLive(e.data.key, e.data.data);
+      if (e.data.type === "live") {
+        if (editing && editing.key === e.data.key) held.set(e.data.key, e.data.data);
+        else onLive(e.data.key, e.data.data);
+      }
       if (e.data.type === "select") select(e.data.key, true);
       if (e.data.type === "reload") window.location.reload();
     };
@@ -89,11 +186,15 @@ export function EditBridge({ onLive }: { onLive: (key: string, data: unknown) =>
       window.clearTimeout(t);
       style.remove();
       window.removeEventListener("click", onClick, true);
+      window.removeEventListener("dblclick", onDblClick, true);
       window.removeEventListener("auxclick", block, true);
       window.removeEventListener("submit", block, true);
       window.removeEventListener("pointerdown", onPointerDown, true);
+      window.removeEventListener("input", onInput, true);
+      window.removeEventListener("keydown", onKeyDown, true);
+      window.removeEventListener("focusout", onFocusOut, true);
       window.removeEventListener("message", onMessage);
     };
-  }, [onLive]);
+  }, [onLive, onRemount]);
   return null;
 }

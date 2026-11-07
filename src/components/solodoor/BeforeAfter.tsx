@@ -10,6 +10,7 @@ import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { HOME_BEFORE_AFTER, HOME_BEFORE_AFTER_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 export interface BeforeAfterPair {
   name: string;
@@ -248,12 +249,12 @@ export function BeforeAfter() {
     <section data-reveal className="overflow-hidden pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <span className="fs-18 font-medium tracking-[0.02em] text-clay lg:fs-22">{c.kicker}</span>
+          <span className="fs-18 font-medium tracking-[0.02em] text-clay lg:fs-22"><EF f="kicker">{c.kicker}</EF></span>
           <h2 className="mt-4.5 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-58">
-            {c.title}
+            <EF f="title">{c.title}</EF>
           </h2>
           <p className="mt-4 max-w-[66ch] fs-18 leading-[1.7] font-medium text-foreground">
-            {c.text}
+            <EF f="text">{c.text}</EF>
           </p>
         </div>
       </Container>
@@ -279,7 +280,7 @@ export function BeforeAfter() {
         <div className="mt-12 flex flex-col items-center gap-4">
           <Button asChild className="w-full px-11 py-4.5 lg:w-auto">
             <Link to="/טפט-לפי-סגנון/$style" params={{ style: "מומלצים" }}>
-              <span>{c.cta}</span>
+              <span><EF f="cta">{c.cta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>

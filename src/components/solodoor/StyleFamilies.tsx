@@ -8,6 +8,7 @@ import { Icon } from "./Icon";
 import { Container, CoverImage } from "./primitives";
 import { HOME_STYLES, HOME_STYLES_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 type Family = (typeof HOME_STYLES_DEFAULTS)["families"][number];
 import { STYLE_HUB_PATH, stylePageForName } from "./shop/styles";
@@ -69,10 +70,10 @@ export function StyleFamilies() {
       <Container>
         <div className="flex flex-col items-center text-center">
           <h2 className="fs-36 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-62">
-            {c.title}
+            <EF f="title">{c.title}</EF>
           </h2>
           <p className="mt-4 fs-18 leading-[1.6] font-medium text-foreground">
-            {c.subtitle}
+            <EF f="subtitle">{c.subtitle}</EF>
           </p>
         </div>
 
@@ -85,7 +86,7 @@ export function StyleFamilies() {
         <div className="mt-10 flex justify-center lg:mt-14">
           <Button asChild className="w-full px-17 lg:w-auto">
             <Link to={STYLE_HUB_PATH}>
-              <span>{c.cta}</span>
+              <span><EF f="cta">{c.cta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>

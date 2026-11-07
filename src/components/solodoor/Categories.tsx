@@ -4,6 +4,7 @@ import { shopSearchFor } from "./shop/links";
 import { Container, CoverImage } from "./primitives";
 import { HOME_CATEGORIES, HOME_CATEGORIES_DEFAULTS } from "./content/home";
 import { shownLabel, useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 export function Categories() {
   const c = useSection(HOME_CATEGORIES, HOME_CATEGORIES_DEFAULTS);
@@ -14,9 +15,9 @@ export function Categories() {
         <div className="flex flex-col items-center text-center">
           <span className="block h-0.5 w-14 bg-primary" />
           <h2 className="mt-6.5 fs-36 leading-[1.1] font-bold tracking-[-0.02em] text-foreground lg:fs-62">
-            {c.title}
+            <EF f="title">{c.title}</EF>
           </h2>
-          <p className="mt-3.5 fs-18 font-medium text-foreground">{c.subtitle}</p>
+          <p className="mt-3.5 fs-18 font-medium text-foreground"><EF f="subtitle">{c.subtitle}</EF></p>
         </div>
 
         <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:gap-6">

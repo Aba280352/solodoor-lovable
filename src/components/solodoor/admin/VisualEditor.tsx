@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import type { EditorMessage, PageMessage } from "../content/edit-bridge";
 import { HOME_SECTIONS } from "../content/home";
-import { SECTION_LABELS, layoutKey, type LayoutOverride } from "../content/layout";
+import { BACKGROUNDS, SECTION_LABELS, SPACES, layoutKey, styleKey, type LayoutOverride, type SectionStyle, type Space } from "../content/layout";
 import { ContentEditor } from "./content-editor";
 import { FooterSection, NavSection, PromoSection } from "./content-sections";
 import { SectionEditor } from "./section-editor";
@@ -28,10 +28,67 @@ const PAGES = [{ path: "/", label: "דף הבית" }];
 
 type Live = (data: unknown) => void;
 
+type Patch = { data: Record<string, unknown>; nonce: number } | null;
+type Focus = { field: string; nonce: number } | null;
+
+/** Safe styling of one section: background and extra space above / below, per device. */
+function StylePanel({ sectionKey, onLive }: { sectionKey: string; onLive: Live }) {
+  const chip = (on: boolean) => cn("cursor-pointer rounded-full border px-3 py-1 fs-13 font-medium", on ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:border-foreground");
+  return (
+    <ContentEditor<SectionStyle>
+      contentKey={styleKey(sectionKey)}
+      title="עיצוב האזור"
+      intro="רקע מצבעי האתר ומרווח נוסף מעל ומתחת, בנפרד למחשב ולטלפון. ללא משאיר כמו היום."
+      onLiveChange={onLive}
+      prepare={(value) => ({ data: value })}
+    >
+      {(value, set) => {
+        const spaceRow = (side: "spaceTop" | "spaceBottom", device: "desktop" | "mobile", label: string) => (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="w-32 fs-14 font-medium text-foreground">{label}</span>
+            {SPACES.map((sp) => (
+              <button
+                key={sp.label}
+                type="button"
+                onClick={() => set({ [side]: { ...value[side], [device]: sp.value as Space | undefined } } as Partial<SectionStyle>)}
+                className={chip(value[side]?.[device] === sp.value)}
+              >
+                {sp.label}
+              </button>
+            ))}
+          </div>
+        );
+        return (
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="w-32 fs-14 font-medium text-foreground">רקע</span>
+              {BACKGROUNDS.map((b) => (
+                <button key={b.label} type="button" onClick={() => set({ background: b.value })} className={chip(value.background === b.value)}>
+                  {b.label}
+                </button>
+              ))}
+            </div>
+            {spaceRow("spaceTop", "desktop", "מרווח מעל, מחשב")}
+            {spaceRow("spaceTop", "mobile", "מרווח מעל, טלפון")}
+            {spaceRow("spaceBottom", "desktop", "מרווח מתחת, מחשב")}
+            {spaceRow("spaceBottom", "mobile", "מרווח מתחת, טלפון")}
+          </div>
+        );
+      }}
+    </ContentEditor>
+  );
+}
+
 /** The fields of one selected part of the page. */
-function SelectedPanel({ sectionKey, onLive }: { sectionKey: string; onLive: Live }) {
+function SelectedPanel({ sectionKey, onLive, onStyleLive, patch, focus }: { sectionKey: string; onLive: Live; onStyleLive: Live; patch: Patch; focus: Focus }) {
   const home = HOME_SECTIONS.find((s) => s.def.key === sectionKey);
-  if (home) return <SectionEditor key={sectionKey} def={home.def} defaults={home.defaults} onLiveChange={onLive} />;
+  if (home)
+    return (
+      <div className="flex flex-col gap-4">
+        <SectionEditor key={sectionKey} def={home.def} defaults={home.defaults} onLiveChange={onLive} patch={patch} focus={focus} />
+        <StylePanel key={`style-${sectionKey}`} sectionKey={sectionKey} onLive={onStyleLive} />
+      </div>
+    );
   if (sectionKey === "promo") return <PromoSection onLiveChange={onLive} />;
   if (sectionKey === "nav") return <NavSection onLiveChange={onLive} />;
   if (sectionKey === "footer") return <FooterSection onLiveChange={onLive} />;
@@ -95,6 +152,8 @@ export function VisualEditor() {
   const [device, setDevice] = useState<(typeof DEVICES)[number]["key"]>("desktop");
   const [tab, setTab] = useState<"section" | "layout">("section");
   const [selected, setSelected] = useState<string | null>(null);
+  const [focus, setFocus] = useState<Focus>(null);
+  const [patch, setPatch] = useState<Patch>(null);
   const [sections, setSections] = useState<string[]>([]);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -118,6 +177,15 @@ export function VisualEditor() {
       if (e.data.type === "select") {
         setSelected(e.data.key);
         setTab("section");
+        setPatch(null);
+        setFocus(e.data.field ? { field: e.data.field, nonce: Date.now() } : null);
+      }
+      if (e.data.type === "inline") {
+        // Typing on the page fills the same field in the panel (and from there the draft).
+        const { key, field, value } = e.data;
+        setSelected(key);
+        setTab("section");
+        setPatch({ data: { [field]: value }, nonce: Date.now() });
       }
     };
     window.addEventListener("message", onMessage);
@@ -170,7 +238,7 @@ export function VisualEditor() {
             </button>
           ))}
         </div>
-        <span className="fs-13 text-foreground/60">לחיצה על אזור בדף בוחרת אותו. שום דבר לא משתנה באתר לפני "פרסום".</span>
+        <span className="fs-13 text-foreground/60">לחיצה בוחרת. לחיצה כפולה על טקסט מאפשרת לכתוב ישר על הדף (Enter לסיום, Esc לביטול). שום דבר לא משתנה באתר לפני "פרסום".</span>
       </header>
 
       <div className="flex min-h-0 flex-1">
@@ -210,7 +278,7 @@ export function VisualEditor() {
             {tab === "layout" ? (
               <LayoutPanel path={path} sections={sections.length ? sections : HOME_SECTIONS.map((s) => s.def.key)} onLive={liveFor(layoutKey(path))} />
             ) : selected ? (
-              <SelectedPanel sectionKey={selected} onLive={liveFor(selected)} />
+              <SelectedPanel sectionKey={selected} onLive={liveFor(selected)} onStyleLive={liveFor(styleKey(selected))} patch={patch} focus={focus} />
             ) : (
               <div className="flex flex-col gap-3 py-6 text-center">
                 <span className="fs-18 font-bold">לחצו על אזור בדף כדי לערוך אותו</span>

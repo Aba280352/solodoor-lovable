@@ -71,14 +71,18 @@ export function SiteContentProvider({ content, children }: { content: SiteConten
   const [live, setLive] = useState<SiteContent>({});
   useEffect(() => setEditing(isEditFrame()), []);
   const onLive = useCallback((key: string, data: unknown) => setLive((l) => ({ ...l, [key]: data })), []);
+  const [rev, setRev] = useState(0);
+  const onRemount = useCallback(() => setRev((r) => r + 1), []);
   const effective = effectiveContent({ ...(content ?? {}), ...(drafts ?? {}), ...live });
   // Module-level details (phone, WhatsApp...) are read by many components at render time; set them first.
   applyBusiness(effective[BUSINESS_KEY]);
   return (
     <SiteContentContext.Provider value={effective}>
       <EditModeContext.Provider value={editing}>
-      {editing && <EditBridge onLive={onLive} />}
-      {drafts && !editing ? (
+      {editing && <EditBridge onLive={onLive} onRemount={onRemount} />}
+      {editing ? (
+        <Fragment key={rev}>{children}</Fragment>
+      ) : drafts ? (
         // A new key remounts the page, so everything re-reads the draft values.
         <Fragment key="preview">
           {children}
@@ -89,8 +93,6 @@ export function SiteContentProvider({ content, children }: { content: SiteConten
             </a>
           </div>
         </Fragment>
-      ) : drafts ? (
-        <Fragment key="preview">{children}</Fragment>
       ) : (
         children
       )}

@@ -9,6 +9,7 @@ import { motionStopped } from "./accessibility/a11y";
 import { Container, CoverImage } from "./primitives";
 import { HOME_PROCESS, HOME_PROCESS_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
+import { EF } from "./content/layout";
 
 /** Auto-scroll speed, in design pixels per second. */
 const SPEED = 30;
@@ -115,22 +116,22 @@ export function Process() {
               <span className="inline-flex text-clay">
                 <Icon name="Award" size={38} />
               </span>
-              <span className="fs-30 leading-none font-bold text-foreground">{c.badgeNumber}</span>
-              <span className="fs-15 font-bold whitespace-nowrap text-foreground">{c.badgeLabel}</span>
+              <span className="fs-30 leading-none font-bold text-foreground"><EF f="badgeNumber">{c.badgeNumber}</EF></span>
+              <span className="fs-15 font-bold whitespace-nowrap text-foreground"><EF f="badgeLabel">{c.badgeLabel}</EF></span>
             </div>
             <div className="flex flex-col gap-2.5 text-center lg:text-right">
-              <span className="fs-15 font-bold tracking-[0.16em] text-clay">{c.standardTitle}</span>
+              <span className="fs-15 font-bold tracking-[0.16em] text-clay"><EF f="standardTitle">{c.standardTitle}</EF></span>
               <span className="max-w-[34ch] fs-18 leading-[1.7] font-medium text-foreground">
-                {c.standardText}
+                <EF f="standardText">{c.standardText}</EF>
               </span>
             </div>
           </div>
 
           <div className="order-1 flex flex-col items-start text-right">
-            <h2 className="fs-36 leading-[1.05] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{c.title}</h2>
-            <p className="mt-3 fs-20 font-medium text-foreground lg:fs-22">{c.subtitle}</p>
+            <h2 className="fs-36 leading-[1.05] font-bold tracking-[-0.02em] text-foreground lg:fs-62"><EF f="title">{c.title}</EF></h2>
+            <p className="mt-3 fs-20 font-medium text-foreground lg:fs-22"><EF f="subtitle">{c.subtitle}</EF></p>
             <p className="mt-3.5 max-w-[60ch] fs-18 leading-[1.7] text-foreground lg:h-[3.1875rem] lg:w-98">
-              {c.text}
+              <EF f="text">{c.text}</EF>
             </p>
           </div>
         </div>
@@ -177,7 +178,7 @@ export function Process() {
           </div>
           <Button asChild className="order-2 px-6 py-4.5 lg:order-1 lg:px-17">
             <Link to="/שאלות-נפוצות">
-              <span>{c.cta}</span>
+              <span><EF f="cta">{c.cta}</EF></span>
               <Icon name="ArrowLeft" size={16} />
             </Link>
           </Button>
