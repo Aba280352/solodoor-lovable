@@ -9,6 +9,7 @@ import { Fragment, createContext, useCallback, useContext, useEffect, useState, 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
+import { edgeCached } from "@/lib/edge-cache";
 
 import { applyBusiness } from "./business";
 import { EditBridge, isEditFrame } from "./edit-bridge";
@@ -30,9 +31,12 @@ export function effectiveContent(content: SiteContent | undefined): SiteContent 
 /** Every published key. Never throws: on any problem the site simply shows its code defaults. */
 export async function fetchSiteContent(): Promise<SiteContent> {
   try {
-    const { data, error } = await (supabase as unknown as SupabaseClient).from("site_content").select("key, data");
-    if (error || !data) return {};
-    return Object.fromEntries((data as { key: string; data: unknown }[]).map((row) => [row.key, row.data]));
+    // Published content, kept 30s at the edge: a publish shows on the site within half a minute.
+    return await edgeCached("site_content", 30, async () => {
+      const { data, error } = await (supabase as unknown as SupabaseClient).from("site_content").select("key, data");
+      if (error || !data) throw new Error(error?.message ?? "no data");
+      return Object.fromEntries((data as { key: string; data: unknown }[]).map((row) => [row.key, row.data])) as SiteContent;
+    });
   } catch {
     return {};
   }

@@ -1,5 +1,6 @@
 /** The FAQ page's questions, read from the database and filtered by what the visitor wants to wallpaper. */
 import { supabase } from "@/integrations/supabase/client";
+import { edgeCached } from "@/lib/edge-cache";
 
 export interface FaqEntry {
   id: number;
@@ -35,11 +36,14 @@ export interface FaqSearch {
   cat?: string;
 }
 
-export async function fetchFaqEntries(): Promise<FaqEntry[]> {
-  const { data, error } = await supabase.from("faq_items").select("*").order("sort_order");
-  if (error) throw new Error(error.message);
-  // Questions written for one product page only have no chips and stay off this page.
-  return ((data ?? []) as FaqEntry[]).filter((e) => e.categories.length > 0);
+export function fetchFaqEntries(): Promise<FaqEntry[]> {
+  // Kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
+  return edgeCached("faq", 60, async () => {
+    const { data, error } = await supabase.from("faq_items").select("*").order("sort_order");
+    if (error) throw new Error(error.message);
+    // Questions written for one product page only have no chips and stay off this page.
+    return ((data ?? []) as FaqEntry[]).filter((e) => e.categories.length > 0);
+  });
 }
 
 export const selectedCategories = (search: FaqSearch) =>

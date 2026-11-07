@@ -1,5 +1,6 @@
 /** Reads the product catalogue from the database. Used by the shop and product routes' loaders. */
 import { supabase } from "@/integrations/supabase/client";
+import { edgeCached } from "@/lib/edge-cache";
 
 import { installPrices, type InstallPrices } from "./install-pricing";
 
@@ -263,7 +264,12 @@ export interface ShopData {
 }
 
 /** Everything the shop archive shows. The filters are applied in the page, so one load serves them all. */
-export async function fetchShop(): Promise<ShopData> {
+export function fetchShop(): Promise<ShopData> {
+  // Kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
+  return edgeCached("shop", 60, loadShop);
+}
+
+async function loadShop(): Promise<ShopData> {
   const [products, applications, rugSizes] = await Promise.all([
     rows<Product>(supabase.from("products").select("*").order("sort_order")),
     rows<Application>(supabase.from("applications").select("*").order("sort_order")),
@@ -287,7 +293,12 @@ export interface ProductData {
 }
 
 /** One product with everything its page shows, or null when the slug does not exist. */
-export async function fetchProduct(slug: string): Promise<ProductData | null> {
+export function fetchProduct(slug: string): Promise<ProductData | null> {
+  // Kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
+  return edgeCached(`product_${slug}`, 60, () => loadProduct(slug));
+}
+
+async function loadProduct(slug: string): Promise<ProductData | null> {
   const [product] = await rows<Product>(supabase.from("products").select("*").eq("slug", slug).limit(1));
   if (!product) return null;
 
@@ -344,7 +355,12 @@ export interface StyleItem {
 }
 
 /** Every wallpaper with its swatch and roll photo. The style pages filter this list in the page. */
-export async function fetchStyleItems(): Promise<StyleItem[]> {
+export function fetchStyleItems(): Promise<StyleItem[]> {
+  // Kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
+  return edgeCached("style_items", 60, loadStyleItems);
+}
+
+async function loadStyleItems(): Promise<StyleItem[]> {
   const products = await rows<Product>(
     supabase.from("products").select("*").eq("product_type", "wallpaper").order("sort_order"),
   );

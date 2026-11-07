@@ -1,5 +1,6 @@
 /** Reads the articles from the database and prepares them for the pages. */
 import { supabase } from "@/integrations/supabase/client";
+import { edgeCached } from "@/lib/edge-cache";
 
 export interface Article {
   id: number;
@@ -37,17 +38,24 @@ async function rows<T>(query: PromiseLike<{ data: unknown; error: { message: str
   return (data ?? []) as T[];
 }
 
+// Published articles, kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
 export const fetchArticles = () =>
-  rows<ArticleSummary>(supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false }));
-
-export const fetchLatestArticles = (count: number) =>
-  rows<ArticleSummary>(
-    supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false }).limit(count),
+  edgeCached("articles", 60, () =>
+    rows<ArticleSummary>(supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false })),
   );
 
-export async function fetchArticle(slug: string): Promise<Article | null> {
-  const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).limit(1));
-  return article ?? null;
+export const fetchLatestArticles = (count: number) =>
+  edgeCached(`articles_latest_${count}`, 60, () =>
+    rows<ArticleSummary>(
+      supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false }).limit(count),
+    ),
+  );
+
+export function fetchArticle(slug: string): Promise<Article | null> {
+  return edgeCached(`article_${slug}`, 60, async () => {
+    const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).limit(1));
+    return article ?? null;
+  });
 }
 
 /** Image URL for a stored path: the site's own /articles folder, or an uploaded (absolute) URL. */

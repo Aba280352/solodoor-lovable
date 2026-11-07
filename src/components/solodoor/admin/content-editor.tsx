@@ -140,7 +140,7 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
               const revision = await save();
               await publishEntry(contentKey, revision);
               onPublished?.();
-            }, "פורסם. השינוי מופיע באתר ברענון הדף.")
+            }, "פורסם. השינוי יופיע באתר תוך חצי דקה (ברענון הדף).")
           }
         >
           פרסום
