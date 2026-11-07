@@ -71,7 +71,8 @@ export async function handleLead(request: Request): Promise<Response> {
     email: text(body.email, 200),
     city: text(body.city, 120),
     message: text(body.message, 4000),
-    page_url: text(body.page_url, 500),
+    // Only a real page address is kept (the admin shows it as a link).
+    page_url: /^https:\/\/[^\s"'<>]+$/.test(String(body.page_url ?? "")) ? text(body.page_url, 500) : null,
     details: {} as Record<string, string>,
   };
   if (body.details && typeof body.details === "object") {

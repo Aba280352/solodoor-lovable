@@ -55,6 +55,15 @@ const FILTERS: { key: "open" | Status | "all"; label: string }[] = [
 const dateFormat = new Intl.DateTimeFormat("he-IL", { dateStyle: "short", timeStyle: "short", timeZone: "Asia/Jerusalem" });
 
 /** An Israeli phone as an international number for a WhatsApp link, or null. */
+/** A page address for display; a malformed one (anyone can send one through the public form) is shown as it is. */
+function safeDecode(path: string): string {
+  try {
+    return decodeURI(path);
+  } catch {
+    return path;
+  }
+}
+
 function whatsappNumber(phone: string | null): string | null {
   const digits = (phone ?? "").replace(/\D/g, "");
   if (digits.startsWith("972")) return digits;
@@ -237,9 +246,9 @@ export function LeadsAdmin() {
                 ))}
               </dl>
               {lead.message && <p className="mt-3 rounded-md bg-muted px-4 py-3 fs-15 whitespace-pre-line text-foreground">{lead.message}</p>}
-              {lead.page_url && (
+              {lead.page_url && /^https:\/\//.test(lead.page_url) && (
                 <a href={lead.page_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block fs-13 text-foreground/60 hover:text-clay">
-                  נשלח מהדף: {decodeURI(lead.page_url.replace(/^https?:\/\/[^/]+/, "") || "/")}
+                  נשלח מהדף: {safeDecode(lead.page_url.replace(/^https?:\/\/[^/]+/, "") || "/")}
                 </a>
               )}
 

@@ -14,8 +14,48 @@ import { Process } from "@/components/solodoor/Process";
 import { Reviews } from "@/components/solodoor/Reviews";
 import { StyleFamilies } from "@/components/solodoor/StyleFamilies";
 import { fetchLatestArticles } from "@/components/solodoor/blog/articles";
-import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
+import { BUSINESS_KEY, effectiveContent, rootContent, withSeo, type SiteContent } from "@/components/solodoor/content/site-content";
+import { BUSINESS_DEFAULTS, cleanBusiness } from "@/components/solodoor/content/business";
 import { EditableSection, useLayout } from "@/components/solodoor/content/layout";
+import { FACEBOOK_URL, INSTAGRAM_URL, YOUTUBE_URL } from "@/components/solodoor/data";
+
+const SITE = "https://solodoor.co.il";
+
+/**
+ * Who the site belongs to, for Google and AI answer engines (the name shown in results, the logo, the phone):
+ * Organization + WebSite structured data. Contact details come from the admin's "פרטי העסק", like the rest of the site.
+ */
+function organizationSchema(content: SiteContent | undefined) {
+  const business = { ...BUSINESS_DEFAULTS, ...cleanBusiness(effectiveContent(content)[BUSINESS_KEY]) };
+  const phone = business.phone.replace(/\D/g, "").replace(/^0/, "+972-");
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE}/#organization`,
+        name: "סולודור",
+        alternateName: "SOLODOOR",
+        url: `${SITE}/`,
+        logo: `${SITE}/images/logo.svg`,
+        email: business.email,
+        telephone: phone,
+        areaServed: { "@type": "Country", name: "ישראל" },
+        sameAs: [INSTAGRAM_URL, FACEBOOK_URL, YOUTUBE_URL],
+        contactPoint: { "@type": "ContactPoint", telephone: phone, contactType: "customer service", availableLanguage: "Hebrew" },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE}/#website`,
+        name: "סולודור",
+        alternateName: "SOLODOOR",
+        url: `${SITE}/`,
+        inLanguage: "he-IL",
+        publisher: { "@id": `${SITE}/#organization` },
+      },
+    ],
+  });
+}
 
 export const Route = createFileRoute("/")({
   // The articles section shows the three latest posts; the rest of the page is static.
@@ -30,7 +70,8 @@ export const Route = createFileRoute("/")({
             "סולודור: ציפויים דקורטיביים לדלתות, מטבחים, מקררים, ארונות חשמל, קירות ושיש. מעל 200 עיצובים, ייעוץ חינם והתקנה מקצועית מצפון ועד דרום.",
         },
       ],
-      links: [{ rel: "canonical", href: "https://solodoor.co.il/" }],
+      links: [{ rel: "canonical", href: `${SITE}/` }],
+      scripts: [{ type: "application/ld+json", children: organizationSchema(rootContent(matches)) }],
     }),
   component: HomePage,
 });

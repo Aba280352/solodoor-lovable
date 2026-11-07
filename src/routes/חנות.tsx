@@ -23,10 +23,19 @@ export const Route = createFileRoute("/חנות")({
   head: ({ loaderData, match, matches }) => {
     if (!loaderData) return {};
     const search = match.search as ShopSearch;
-    const { title, intro } = shopHeading(activeFilters(search, loaderData), loaderData);
+    const filters = activeFilters(search, loaderData);
+    const { title, intro } = shopHeading(filters, loaderData);
+    // The canonical address keeps only real filters (a known category, style or colour), so links with other or
+    // unknown parameters (?sort=, ?q=, ?cat=xyz) count as the page they show, not as pages of their own.
     const params = new URLSearchParams(
-      Object.entries(search)
-        .filter((entry): entry is [string, string] => Boolean(entry[1]) && entry[0] !== "all"),
+      (
+        [
+          ["cat", filters.cats.join(",")],
+          ["style", filters.styles.join(",")],
+          ["color", filters.colors.join(",")],
+          ["rec", filters.recommended ? "y" : ""],
+        ] as [string, string][]
+      ).filter(([, v]) => v),
     ).toString();
     const head = {
       meta: [

@@ -10,6 +10,8 @@ interface ShopCardProps {
   rugFromPrice?: number | null;
   /** A designed door's colour photo: the card shows it, is named after it and opens the product on it. */
   variant?: ShopVariant;
+  /** One of the first cards (seen without scrolling): its picture loads at once; the very first one first. */
+  priority?: "first" | "early";
 }
 
 /** What the card says under the name, e.g. "₪119 למטר". */
@@ -21,7 +23,7 @@ export function priceLabel(item: ShopItem, application?: Application, rugFromPri
 }
 
 /** Shop grid card. The whole card is one link to the product page. */
-export function ShopCard({ item, application, rugFromPrice, variant }: ShopCardProps) {
+export function ShopCard({ item, application, rugFromPrice, variant, priority }: ShopCardProps) {
   const isWallpaper = item.product_type === "wallpaper";
   const path = variant?.image ?? (isWallpaper && application ? item.images[application.slug] : null) ?? item.cover;
   const src = catalogImage(path);
@@ -42,7 +44,8 @@ export function ShopCard({ item, application, rugFromPrice, variant }: ShopCardP
             src={src}
             sizes="(min-width: 1024px) 25vw, 50vw"
             alt={name}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority === "first" ? "high" : undefined}
             className="transition-transform duration-700 ease-standard group-hover:scale-105"
           />
         ) : (
