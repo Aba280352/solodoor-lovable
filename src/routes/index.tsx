@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { About } from "@/components/solodoor/About";
@@ -14,6 +15,7 @@ import { Reviews } from "@/components/solodoor/Reviews";
 import { StyleFamilies } from "@/components/solodoor/StyleFamilies";
 import { fetchLatestArticles } from "@/components/solodoor/blog/articles";
 import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
+import { EditableSection, useLayout } from "@/components/solodoor/content/layout";
 
 export const Route = createFileRoute("/")({
   // The articles section shows the three latest posts; the rest of the page is static.
@@ -33,21 +35,32 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
+/** The home page sections, in their original order. The admin can reorder them and hide them per device. */
+const HOME_ORDER = ["home.hero", "home.categories", "home.styles", "home.diy", "home.about", "home.process", "home.beforeAfter", "home.bestSellers", "home.reviews", "home.faq", "home.articles"];
+
 function HomePage() {
   const articles = Route.useLoaderData();
+  const layout = useLayout("/", HOME_ORDER);
+  const render: Record<string, () => ReactNode> = {
+    "home.hero": () => <Hero />,
+    "home.categories": () => <Categories />,
+    "home.styles": () => <StyleFamilies />,
+    "home.diy": () => <Diy />,
+    "home.about": () => <About />,
+    "home.process": () => <Process />,
+    "home.beforeAfter": () => <BeforeAfter />,
+    "home.bestSellers": () => <BestSellers />,
+    "home.reviews": () => <Reviews />,
+    "home.faq": () => <Faq />,
+    "home.articles": () => <Articles articles={articles} />,
+  };
   return (
     <PageShell>
-      <Hero />
-      <Categories />
-      <StyleFamilies />
-      <Diy />
-      <About />
-      <Process />
-      <BeforeAfter />
-      <BestSellers />
-      <Reviews />
-      <Faq />
-      <Articles articles={articles} />
+      {layout.order.map((key) => (
+        <EditableSection key={key} id={key} hide={layout.hide(key)}>
+          {render[key]()}
+        </EditableSection>
+      ))}
     </PageShell>
   );
 }

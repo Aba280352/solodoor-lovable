@@ -7,7 +7,7 @@ export function PromoStrip() {
   const items = usePromoItems(promoItems);
   const loop = [...items, ...items, ...items, ...items];
   return (
-    <div className="flex h-9 items-center justify-center bg-primary text-primary-foreground">
+    <div data-edit-section="promo" data-edit-label="פס מבצעים" className="flex h-9 items-center justify-center bg-primary text-primary-foreground">
       <div className="group relative h-9 w-full overflow-hidden">
         <div
           dir="ltr"

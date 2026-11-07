@@ -19,13 +19,15 @@ interface EditorProps<T> {
   onPublished?: () => void;
   /** A page of the site to open in preview mode (with the drafts) after saving, e.g. "/". */
   previewPath?: string;
+  /** Called with the prepared value on every change (the visual editor shows it on the page at once). */
+  onLiveChange?: (data: T) => void;
 }
 
 /**
  * Loads a key, lets the form edit it, and offers: save as draft, publish, discard the draft, back to the code
  * default, and the publish history with "restore to draft". Nothing reaches visitors before "פרסום".
  */
-export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath }: EditorProps<T>) {
+export function ContentEditor<T extends object>({ contentKey, title, intro, prepare, children, onPublished, previewPath, onLiveChange }: EditorProps<T>) {
   const [entry, setEntry] = useState<ContentEntry<T> | null>(null);
   const [value, setValue] = useState<T>({} as T);
   const [dirty, setDirty] = useState(false);
@@ -44,6 +46,14 @@ export function ContentEditor<T extends object>({ contentKey, title, intro, prep
       setMessage(`הטעינה נכשלה: ${(err as Error).message}`);
     }
   };
+  // The visual editor mirrors every edit on the page, before anything is saved.
+  useEffect(() => {
+    if (!onLiveChange || !entry) return;
+    const prepared = prepare(value);
+    if ("data" in prepared) onLiveChange(prepared.data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, entry]);
+
   useEffect(() => {
     setEntry(null);
     setMessage(null);

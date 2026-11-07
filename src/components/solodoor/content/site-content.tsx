@@ -5,12 +5,13 @@
  *
  * The root route loads all published keys once (server side, for SEO) and hands them to <SiteContentProvider>.
  */
-import { Fragment, createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { Fragment, createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
 import { applyBusiness } from "./business";
+import { EditBridge, isEditFrame } from "./edit-bridge";
 
 export type SiteContent = Record<string, unknown>;
 
@@ -58,15 +59,26 @@ function usePreviewDrafts(): SiteContent | null {
   return drafts;
 }
 
-/** Puts the published content in force for everything below it (plus the drafts, in preview mode). */
+const EditModeContext = createContext(false);
+
+/** True inside the visual editor's preview frame. */
+export const useEditMode = () => useContext(EditModeContext);
+
+/** Puts the published content in force for everything below it (plus the drafts in preview mode, plus the editor's unsaved values). */
 export function SiteContentProvider({ content, children }: { content: SiteContent | undefined; children: ReactNode }) {
   const drafts = usePreviewDrafts();
-  const effective = effectiveContent(drafts ? { ...(content ?? {}), ...drafts } : content);
+  const [editing, setEditing] = useState(false);
+  const [live, setLive] = useState<SiteContent>({});
+  useEffect(() => setEditing(isEditFrame()), []);
+  const onLive = useCallback((key: string, data: unknown) => setLive((l) => ({ ...l, [key]: data })), []);
+  const effective = effectiveContent({ ...(content ?? {}), ...(drafts ?? {}), ...live });
   // Module-level details (phone, WhatsApp...) are read by many components at render time; set them first.
   applyBusiness(effective[BUSINESS_KEY]);
   return (
     <SiteContentContext.Provider value={effective}>
-      {drafts ? (
+      <EditModeContext.Provider value={editing}>
+      {editing && <EditBridge onLive={onLive} />}
+      {drafts && !editing ? (
         // A new key remounts the page, so everything re-reads the draft values.
         <Fragment key="preview">
           {children}
@@ -77,9 +89,12 @@ export function SiteContentProvider({ content, children }: { content: SiteConten
             </a>
           </div>
         </Fragment>
+      ) : drafts ? (
+        <Fragment key="preview">{children}</Fragment>
       ) : (
         children
       )}
+      </EditModeContext.Provider>
     </SiteContentContext.Provider>
   );
 }

@@ -10,10 +10,11 @@ import { ImageField, ListEditor } from "./fields";
 
 /* ───────────── Promo strip ───────────── */
 
-export function PromoSection() {
+export function PromoSection({ onLiveChange }: { onLiveChange?: (data: unknown) => void } = {}) {
   return (
     <ContentEditor<PromoOverride>
       contentKey={PROMO_KEY}
+      onLiveChange={onLiveChange}
       title="פס המבצעים העליון"
       intro="ההודעות שרצות בפס הצבעוני בראש כל דף. עד 8 הודעות."
       previewPath="/"
@@ -66,10 +67,11 @@ const NAV_GROUPS: { title: string; keys: string[]; images?: { name: string; img:
 /** Titles and archive links that cannot be hidden (hiding them would leave a menu without a heading). */
 const NOT_HIDEABLE = new Set(["בחרו טפט לפי סגנון", "בחרו טפט לפי שימוש", "מפת אתר", "קטגוריות", "לכל הסגנונות"]);
 
-export function NavSection() {
+export function NavSection({ onLiveChange }: { onLiveChange?: (data: unknown) => void } = {}) {
   return (
     <ContentEditor<NavOverride>
       contentKey={NAV_KEY}
+      onLiveChange={onLiveChange}
       title="תפריטים וקישורים"
       intro="שינוי שם משנה רק את הטקסט שמוצג. הקישור נשאר לאותו מקום, כך שאי אפשר לשבור אותו. אותו שם מתעדכן בכל מקום שהוא מופיע (תפריט עליון, תפריט טלפון ופוטר)."
       previewPath="/"
@@ -132,10 +134,11 @@ export function NavSection() {
 const BANNER_LINES = ["דלת חדשה,", "אותו בית,", "הרגשה אחרת"];
 const BANNER_ENGLISH = ["Small Change", "Big Difference"];
 
-export function FooterSection() {
+export function FooterSection({ onLiveChange }: { onLiveChange?: (data: unknown) => void } = {}) {
   return (
     <ContentEditor<FooterOverride>
       contentKey={FOOTER_KEY}
+      onLiveChange={onLiveChange}
       title="פוטר (תחתית האתר)"
       intro="התמונה והמשפטים מעל הפוטר, השורה מתחת ללוגו, טופס יצירת הקשר וזכויות היוצרים. שדה ריק משאיר את המקור. הקישורים עצמם נערכים ב'תפריטים וקישורים'."
       previewPath="/"

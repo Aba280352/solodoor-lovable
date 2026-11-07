@@ -26,6 +26,7 @@ import { Route as Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Cha
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as AdminEditorRouteImport } from './routes/admin.editor'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
@@ -136,6 +137,11 @@ const AdminContentRoute = AdminContentRouteImport.update({
   path: '/content',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEditorRoute = AdminEditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminFaqRoute = AdminFaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
@@ -299,6 +308,7 @@ export interface FileRouteTypes {
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
+    | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
+    | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
     | '/admin/content'
+    | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
@@ -511,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContentRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/editor': {
+      id: '/admin/editor'
+      path: '/editor'
+      fullPath: '/admin/editor'
+      preLoaderRoute: typeof AdminEditorRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/faq': {
       id: '/admin/faq'
       path: '/faq'
@@ -587,6 +606,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminIdRoute: typeof AdminIdRoute
   AdminContentRoute: typeof AdminContentRoute
+  AdminEditorRoute: typeof AdminEditorRoute
   AdminFaqRoute: typeof AdminFaqRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminPricesRoute: typeof AdminPricesRoute
@@ -599,6 +619,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIdRoute: AdminIdRoute,
   AdminContentRoute: AdminContentRoute,
+  AdminEditorRoute: AdminEditorRoute,
   AdminFaqRoute: AdminFaqRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminPricesRoute: AdminPricesRoute,

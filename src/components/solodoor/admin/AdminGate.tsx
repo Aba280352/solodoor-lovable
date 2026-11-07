@@ -19,6 +19,7 @@ type Role = "owner" | "editor";
 /** The areas of the admin, in the order of the header. */
 const NAV = [
   { to: "/admin/leads", label: "פניות" },
+  { to: "/admin/editor", label: "עורך ויזואלי" },
   { to: "/admin/site", label: "תוכן האתר" },
   { to: "/admin", label: "מאמרים" },
   { to: "/admin/products", label: "מוצרים" },

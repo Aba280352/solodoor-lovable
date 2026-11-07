@@ -170,13 +170,14 @@ function prepareOverride(def: SectionDef, value: Obj): Obj {
   return out;
 }
 
-export function SectionEditor({ def, defaults }: { def: SectionDef; defaults: Obj }) {
+export function SectionEditor({ def, defaults, onLiveChange }: { def: SectionDef; defaults: Obj; onLiveChange?: (data: Obj) => void }) {
   return (
     <ContentEditor<Obj>
       contentKey={def.key}
       title={def.title}
       intro="שדה ריק משאיר את התוכן המקורי (מוצג באפור). שום דבר לא משתנה באתר לפני 'פרסום'."
       previewPath={def.page}
+      onLiveChange={onLiveChange}
       prepare={(value) => ({ data: prepareOverride(def, value) })}
     >
       {(value, set) => (

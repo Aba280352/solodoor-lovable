@@ -178,7 +178,7 @@ export function SiteFooter() {
   const bannerLines = ["דלת חדשה,", "אותו בית,", "הרגשה אחרת"].map((line, i) => footer.bannerLines[i] ?? line);
   const bannerEnglish = ["Small Change", "Big Difference"].map((line, i) => footer.bannerEnglish[i] ?? line);
   return (
-    <footer data-reveal>
+    <footer data-reveal data-edit-section="footer" data-edit-label="פוטר">
       <div className="relative">
         <div className="relative h-96 overflow-hidden bg-muted lg:h-130">
           <img src={footer.bannerImage ?? FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />

@@ -327,6 +327,8 @@ export function SiteHeader() {
 
   return (
     <header
+      data-edit-section="nav"
+      data-edit-label="תפריט עליון"
       onMouseLeave={() => setMenu(null)}
       className="sticky top-0 z-40 border-b border-border bg-background"
     >
