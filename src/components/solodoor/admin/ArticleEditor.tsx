@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { Icon } from "../Icon";
 import { articleImage, type Article } from "../blog/articles";
+import { uploadPicture } from "./image-tools";
 
 type Draft = Omit<Article, "id"> & { id?: number };
 
@@ -37,13 +38,8 @@ const slugify = (s: string) =>
     .replace(/[^\p{L}\p{N}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
 
-/** Stores a picked file in the "articles" bucket and returns its public URL. */
-async function uploadImage(file: File, folder: string) {
-  const name = `${folder || "images"}/${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
-  const { error } = await supabase.storage.from("articles").upload(name, file, { upsert: false });
-  if (error) throw new Error(error.message);
-  return supabase.storage.from("articles").getPublicUrl(name).data.publicUrl;
-}
+/** Stores a picked picture in the "articles" bucket (shrunk to WebP, with phone-size copies) and returns its public URL. */
+const uploadImage = (file: File, folder: string) => uploadPicture("articles", folder || "images", file, { responsive: true });
 
 const toLocalInput = (iso: string) => {
   const d = new Date(iso);

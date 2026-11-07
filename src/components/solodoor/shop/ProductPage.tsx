@@ -14,6 +14,7 @@ import { ProductBuyBox } from "./ProductBuyBox";
 import { YouTubePlayer } from "./YouTubePlayer";
 import { ShopCard } from "./ShopCard";
 import { DEFAULT_APPLICATION, DOOR_SIZE_TEXT, catalogImage, type Application, type FaqItem, type ProductData, type ProductVariant } from "./catalog";
+import { responsive } from "../responsive";
 
 interface GalleryImage {
   src: string;
@@ -85,7 +86,7 @@ function Gallery({
   return (
     <div className="flex flex-col gap-3 lg:sticky lg:top-24">
       <div className="relative aspect-square overflow-hidden rounded-lg border border-border bg-muted">
-        <CoverImage src={main.src} alt={main.alt} fetchPriority="high" />
+        <CoverImage src={main.src} sizes="(min-width: 1024px) 50vw, 100vw" alt={main.alt} fetchPriority="high" />
       </div>
       {images.length > 1 && (
         <DragRow className="-mx-5 flex gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:grid lg:grid-cols-7 lg:gap-2.5 lg:overflow-visible lg:px-0">
@@ -104,7 +105,7 @@ function Gallery({
                 i === index ? "border-foreground" : "border-border hover:border-foreground",
               )}
             >
-              <img src={image.src} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
+              <img {...responsive(image.src, "120px")} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
             </button>
           ))}
         </DragRow>

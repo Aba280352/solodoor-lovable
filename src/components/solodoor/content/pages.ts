@@ -8,7 +8,7 @@ export interface SitePage {
   /** The path as the SEO override key uses it: "seo:" + path. */
   path: string;
   label: string;
-  /** The canonical address (the kitchen page keeps the old site's trailing slash). */
+  /** The canonical address: the one the site serves (no trailing slash; old addresses with one move here with a 301). */
   url: string;
 }
 
@@ -17,7 +17,7 @@ const page = (path: string, label: string, url = `${SITE}${path === "/" ? "/" : 
 export const SITE_PAGES: SitePage[] = [
   page("/", "דף הבית"),
   page("/ציפוי-דלתות", "ציפוי דלתות"),
-  page("/ציפוי-מטבחים", "ציפוי מטבחים", `${SITE}/ציפוי-מטבחים/`),
+  page("/ציפוי-מטבחים", "ציפוי מטבחים"),
   page("/חנות", "החנות (בלי סינון)"),
   page("/טפט-לפי-סגנון", "טפט לפי סגנון"),
   page("/טפט-לפי-סגנון/עצים", "סגנון: עצים"),

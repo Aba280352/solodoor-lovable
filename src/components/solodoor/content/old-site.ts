@@ -19,6 +19,8 @@ export function oldSiteRedirect(pathname: string): string | null {
   if (lower === "/feed" || lower === "/comments/feed") return "/";
   if (lower.endsWith("/feed")) {
     const parent = path.slice(0, -"/feed".length) || "/";
+    // "//host/feed" would point to another site: never redirect outside.
+    if (parent.startsWith("//") || parent.includes("\\")) return "/";
     return oldSiteRedirect(parent) ?? parent;
   }
 
@@ -37,6 +39,10 @@ export function oldSiteRedirect(pathname: string): string | null {
   if (/^\/upcp-product-category\/טפטים-לדלתות$/.test(path)) return "/חנות?cat=door";
   if (/^\/(upcp[-_]product(-category)?|product-category|shop|cart|checkout|my-account)(\/|$)/i.test(path)) return "/חנות";
 
+  // The old PVC rugs landing page: the rugs now live in the shop (its route redirects too; listed here so the
+  // address with a trailing slash also moves in one step).
+  if (/^\/שטיחי-pvc-מעוצבים$/i.test(path)) return "/חנות?cat=pvc_rug";
+
   // Old one-off pages.
   if (/^\/(thanks|thank-you|תודה|contact|צור-קשר)$/i.test(path)) return "/";
 
@@ -48,3 +54,23 @@ export const encodeTarget = (target: string) => {
   const [p, q] = target.split("?");
   return encodeURI(p) + (q ? `?${q}` : "");
 };
+
+/**
+ * An address that ends with "/" (every old WordPress address did): one permanent (301) move, straight to its final
+ * page — the old-site target when it has one, otherwise the same address without the slash (the one the site
+ * serves and every canonical uses). The home page "/" is left alone. `search` is kept ("?cat=door").
+ */
+export function slashRedirect(pathname: string, search = ""): string | null {
+  if (pathname === "/" || !pathname.endsWith("/")) return null;
+  let path: string;
+  try {
+    path = decodeURIComponent(pathname);
+  } catch {
+    path = pathname;
+  }
+  const base = path.replace(/\/+$/, "") || "/";
+  if (base.startsWith("//") || base.includes("\\")) return "/";
+  const old = oldSiteRedirect(base);
+  if (old) return encodeTarget(old);
+  return encodeTarget(base) + (search && search !== "?" ? (search.startsWith("?") ? search : `?${search}`) : "");
+}

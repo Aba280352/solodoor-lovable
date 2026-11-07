@@ -126,7 +126,7 @@ export function SearchButton() {
                       className="flex items-center gap-4"
                     >
                       <span className="relative size-16 flex-none overflow-hidden rounded-md border border-border bg-muted">
-                        {src && <img src={src} alt="" className="absolute inset-0 size-full object-cover" />}
+                        {src && <img {...responsive(src, "80px")} alt="" className="absolute inset-0 size-full object-cover" />}
                       </span>
                       <span className="flex min-w-0 flex-col gap-0.5">
                         <span className="fs-18 font-medium text-foreground">
@@ -269,7 +269,7 @@ export function CartButton() {
               {lines.map((line) => (
                 <li key={line.id} className="flex gap-3.5 border-b border-border py-4 text-right">
                   <span className="relative size-18 flex-none overflow-hidden rounded-md border border-border bg-muted">
-                    {line.image && <img src={line.image} alt="" className="absolute inset-0 size-full object-cover" />}
+                    {line.image && <img {...responsive(line.image, "80px")} alt="" className="absolute inset-0 size-full object-cover" />}
                   </span>
                   <span className="flex min-w-0 flex-auto flex-col gap-1">
                     <span className="fs-16 leading-[1.3] font-semibold text-foreground">{line.title}</span>

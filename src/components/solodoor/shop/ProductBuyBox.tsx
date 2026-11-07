@@ -17,6 +17,7 @@ import { QuantityCalculator } from "../QuantityCalculator";
 const METRE_PRECISION = 0.1;
 import { DOOR_SIZE_TEXT, STOCK_LABELS, catalogImage, formatPrice, type Addon, type Application, type ProductData, type ProductVariant } from "./catalog";
 import { WHATSAPP_MESSAGE, whatsappHref } from "../whatsapp";
+import { responsive } from "../responsive";
 
 interface ProductBuyBoxProps {
   data: ProductData;
@@ -97,7 +98,7 @@ function CheckRow({ checked, onChange, title, text, price, image }: { checked: b
       </span>
       {image && (
         <span className="relative size-12 flex-none overflow-hidden rounded-[0.3125rem] bg-muted">
-          <img src={image} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
+          <img {...responsive(image, "80px")} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
         </span>
       )}
       <span className="flex min-w-0 flex-auto flex-col text-right">
@@ -290,7 +291,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
                   v.variant_key === variant?.variant_key ? "border-primary" : "border-input hover:border-foreground",
                 )}
               >
-                <img src={catalogImage(v.image_path) ?? ""} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
+                <img {...responsive(catalogImage(v.image_path) ?? "", "80px")} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
               </button>
             ))}
           </div>
@@ -486,7 +487,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
                 >
                   <span className="relative block aspect-[4/5] w-full overflow-hidden bg-muted">
                     {src ? (
-                      <img src={src} alt={`דלת עם ${option.title}`} loading="lazy" className="absolute inset-0 size-full object-cover" />
+                      <img {...responsive(src, "(min-width: 1024px) 300px, 45vw")} alt={`דלת עם ${option.title}`} loading="lazy" className="absolute inset-0 size-full object-cover" />
                     ) : (
                       <span className="absolute inset-0 flex items-center justify-center px-3 fs-14 leading-[1.4] text-foreground">{option.title}</span>
                     )}

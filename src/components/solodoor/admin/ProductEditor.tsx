@@ -121,7 +121,7 @@ export function ProductEditor({ handle }: { handle: string }) {
     setBusy(true);
     setStatus(null);
     try {
-      apply(await uploadCatalogImage(file, product.handle));
+      apply(await uploadCatalogImage(file, product.handle, { responsive: true }));
     } catch (e) {
       setStatus(`ההעלאה נכשלה: ${(e as Error).message}`);
     }

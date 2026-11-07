@@ -8,6 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 import type { Application, Product, ProductApplication, ProductImage, ProductVariant, RugSize } from "../shop/catalog";
+import { uploadPicture } from "./image-tools";
 
 export const db = supabase as unknown as SupabaseClient;
 
@@ -55,14 +56,12 @@ export async function fetchAdminProduct(handle: string): Promise<AdminProductDat
   return { product, applications, productApplications, images, variants, rugSizes, sync: syncRows[0] ?? null };
 }
 
-/** Stores a picked image in the "catalog" bucket, under the product, and returns its public URL. */
-export async function uploadCatalogImage(file: File, handle: string): Promise<string> {
-  const clean = file.name.replace(/[^\w.-]+/g, "-").toLowerCase();
-  const name = `${handle}/${Date.now()}-${clean}`;
-  const { error } = await db.storage.from("catalog").upload(name, file, { upsert: false, cacheControl: "31536000" });
-  if (error) throw new Error(error.message);
-  return db.storage.from("catalog").getPublicUrl(name).data.publicUrl;
-}
+/**
+ * Stores a picked image in the "catalog" bucket, under the product (or folder), and returns its public URL.
+ * With `responsive` it is shrunk to WebP and uploaded with phone-size copies (image-tools.ts).
+ */
+export const uploadCatalogImage = (file: File, handle: string, options: { responsive?: boolean } = {}): Promise<string> =>
+  uploadPicture("catalog", handle, file, options);
 
 /** A handle as Shopify and the image folders want it: lower case ascii letters, digits and hyphens. */
 export const cleanHandle = (s: string) =>

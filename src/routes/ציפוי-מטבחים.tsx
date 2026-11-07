@@ -12,7 +12,7 @@ import { kitchenSeo } from "@/components/solodoor/kitchen/data";
 import { rootContent, withSeo } from "@/components/solodoor/content/site-content";
 import { EditableSection, useLayout } from "@/components/solodoor/content/layout";
 
-const CANONICAL = "https://solodoor.co.il/ציפוי-מטבחים/";
+const CANONICAL = "https://solodoor.co.il/ציפוי-מטבחים";
 
 // The file name is the URL. It matches the old site's slug on purpose: that page
 // ranks first for "ציפוי מטבחים", so the address must not change.

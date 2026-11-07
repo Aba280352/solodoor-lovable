@@ -5,28 +5,6 @@ import { Input } from "@/components/ui/input";
 
 import { uploadCatalogImage } from "./db";
 
-/**
- * Pictures go on the site light, so a page never slows down (Google ranks slow pages lower): at most 2000px on the
- * long side, as WebP. A 5MB phone photo becomes a few hundred KB. Anything that cannot be converted goes as it is.
- */
-async function lighten(file: File): Promise<File> {
-  if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) return file;
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, 2000 / Math.max(bitmap.width, bitmap.height));
-    if (scale === 1 && file.type === "image/webp" && file.size < 400_000) return file;
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
-    if (!blob || blob.size >= file.size) return file;
-    return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.webp`, { type: "image/webp" });
-  } catch {
-    return file;
-  }
-}
-
 /** An image: current one (or the original, greyed), upload a replacement, or paste a link; "back to original" clears it. */
 export function ImageField({ value, original, onChange, folder = "site" }: { value?: string; original?: string; onChange: (url: string | undefined) => void; folder?: string }) {
   const [busy, setBusy] = useState(false);
@@ -53,9 +31,8 @@ export function ImageField({ value, original, onChange, folder = "site" }: { val
                 setBusy(true);
                 setError(null);
                 try {
-                  const light = await lighten(file);
-                  if (light.size > 8 * 1024 * 1024) throw new Error("התמונה גדולה מ-8MB גם אחרי הקטנה. כדאי להקטין אותה קודם");
-                  onChange(await uploadCatalogImage(light, folder));
+                  // Shrunk to WebP with phone-size copies, so it never slows the page down (see image-tools).
+                  onChange(await uploadCatalogImage(file, folder, { responsive: true }));
                 } catch (err) {
                   setError(`ההעלאה נכשלה: ${(err as Error).message}`);
                 } finally {

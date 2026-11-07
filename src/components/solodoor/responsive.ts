@@ -1,13 +1,23 @@
 /**
- * Phone-size copies of the site's pictures. For a picture that has copies (see image-variants.ts), `srcSetFor`
- * lists them so the browser downloads the smallest one that is still sharp at the size it is shown; the picture
- * itself is the same. Pictures without copies (uploads from the admin, products) are left as they are.
+ * Phone-size copies of the site's pictures. For a picture that has copies, `srcSetFor` lists them so the browser
+ * downloads the smallest one that is still sharp at the size it is shown; the picture itself is the same.
+ *
+ * Which pictures have copies (<name>-480w.webp and <name>-828w.webp next to the original):
+ *  - the site's own pictures in /images and /articles listed in image-variants.ts;
+ *  - every .webp product picture in /catalog-images (copies made for all of them by scripts-make-variants.cjs);
+ *  - pictures uploaded from the admin whose name ends with "@r.webp" (the admin uploads the copies with them).
+ * Anything else (older uploads, .jpg/.png) is left as it is.
  */
 import { IMAGE_WIDTHS } from "./image-variants";
 
+/** The width the srcset states for a catalogue or uploaded original (they are at most this wide). */
+const LARGE = 1600;
+const CATALOG = /^\/catalog-images\/.+\.webp$/;
+const UPLOADED = /^https:\/\/[^\s]+@r\.webp$/;
+
 export function srcSetFor(src: string | undefined): string | undefined {
   if (!src) return undefined;
-  const width = IMAGE_WIDTHS[src];
+  const width = IMAGE_WIDTHS[src] ?? (CATALOG.test(src) && !/-\d+w\.webp$/.test(src) ? LARGE : UPLOADED.test(src) ? LARGE : 0);
   if (!width) return undefined;
   const base = src.replace(/\.webp$/, "");
   return `${base}-480w.webp 480w, ${base}-828w.webp 828w, ${src} ${width}w`;
