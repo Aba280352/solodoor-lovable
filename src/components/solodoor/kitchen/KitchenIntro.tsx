@@ -41,7 +41,7 @@ export function KitchenIntro() {
 
           <div className="relative mx-auto w-full max-w-120 lg:max-w-none lg:ps-12 lg:pb-16">
             <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-muted">
-              <CoverImage {...mark("image")} src={c.image} alt="מטבח לאחר ציפוי בטפט של סולודור" />
+              <CoverImage {...mark("image")} src={c.image} sizes="(min-width: 1024px) 45vw, 100vw" loading="lazy" alt="מטבח לאחר ציפוי בטפט של סולודור" />
             </div>
             {/* Illustrates the paragraph beside it; the words themselves are in the text. */}
             <div

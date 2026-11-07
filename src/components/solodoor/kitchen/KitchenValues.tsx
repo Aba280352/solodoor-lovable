@@ -4,6 +4,7 @@ import { Container, Pill } from "../primitives";
 import { KITCHEN_VALUES, KITCHEN_VALUES_DEFAULTS } from "../content/kitchen";
 import { useSection } from "../content/sections";
 import { EF, useEditMark } from "../content/layout";
+import { responsive } from "../responsive";
 
 /**
  * "מה תקבלו מאיתנו?" — service, experience, innovation. Three tall photos of real
@@ -29,7 +30,7 @@ export function KitchenValues() {
                 <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted lg:aspect-[4/5]">
                   <img
                     {...mark(`values.${i}.img`)}
-                    src={value.img}
+                    {...responsive(value.img, "(min-width: 1024px) 30vw, 100vw")}
                     alt={value.alt}
                     loading="lazy"
                     className="absolute inset-0 block size-full object-cover transition-transform duration-700 ease-standard group-hover:scale-103"

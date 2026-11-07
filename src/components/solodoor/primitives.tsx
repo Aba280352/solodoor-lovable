@@ -2,6 +2,8 @@ import type { HTMLAttributes, ImgHTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 
+import { SIZES, responsive } from "./responsive";
+
 /** Page container: 1320px max, 48px side padding on desktop, 20px on mobile. */
 export function Container({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("mx-auto max-w-330 px-5 lg:px-12", className)} {...props} />;
@@ -21,12 +23,17 @@ export function Pill({ className, ...props }: HTMLAttributes<HTMLSpanElement>) {
 }
 
 /** Image that fills its (relative, overflow-hidden) frame and never distorts. */
-export function CoverImage({ className, alt = "", ...props }: ImgHTMLAttributes<HTMLImageElement>) {
+/**
+ * A picture that fills its frame. A site picture with phone-size copies gets a srcset, so phones download a small
+ * copy; `sizes` says how wide the frame is (default: the full screen width, which is never smaller than needed).
+ */
+export function CoverImage({ className, alt = "", src, sizes, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <img
       alt={alt}
       draggable={false}
       className={cn("absolute inset-0 block size-full select-none object-cover", className)}
+      {...responsive(src, sizes ?? SIZES.full)}
       {...props}
     />
   );

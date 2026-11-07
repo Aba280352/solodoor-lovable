@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { useEditMark } from "../content/layout";
 import type { doorFinishes as Finishes, doorHotspots as Hotspots } from "./data";
+import { responsive } from "../responsive";
 
 /**
  * Interactive door: pick a coating and the door changes, tap a hotspot to read
@@ -25,7 +26,8 @@ export function DoorViewer({ finishes: doorFinishes, hotspots: doorHotspots }: {
               <img
                 key={item.img}
                 {...(i === finish ? mark(`finishes.${i}.img`) : {})}
-                src={item.img}
+                {...responsive(item.img, "(min-width: 1024px) 480px, 100vw")}
+                fetchPriority={i === 0 ? "high" : "low"}
                 alt={i === finish ? `ציפוי דלתות, דלת כניסה בגוון ${item.name}` : ""}
                 className={cn(
                   "absolute inset-0 block size-full object-cover transition-opacity duration-700 ease-standard",

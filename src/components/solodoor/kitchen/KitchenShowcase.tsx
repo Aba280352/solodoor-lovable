@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useMotionStopped } from "../accessibility/a11y";
 import { EF, useEditMark } from "../content/layout";
 import type { kitchenModels as Models } from "./data";
+import { responsive } from "../responsive";
 
 /** How long each model stays, and how many vertical panels the curtain has. */
 const SLIDE_MS = 4200;
@@ -49,7 +50,7 @@ export function KitchenShowcase({ models: kitchenModels }: { models: typeof Mode
       onTouchEnd={(e) => onTouchEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY)}
       className="relative aspect-video touch-pan-y overflow-hidden rounded-xl bg-muted [container-type:inline-size]"
     >
-      <img src={previous.img} alt="" className="absolute inset-0 block size-full object-cover" />
+      <img {...responsive(previous.img, "(min-width: 1024px) 1100px, 100vw")} alt="" className="absolute inset-0 block size-full object-cover" />
 
       {/* Keyed by model so the curtain animation replays on every change. */}
       <div key={index} dir="ltr" className="absolute inset-0" {...mark(`models.${index % count}.img`)}>
@@ -65,7 +66,8 @@ export function KitchenShowcase({ models: kitchenModels }: { models: typeof Mode
             }}
           >
             <img
-              src={current.img}
+              {...responsive(current.img, "(min-width: 1024px) 1100px, 100vw")}
+              fetchPriority={i === 0 ? "high" : undefined}
               alt={i === 0 ? `ציפוי מטבחים, ${current.name}` : ""}
               className="absolute inset-y-0 block h-full max-w-none object-cover"
               style={{ width: "100cqw", left: `${(-i * 100) / PANELS}cqw` }}
@@ -97,7 +99,7 @@ export function KitchenShowcase({ models: kitchenModels }: { models: typeof Mode
       {/* Loads the other models ahead of time so the curtain never opens on a blank panel. */}
       <div hidden>
         {kitchenModels.map((model, i) => (
-          <img key={i} src={model.img} alt="" />
+          <img key={i} {...responsive(model.img, "(min-width: 1024px) 1100px, 100vw")} fetchPriority="low" alt="" />
         ))}
       </div>
     </div>

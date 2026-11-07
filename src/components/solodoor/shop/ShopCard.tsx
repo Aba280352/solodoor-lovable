@@ -40,6 +40,7 @@ export function ShopCard({ item, application, rugFromPrice, variant }: ShopCardP
         {src ? (
           <CoverImage
             src={src}
+            sizes="(min-width: 1024px) 25vw, 50vw"
             alt={name}
             loading="lazy"
             className="transition-transform duration-700 ease-standard group-hover:scale-105"

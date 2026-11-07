@@ -13,6 +13,7 @@ import { shownLabel, useSection } from "./content/sections";
 import { EF, useEditMark } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
+import { responsive } from "./responsive";
 
 const SLIDE_MS = 3500;
 
@@ -45,7 +46,9 @@ export function Hero() {
           <img
             key={s.tag}
             {...(i === slide % count ? mark(`slides.~${s.tag}.img`) : {})}
-            src={s.img}
+            {...responsive(s.img, "100vw")}
+            fetchPriority={i === 0 ? "high" : "low"}
+            decoding={i === 0 ? "sync" : "async"}
             alt={`${s.l1} ${s.l2}`}
             className={cn(
               "absolute inset-0 block size-full origin-left object-cover object-left will-change-[opacity,transform,filter]",

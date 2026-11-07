@@ -44,7 +44,7 @@ function ReviewCard({ review }: { review: Review }) {
             </span>
           </span>
         </div>
-        <img src={GOOGLE_MARK} alt="Google" className="block size-5.5" />
+        <img src={GOOGLE_MARK} alt="Google" loading="lazy" className="block size-5.5" />
       </div>
       <Stars className="gap-0.5 fs-20" />
       <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
@@ -89,7 +89,7 @@ export function Reviews({ page = "home.reviews" }: { page?: ReviewsKey }) {
         <div className="mt-5 flex flex-col items-center gap-5 text-center">
           <Stars className="gap-1 fs-38" />
           <span className="fs-18 font-semibold text-foreground">מבוסס על {business.reviewCount} ביקורות</span>
-          <img src={GOOGLE_WORDMARK} alt="Google" className="block h-10 w-auto" />
+          <img src={GOOGLE_WORDMARK} alt="Google" loading="lazy" className="block h-10 w-auto" />
         </div>
       </Container>
 

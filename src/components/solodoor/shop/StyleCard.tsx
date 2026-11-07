@@ -16,10 +16,11 @@ export function StyleCard({ item }: { item: Pick<StyleItem, "slug" | "title" | "
       className="group flex flex-col overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground focus-visible:border-foreground"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-        {swatch ? <CoverImage src={swatch} alt={name} loading="lazy" /> : <MediaPlaceholder label={name} />}
+        {swatch ? <CoverImage src={swatch} sizes="(min-width: 1024px) 25vw, 50vw" alt={name} loading="lazy" /> : <MediaPlaceholder label={name} />}
         {roll && (
           <CoverImage
             src={roll}
+            sizes="(min-width: 1024px) 25vw, 50vw"
             alt=""
             aria-hidden="true"
             loading="lazy"

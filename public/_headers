@@ -1,0 +1,13 @@
+# Browser and CDN caching for the site's static pictures and fonts (pages and data are not affected).
+# Pictures: 30 days, then refreshed in the background. A changed picture should get a new file name.
+/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/articles/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/catalog/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -10,6 +10,7 @@ import { useSection } from "./content/sections";
 import { EF, useEditMark } from "./content/layout";
 import { useQuiz } from "./quiz-context";
 import { whatsappHref } from "./whatsapp";
+import { responsive } from "./responsive";
 
 export function About() {
   const { openQuiz } = useQuiz();
@@ -92,7 +93,8 @@ export function About() {
             >
               <img
                 {...mark(`gallery.${i}.src`)}
-                src={shot.src}
+                {...responsive(shot.src, i === 0 ? "(min-width: 1024px) 55vw, 100vw" : "(min-width: 1024px) 20vw, 34vw")}
+                loading="lazy"
                 alt={shot.alt}
                 className="absolute inset-0 block size-full object-cover object-left transition-transform duration-420 ease-standard hover:scale-103"
               />

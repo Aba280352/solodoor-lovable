@@ -21,6 +21,7 @@ import { whatsappHref } from "./whatsapp";
 import { LEGAL_UPDATED } from "./legal/legal-content";
 import { TermsDialog } from "./legal/TermsDialog";
 import { loadShop } from "./shop/useShop";
+import { responsive } from "./responsive";
 
 const iconTrigger = "inline-flex cursor-pointer items-center text-foreground";
 
@@ -185,7 +186,7 @@ function GroupList({ groups }: { groups: typeof searchable }) {
         <DialogClose key={item.name} asChild>
           <MenuLink name={item.name} className="flex items-center gap-4">
             <div className="size-16 flex-none overflow-hidden rounded-md border border-border bg-muted">
-              <img src={item.img} alt={item.name} className="block size-full object-cover" />
+              <img {...responsive(item.img, "240px")} fetchPriority="low" alt={item.name} className="block size-full object-cover" />
             </div>
             <span className="fs-18 font-medium text-foreground">{item.name}</span>
           </MenuLink>

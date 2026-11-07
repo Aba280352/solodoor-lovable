@@ -23,6 +23,7 @@ import {
   footerLegal,
   footerSocial,
 } from "./data";
+import { responsive } from "./responsive";
 
 /** The contact lines of the footer, with the business details in force (editable in the admin). */
 const contactLines = () =>
@@ -184,7 +185,7 @@ export function SiteFooter() {
     <footer data-reveal data-edit-section="footer" data-edit-label="פוטר">
       <div className="relative">
         <div className="relative h-96 overflow-hidden bg-muted lg:h-130">
-          <img {...mark("bannerImage")} src={footer.bannerImage ?? FOOTER_BANNER} alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
+          <img {...mark("bannerImage")} {...responsive(footer.bannerImage ?? FOOTER_BANNER, "100vw")} loading="lazy" alt="דלת כניסה מחודשת" className="absolute inset-0 block size-full object-cover" />
           <div className="absolute inset-0 bg-footer-scrim" />
           <div className="absolute inset-y-0 right-0 flex w-full flex-col items-start justify-center gap-5.5 px-5 text-right lg:w-[52%] lg:px-27">
             <span {...mark("bannerLines", "field")} className="fs-36 leading-[1.08] font-medium text-background lg:fs-52">
@@ -207,7 +208,7 @@ export function SiteFooter() {
           <Container>
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-10 lg:grid-cols-[1.15fr_0.85fr_1fr_1.5fr] lg:gap-9">
               <div className="col-span-full text-right lg:col-span-1">
-                <img src={LOGO_SRC} alt="SOLODOOR" className="block h-11 w-37.5" />
+                <img src={LOGO_SRC} alt="SOLODOOR" loading="lazy" className="block h-11 w-37.5" />
                 <span {...mark("tagline", "field")} className="mt-3 block fs-16 leading-[1.7] text-foreground">{footer.tagline ?? "ציפוי דלתות. בדיוק הסגנון שלכם."}</span>
                 <div className="mt-5 flex items-center gap-3">
                   {footerSocial.map((social) => (
@@ -256,6 +257,7 @@ export function SiteFooter() {
             <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 pb-6 lg:mt-12 lg:flex-row lg:flex-wrap lg:gap-6 lg:pb-9">
               <img
                 src={PAYMENTS_SRC}
+                loading="lazy"
                 alt="אמצעי תשלום: ויזה, מאסטרקארד, דיינרס, ביט, אפל פיי, גוגל פיי, ישראכרט"
                 className="block h-auto w-125 max-w-full"
               />

@@ -59,10 +59,10 @@ export function DoorsAbout() {
           {/* Collage: tall photo, a smaller one stepping out of its corner, and the badge. */}
           <div className="relative mx-auto w-full max-w-120 pb-14 ps-10 lg:max-w-none lg:pb-20 lg:ps-20">
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-muted">
-              <CoverImage {...mark("mainImage")} src={c.mainImage} alt="דלת כניסה לאחר ציפוי של סולודור" loading="lazy" />
+              <CoverImage {...mark("mainImage")} src={c.mainImage} sizes="(min-width: 1024px) 45vw, 90vw" alt="דלת כניסה לאחר ציפוי של סולודור" loading="lazy" />
             </div>
             <div className="absolute start-0 bottom-0 aspect-square w-[46%] overflow-hidden rounded-lg border-4 border-background bg-muted lg:border-[0.5rem]">
-              <CoverImage {...mark("detailImage")} src={c.detailImage} alt="ציפוי דלת במראה עץ טבעי" loading="lazy" />
+              <CoverImage {...mark("detailImage")} src={c.detailImage} sizes="(min-width: 1024px) 20vw, 42vw" alt="ציפוי דלת במראה עץ טבעי" loading="lazy" />
             </div>
             <div className="absolute end-3 top-3 flex flex-col items-center rounded-lg bg-secondary px-4 py-3 text-center text-secondary-foreground lg:-end-6 lg:top-10 lg:px-7 lg:py-6">
               <span dir="ltr" className="fs-40 leading-none font-bold lg:fs-70">

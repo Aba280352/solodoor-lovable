@@ -12,7 +12,7 @@ import type { Product } from "./data";
 
 export function ProductMedia({ product }: { product: Product }) {
   return product.img ? (
-    <CoverImage src={product.img} alt={product.name} />
+    <CoverImage src={product.img} sizes="(min-width: 1024px) 25vw, 50vw" loading="lazy" alt={product.name} />
   ) : (
     <MediaPlaceholder label={product.name} />
   );

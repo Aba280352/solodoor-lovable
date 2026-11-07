@@ -154,7 +154,7 @@ export function Process() {
               className="relative z-1 flex w-64 flex-none flex-col items-center text-center lg:w-86"
             >
               <div className="relative h-56 w-64 overflow-hidden rounded-lg bg-muted lg:h-75 lg:w-86">
-                <CoverImage {...mark(`steps.${i % processSteps.length}.img`)} src={step.img} alt={step.name} />
+                <CoverImage {...mark(`steps.${i % processSteps.length}.img`)} src={step.img} sizes="(min-width: 1024px) 344px, 256px" loading="lazy" alt={step.name} />
               </div>
               <span className="mt-6.5 inline-flex size-9.5 items-center justify-center rounded-full bg-primary fs-16 font-bold tracking-[0.04em] text-primary-foreground">
                 {String((i % processSteps.length) + 1).padStart(2, "0")}

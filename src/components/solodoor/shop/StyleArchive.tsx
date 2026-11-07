@@ -15,6 +15,7 @@ import { STYLE_PAGES, colorOptionsFor, itemsForStyle, styleImage, type StylePage
 import { STYLES_HEADER, STYLE_HEADERS, styleHeaderKey } from "../content/archives";
 import { EF, editSection } from "../content/layout";
 import { useSection } from "../content/sections";
+import { responsive } from "../responsive";
 
 /** Wallpapers of a list that have at least one of the chosen colours (all of them when none is chosen). */
 const withColors = (items: StyleItem[], colors: string[]) =>
@@ -188,7 +189,7 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
                     <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                       {image && (
                         <img
-                          src={image}
+                          {...responsive(image, "(min-width: 1024px) 25vw, 50vw")}
                           alt={p.title}
                           loading="lazy"
                           draggable={false}

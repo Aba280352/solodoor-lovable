@@ -17,6 +17,7 @@ export function ArticleCard({ article, priority = false }: { article: ArticleSum
         {src ? (
           <CoverImage
             src={src}
+            sizes="(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw"
             alt={article.featured_alt ?? article.title}
             loading={priority ? "eager" : "lazy"}
             className="transition-transform duration-700 ease-standard group-hover:scale-105"

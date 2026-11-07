@@ -38,6 +38,8 @@ export function Faq() {
                   key={i}
                   {...(i === image ? mark(`items.${i}.img`) : {})}
                   src={src}
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  loading="lazy"
                   className={cn("transition-opacity duration-700 ease-grow", i === image ? "opacity-100" : "opacity-0")}
                 />
               ))}

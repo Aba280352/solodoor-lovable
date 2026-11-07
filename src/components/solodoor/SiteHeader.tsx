@@ -13,6 +13,7 @@ import { FOOTER_ANCHORS, scrollToAboutOnHome, scrollToFooterAnchor } from "./sho
 import { MenuLink } from "./shop/MenuLink";
 import { STYLE_HUB_PATH } from "./shop/styles";
 import { useNav } from "./content/nav";
+import { responsive } from "./responsive";
 
 type MenuKey = "style" | "use" | null;
 
@@ -47,7 +48,7 @@ function MegaMenu({ title, items, allLink }: { title: string; items: MenuItem[];
           {shownItems.map((item) => (
             <MenuLink key={item.name} name={item.name} className="group block">
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-muted transition-colors duration-240 ease-standard group-hover:border-foreground">
-                <img src={nav.img(item.name, item.img)} alt={nav.label(item.name)} className="block size-full object-cover" />
+                <img {...responsive(nav.img(item.name, item.img), "240px")} fetchPriority="low" alt={nav.label(item.name)} className="block size-full object-cover" />
               </div>
               <div className="mt-2.5 fs-16 font-medium text-foreground">{nav.label(item.name)}</div>
             </MenuLink>
@@ -258,7 +259,7 @@ function MobileMenuGroup({ title, to, items, allLink }: { title: string; to: Arc
             <DialogClose key={item.name} asChild>
               <MenuLink name={item.name} className="flex items-center gap-4">
               <div className="size-20 flex-none overflow-hidden rounded-md border border-border bg-muted">
-                <img src={nav.img(item.name, item.img)} alt={nav.label(item.name)} className="block size-full object-cover" />
+                <img {...responsive(nav.img(item.name, item.img), "240px")} fetchPriority="low" alt={nav.label(item.name)} className="block size-full object-cover" />
               </div>
               <div className="fs-16 font-medium text-foreground">{nav.label(item.name)}</div>
               </MenuLink>

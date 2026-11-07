@@ -11,6 +11,7 @@ import { Container, CoverImage } from "./primitives";
 import { HOME_BEFORE_AFTER, HOME_BEFORE_AFTER_DEFAULTS } from "./content/home";
 import { useSection } from "./content/sections";
 import { EF, useEditMark } from "./content/layout";
+import { responsive } from "./responsive";
 
 export interface BeforeAfterPair {
   name: string;
@@ -82,11 +83,12 @@ function CompareCard({ pair, field }: { pair: BeforeAfterPair; field?: string })
       <div
         className="relative h-72 overflow-hidden bg-muted select-none lg:h-105"
       >
-        <CoverImage {...(field ? mark(f("after")) : {})} src={pair.after} alt={`${pair.name}, אחרי`} />
+        <CoverImage {...(field ? mark(f("after")) : {})} src={pair.after} sizes="(min-width: 1024px) 420px, 288px" loading="lazy" alt={`${pair.name}, אחרי`} />
         <span className="absolute inset-y-0 right-0 overflow-hidden" style={{ width: `${pct}%` }}>
           <img
             {...(field ? mark(f("before")) : {})}
-            src={pair.before}
+            {...responsive(pair.before, "(min-width: 1024px) 420px, 288px")}
+            loading="lazy"
             alt={`${pair.name}, לפני`}
             draggable={false}
             className="pointer-events-none absolute top-0 right-0 block h-full w-72 max-w-none object-cover select-none lg:w-105"

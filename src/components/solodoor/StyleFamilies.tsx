@@ -12,6 +12,7 @@ import { EF, useEditMark } from "./content/layout";
 
 type Family = (typeof HOME_STYLES_DEFAULTS)["families"][number];
 import { STYLE_HUB_PATH, stylePageForName } from "./shop/styles";
+import { responsive } from "./responsive";
 
 function StyleCard({ family, cta }: { family: Family; cta: string }) {
   // Hovering a swatch previews it in the card image; leaving returns to the default.
@@ -39,7 +40,7 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
                 hovered === i && "shadow-swatch",
               )}
             >
-              <img {...mark(f(`swatches.${i}`))} src={src} alt="" className="block size-full object-cover" />
+              <img {...mark(f(`swatches.${i}`))} {...responsive(src, "40px")} loading="lazy" alt="" className="block size-full object-cover" />
             </span>
           ))}
         </div>
@@ -57,6 +58,8 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
             key={i}
             {...(src === current ? mark(f(`swatches.${i}`)) : {})}
             src={src}
+            sizes="(min-width: 1024px) 260px, 100vw"
+            loading="lazy"
             alt={shownLabel(family, "name")}
             className={cn("transition-opacity duration-420 ease-standard", src === current ? "opacity-100" : "opacity-0")}
           />
