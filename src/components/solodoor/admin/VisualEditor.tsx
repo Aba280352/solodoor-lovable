@@ -164,7 +164,8 @@ export function VisualEditor() {
 
       <div className="flex min-h-0 flex-1">
         <div ref={stageRef} className="relative min-w-0 flex-1 overflow-hidden">
-          <div className="absolute top-3 left-1/2 origin-top -translate-x-1/2" style={{ width, height: (stage.h - 24) / scale, transform: `translateX(-50%) scale(${scale})` }}>
+          {/* Centred by hand (left + negative margin), so the scale is the only transform. */}
+          <div className="absolute top-3 origin-top" style={{ width, height: (stage.h - 24) / scale, left: "50%", marginLeft: -width / 2, transform: `scale(${scale})` }}>
             <iframe
               key={path}
               ref={frameRef}
@@ -175,7 +176,7 @@ export function VisualEditor() {
           </div>
         </div>
 
-        <aside className="flex w-[30rem] flex-none flex-col border-s border-border bg-card">
+        <aside className="flex w-[440px] max-w-[45vw] flex-none flex-col border-s border-border bg-card">
           <div className="flex border-b border-border">
             {(
               [
