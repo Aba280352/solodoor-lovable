@@ -101,12 +101,20 @@ export function VisualEditor() {
   const [stage, setStage] = useState({ w: 1000, h: 700 });
 
   const send = useCallback((msg: EditorMessage) => frameRef.current?.contentWindow?.postMessage(msg, window.location.origin), []);
+  /** The unsaved values sent to the page, so a reloaded page (another device, another page) gets them back. */
+  const liveRef = useRef<Record<string, unknown>>({});
+  const selectedRef = useRef<string | null>(null);
+  selectedRef.current = selected;
 
   // Messages from the page: it is ready (with its sections), or a part was clicked.
   useEffect(() => {
     const onMessage = (e: MessageEvent<PageMessage>) => {
       if (e.origin !== window.location.origin || e.source !== frameRef.current?.contentWindow || !e.data) return;
-      if (e.data.type === "ready") setSections(e.data.sections.filter((k) => k.startsWith("home.") || !["promo", "nav", "footer"].includes(k)));
+      if (e.data.type === "ready") {
+        setSections(e.data.sections.filter((k) => k.startsWith("home.") || !["promo", "nav", "footer"].includes(k)));
+        for (const [key, data] of Object.entries(liveRef.current)) send({ type: "live", key, data });
+        if (selectedRef.current) send({ type: "select", key: selectedRef.current });
+      }
       if (e.data.type === "select") {
         setSelected(e.data.key);
         setTab("section");
@@ -114,7 +122,7 @@ export function VisualEditor() {
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, []);
+  }, [send]);
 
   // The frame is drawn at the device's real width and scaled down to fit the stage.
   useLayoutEffect(() => {
@@ -127,7 +135,10 @@ export function VisualEditor() {
   const width = DEVICES.find((d) => d.key === device)!.width;
   const scale = Math.min(1, (stage.w - 24) / width);
 
-  const liveFor = (key: string) => (data: unknown) => send({ type: "live", key, data });
+  const liveFor = (key: string) => (data: unknown) => {
+    liveRef.current[key] = data;
+    send({ type: "live", key, data });
+  };
 
   return (
     <div dir="rtl" className="fixed inset-0 z-50 flex flex-col bg-muted font-sans text-foreground">
@@ -167,7 +178,8 @@ export function VisualEditor() {
           {/* Centred by hand (left + negative margin), so the scale is the only transform. */}
           <div className="absolute top-3 origin-top" style={{ width, height: (stage.h - 24) / scale, left: "50%", marginLeft: -width / 2, transform: `scale(${scale})` }}>
             <iframe
-              key={path}
+              // A new device reloads the page at its width, so every size and layout is computed fresh.
+              key={`${path}|${device}`}
               ref={frameRef}
               title="תצוגת הדף לעריכה"
               src={`${path}?edit=1&preview=1`}
