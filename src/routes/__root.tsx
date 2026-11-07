@@ -3,6 +3,7 @@
 // Both load the content published in the admin and hand it to <SiteContentProvider>.
 import { HeadContent, Outlet, createRootRoute, redirect } from "@tanstack/react-router";
 
+import { NotFoundPage } from "@/components/solodoor/NotFoundPage";
 import { slashRedirect } from "@/components/solodoor/content/old-site";
 import { SiteContentProvider, fetchSiteContent } from "@/components/solodoor/content/site-content";
 
@@ -16,6 +17,7 @@ export const Route = createRootRoute({
   loader: () => fetchSiteContent(),
   staleTime: 60_000,
   component: RootComponent,
+  notFoundComponent: NotFoundPage,
 });
 
 function RootComponent() {
