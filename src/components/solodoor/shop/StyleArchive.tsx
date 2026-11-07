@@ -11,7 +11,10 @@ import { Group, Swatch } from "./ShopFilters";
 import { StyleCard } from "./StyleCard";
 import { variantColors, type StyleItem } from "./catalog";
 import { splitList } from "./filters";
-import { STYLE_HUB, STYLE_PAGES, colorOptionsFor, itemsForStyle, styleImage, type StylePage } from "./styles";
+import { STYLE_PAGES, colorOptionsFor, itemsForStyle, styleImage, type StylePage } from "./styles";
+import { STYLES_HEADER, STYLE_HEADERS, styleHeaderKey } from "../content/archives";
+import { EF, editSection } from "../content/layout";
+import { useSection } from "../content/sections";
 
 /** Wallpapers of a list that have at least one of the chosen colours (all of them when none is chosen). */
 const withColors = (items: StyleItem[], colors: string[]) =>
@@ -124,7 +127,8 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
   const colors = splitList(color).filter((c) => items.some((i) => i.colors.includes(c)));
   const inPage = page ? itemsForStyle(items, page) : items;
   const shown = withColors(inPage, colors);
-  const heading = page ? { title: page.title, intro: page.intro } : STYLE_HUB;
+  const part = (page && STYLE_HEADERS.find((h) => h.def.key === styleHeaderKey(page.slug))) || STYLES_HEADER;
+  const heading = useSection(part.def, part.defaults);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   // The colours live in the URL (?color=grey), like the shop's filters, so each view can be linked to.
@@ -138,7 +142,7 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
 
   return (
     <>
-      <section className="border-b border-border">
+      <section className="border-b border-border" {...editSection(part.def.key)}>
         <Container className="pt-6 pb-9 text-right lg:pt-8 lg:pb-12">
           <nav aria-label="פירורי לחם" className="flex flex-wrap items-center gap-2 fs-14 text-foreground lg:fs-15">
             <Link to="/" className="transition-colors duration-160 ease-standard hover:text-clay">
@@ -161,9 +165,9 @@ export function StyleArchive({ items, page, color }: { items: StyleItem[]; page:
               </span>
             )}
           </nav>
-          <Pill className="mt-5 tracking-[0.16em]">טפט לפי סגנון</Pill>
-          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{heading.title}</h1>
-          <p className="mt-4 max-w-[62ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{heading.intro}</p>
+          <Pill className="mt-5 tracking-[0.16em]"><EF f="pill">{heading.pill}</EF></Pill>
+          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62"><EF f="title">{heading.title}</EF></h1>
+          <p className="mt-4 max-w-[62ch] fs-18 leading-[1.7] text-foreground lg:fs-20"><EF f="intro">{heading.intro}</EF></p>
         </Container>
       </section>
 

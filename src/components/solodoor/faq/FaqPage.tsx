@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import { Icon } from "../Icon";
 import { DragRow } from "../DragRow";
 import { Container, Pill } from "../primitives";
+import { FAQ_PAGE } from "../content/archives";
+import { EF, editSection } from "../content/layout";
+import { useSection } from "../content/sections";
 import { business, phoneHref } from "../content/business";
 import { FAQ_CATEGORIES, categoryLabel, filterFaq, selectedCategories, type FaqEntry, type FaqSearch } from "./faq-items";
 import { whatsappHref } from "../whatsapp";
@@ -100,7 +103,10 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
   const q = query.trim();
   const byCategory = filterFaq(entries, selected);
   const shown = q ? byCategory.filter((e) => e.question.includes(q) || e.answer.includes(q)) : byCategory;
-  const { title, intro } = faqHeading(selected);
+  // The main view shows the admin's heading; a category view keeps its own (a page of its own in Google).
+  const c = useSection(FAQ_PAGE.def, FAQ_PAGE.defaults);
+  const { title, intro } = selected.length ? faqHeading(selected) : c;
+  const f = (name: string, text: string) => (selected.length ? text : <EF f={name}>{text}</EF>);
   const count = (key: string) => entries.filter((e) => e.categories.includes(key)).length;
 
   const setSelected = (next: string[]) => {
@@ -111,7 +117,7 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
 
   return (
     <>
-      <section className="border-b border-border">
+      <section className="border-b border-border" {...editSection("faq.page")}>
         <Container className="pt-6 pb-9 text-right lg:pt-8 lg:pb-12">
           <nav aria-label="פירורי לחם" className="flex items-center gap-2 fs-14 text-foreground lg:fs-15">
             <Link to="/" className="transition-colors duration-160 ease-standard hover:text-clay">
@@ -122,9 +128,9 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
               שאלות נפוצות
             </span>
           </nav>
-          <Pill className="mt-5 tracking-[0.16em]">שאלות ותשובות</Pill>
-          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{title}</h1>
-          <p className="mt-4 max-w-[64ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{intro}</p>
+          <Pill className="mt-5 tracking-[0.16em]"><EF f="pill">{c.pill}</EF></Pill>
+          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{f("title", title)}</h1>
+          <p className="mt-4 max-w-[64ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{f("intro", intro)}</p>
         </Container>
       </section>
 
@@ -132,7 +138,7 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
       <div className="sticky top-16 z-30 border-b border-border bg-background/95 backdrop-blur lg:top-20">
         <Container className="py-3 lg:py-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
-            <span className="flex-none fs-15 font-semibold text-foreground lg:fs-16">מה מעניין אתכם?</span>
+            <span className="flex-none fs-15 font-semibold text-foreground lg:fs-16"><EF f="filterLabel">{c.filterLabel}</EF></span>
             <DragRow className="-mx-5 flex flex-auto gap-2 overflow-x-auto px-5 scrollbar-none lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
               <Chip active={selected.length === 0} onClick={() => setSelected([])}>
                 הכל
@@ -186,20 +192,20 @@ export function FaqPage({ entries, search }: { entries: FaqEntry[]; search: FaqS
         </Container>
       </section>
 
-      <section data-reveal className="pb-16 lg:pb-26">
+      <section data-reveal className="pb-16 lg:pb-26" {...editSection("faq.page")}>
         <Container>
           <div className="overflow-hidden rounded-lg bg-foreground px-6 py-9 text-background lg:px-14 lg:py-14">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="text-right">
-                <h2 className="max-w-[20ch] fs-28 leading-[1.12] font-bold tracking-[-0.02em] lg:fs-44">לא מצאתם את התשובה?</h2>
+                <h2 className="max-w-[20ch] fs-28 leading-[1.12] font-bold tracking-[-0.02em] lg:fs-44"><EF f="ctaTitle">{c.ctaTitle}</EF></h2>
                 <p className="mt-3 max-w-[46ch] fs-17 leading-[1.7] font-light lg:fs-19">
-                  שלחו לנו הודעה או תמונה בווצאפ, ונחזור אליכם עם תשובה אישית ועם המלצה למשטח שלכם.
+                  <EF f="ctaText">{c.ctaText}</EF>
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-none">
                 <Button asChild className="px-8 py-4">
                   <a href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                    <span>לשיחה בווצאפ</span>
+                    <span><EF f="whatsappLabel">{c.whatsappLabel}</EF></span>
                     <Icon name="ChatDots" size={17} />
                   </a>
                 </Button>

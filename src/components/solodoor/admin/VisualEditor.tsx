@@ -282,7 +282,7 @@ export function VisualEditor() {
     const owner = parts && ownerOf(parts, element.field);
     return owner ? (resolvePath(owner.def, owner.defaults, element.field)?.label ?? null) : null;
   })();
-  const styleable = selected && !SHARED.includes(selected);
+  const styleable = selected && !SHARED.includes(selected) && page.layout;
 
   return (
     <div dir="rtl" className="fixed inset-0 z-50 flex flex-col bg-muted font-sans text-foreground">
@@ -375,7 +375,20 @@ export function VisualEditor() {
 
           <div className="min-h-0 flex-1 overflow-y-auto p-3 text-right">
             <div hidden={tab !== "navigator"}>
-              <NavigatorPanel path={path} sections={pageSections} selected={selected} onPick={(k) => { pick(k); setTab("content"); }} onLive={live(layoutKey(path))} />
+              {page.layout ? (
+                <NavigatorPanel path={path} sections={pageSections} selected={selected} onPick={(k) => { pick(k); setTab("content"); }} onLive={live(layoutKey(path))} />
+              ) : (
+                <div className="flex flex-col gap-3 py-6 text-center">
+                  <p className="fs-15 text-foreground/70">בדף הזה יש אזור עריכה אחד, בלי סידור אזורים. המוצרים, השאלות והמאמרים עצמם נערכים במסכים שלהם בפאנל.</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {pageSections.map((key) => (
+                      <button key={key} type="button" onClick={() => { pick(key); setTab("content"); }} className="cursor-pointer rounded-full border border-border px-3 py-1.5 fs-14 hover:border-foreground">
+                        {SECTION_LABELS[key] ?? key}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             {visited.map((key) => (
               <div key={key} hidden={!(tab === "content" && key === selected)}>
@@ -400,7 +413,7 @@ export function VisualEditor() {
                 </div>
               </div>
             ) : tab === "style" && !styleable ? (
-              <p className="py-6 text-center fs-15 text-foreground/70">ל"{sectionLabel}" אין הגדרות עיצוב. בחרו אזור בדף.</p>
+              <p className="py-6 text-center fs-15 text-foreground/70">{page.layout ? `ל"${sectionLabel}" אין הגדרות עיצוב. בחרו אזור בדף.` : "בדף הזה העיצוב קבוע (רקע ומרווחים קיימים בדף הבית, דלתות ומטבחים)."}</p>
             ) : null}
           </div>
         </aside>

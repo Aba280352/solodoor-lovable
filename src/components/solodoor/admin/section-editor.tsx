@@ -79,7 +79,7 @@ function FieldInput({ field, value, original, onChange, big }: { field: FieldDef
       return (
         <div className="flex flex-col gap-1">
           {long ? (
-            <Textarea rows={field.type === "textarea" ? (big ? 6 : 4) : 2} value={shown} onChange={(e) => onChange(e.target.value)} className="fs-16" />
+            <Textarea rows={field.type === "textarea" ? ((field.max ?? 0) > 2000 ? 16 : big ? 6 : 4) : 2} value={shown} onChange={(e) => onChange(e.target.value)} className="fs-16" />
           ) : (
             <Input value={shown} onChange={(e) => onChange(e.target.value)} className="fs-16" />
           )}
@@ -184,7 +184,7 @@ function FixedList({ field, value, original, onChange }: { field: ListField; val
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
                 <button type="button" onClick={() => setOpen(open === id ? null : id)} className="flex min-w-0 flex-1 cursor-pointer items-center justify-between gap-2 text-right fs-15 font-medium text-foreground">
-                  <span className="min-w-0 truncate">{typeof item[key] === "string" && item[key] ? String(item[key]) : id}</span>
+                  <span className="min-w-0 truncate">{itemSummary(field.fields, item, orig) || id}</span>
                   <span aria-hidden="true" className="flex-none text-foreground/50">{open === id ? "▴" : "▾"}</span>
                 </button>
                 <label className="flex flex-none cursor-pointer items-center gap-1.5 fs-14 text-foreground">
@@ -231,7 +231,8 @@ function resolveItem(def: SectionDef, defaults: Obj, top: ListField, seg: string
   if (top.keyField) {
     const id = seg.replace(/^~/, "");
     const items = (v: Obj) => fixedItems(top, v[top.name], originals);
-    return { items, index: (v: Obj) => items(v).findIndex((o) => String(o._key) === id), original: originals.find((d) => String(d[top.keyField!]) === id), label: id };
+    const original = originals.find((d) => String(d[top.keyField!]) === id);
+    return { items, index: (v: Obj) => items(v).findIndex((o) => String(o._key) === id), original, label: (original && itemSummary(top.fields, {}, original)) || id };
   }
   const i = Number(seg);
   if (!Number.isInteger(i) || i < 0) return null;

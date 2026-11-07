@@ -4,7 +4,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, Dia
 
 import { Icon } from "../Icon";
 import { LegalBlockView } from "./LegalPage";
-import { LEGAL_UPDATED, TERMS } from "./legal-content";
+import { TERMS as ORIGINAL_TERMS } from "./legal-content";
+import { useLegalDoc } from "../content/legal";
 
 /**
  * The terms of use in a pop-up, opened from the link passed as `children`.
@@ -12,6 +13,8 @@ import { LEGAL_UPDATED, TERMS } from "./legal-content";
  * With `section` (the id of a section, e.g. "installation") the pop-up opens scrolled to that section.
  */
 export function TermsDialog({ children, section }: { children: ReactNode; section?: string }) {
+  // The terms in force, edits included, exactly as on the /terms page.
+  const TERMS = useLegalDoc(ORIGINAL_TERMS);
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -28,7 +31,7 @@ export function TermsDialog({ children, section }: { children: ReactNode; sectio
         <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 lg:px-8 lg:py-5">
           <div className="flex flex-col gap-1">
             <DialogTitle className="fs-22 leading-[1.2] font-bold text-foreground lg:fs-26">{TERMS.title}</DialogTitle>
-            <DialogDescription className="fs-15 text-foreground">עודכן לאחרונה: {LEGAL_UPDATED}</DialogDescription>
+            <DialogDescription className="fs-15 text-foreground">עודכן לאחרונה: {TERMS.updated}</DialogDescription>
           </div>
           <DialogClose aria-label="סגירה" className="inline-flex size-10 flex-none cursor-pointer items-center justify-center text-foreground">
             <Icon name="Times" size={22} />

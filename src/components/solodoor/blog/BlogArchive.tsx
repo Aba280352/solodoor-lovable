@@ -7,16 +7,20 @@ import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { ArticleCard } from "./ArticleCard";
 import type { ArticleSummary } from "./articles";
+import { ARTICLES_HEADER } from "../content/archives";
+import { EF, editSection } from "../content/layout";
+import { useSection } from "../content/sections";
 
 /** The articles archive: heading, a search box and every published article. */
 export function BlogArchive({ articles }: { articles: ArticleSummary[] }) {
+  const c = useSection(ARTICLES_HEADER.def, ARTICLES_HEADER.defaults);
   const [query, setQuery] = useState("");
   const q = query.trim();
   const shown = q ? articles.filter((a) => `${a.title} ${a.excerpt ?? ""}`.includes(q)) : articles;
 
   return (
     <>
-      <section className="border-b border-border">
+      <section className="border-b border-border" {...editSection("articles.header")}>
         <Container className="pt-6 pb-9 text-right lg:pt-8 lg:pb-12">
           <nav aria-label="פירורי לחם" className="flex items-center gap-2 fs-14 text-foreground lg:fs-15">
             <Link to="/" className="transition-colors duration-160 ease-standard hover:text-clay">
@@ -27,10 +31,10 @@ export function BlogArchive({ articles }: { articles: ArticleSummary[] }) {
               מאמרים
             </span>
           </nav>
-          <Pill className="mt-5 tracking-[0.16em]">הבלוג</Pill>
-          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">מדריכים ומאמרים</h1>
+          <Pill className="mt-5 tracking-[0.16em]"><EF f="pill">{c.pill}</EF></Pill>
+          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62"><EF f="title">{c.title}</EF></h1>
           <p className="mt-4 max-w-[62ch] fs-18 leading-[1.7] text-foreground lg:fs-20">
-            כל מה שכדאי לדעת לפני שמחדשים דלת, מטבח, מקרר או ארון: מדריכים, השוואות ותשובות מהניסיון שלנו בשטח.
+            <EF f="intro">{c.intro}</EF>
           </p>
         </Container>
       </section>

@@ -11,21 +11,28 @@ import { ShopFilters } from "./ShopFilters";
 import { StyleCard } from "./StyleCard";
 import { type ShopData } from "./catalog";
 import { activeFilters, shopCards, shopHeading, type ShopSearch } from "./filters";
+import { SHOP_HEADER } from "../content/archives";
+import { EF, editSection } from "../content/layout";
+import { useSection } from "../content/sections";
 
 /** The shop archive: heading, the filters beside the grid (in a sheet on mobile), and the products. */
 export function ShopArchive({ data, search }: { data: ShopData; search: ShopSearch }) {
   const filters = activeFilters(search, data);
   const items = shopCards(data, filters);
-  const { title, intro } = shopHeading(filters, data);
+  const computed = shopHeading(filters, data);
+  // The main view (no filters) shows the admin's heading; each filtered view keeps its own (a page of its own in Google).
+  const isRoot = computed.title === SHOP_HEADER.defaults.title;
+  const edited = useSection(SHOP_HEADER.def, SHOP_HEADER.defaults);
+  const { title, intro } = isRoot ? edited : computed;
+  const f = (name: string, text: string) => (isRoot ? <EF f={name}>{text}</EF> : text);
   // The surface whose photo and price the cards show.
   const application = data.applications.find((a) => a.slug === filters.uses[0]);
   const activeCount = filters.cats.length + filters.styles.length + filters.colors.length + (filters.recommended ? 1 : 0);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const isRoot = title === "החנות של סולודור";
 
   return (
     <>
-      <section className="border-b border-border">
+      <section className="border-b border-border" {...editSection("shop.header")}>
         <Container className="pt-6 pb-9 text-right lg:pt-8 lg:pb-12">
           <nav aria-label="פירורי לחם" className="flex items-center gap-2 fs-14 text-foreground lg:fs-15">
             <Link to="/" className="transition-colors duration-160 ease-standard hover:text-clay">
@@ -49,9 +56,9 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
             )}
           </nav>
 
-          <Pill className="mt-5 tracking-[0.16em]">החנות</Pill>
-          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{title}</h1>
-          <p className="mt-4 max-w-[62ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{intro}</p>
+          <Pill className="mt-5 tracking-[0.16em]">{f("pill", isRoot ? edited.pill : "החנות")}</Pill>
+          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{f("title", title)}</h1>
+          <p className="mt-4 max-w-[62ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{f("intro", intro)}</p>
         </Container>
       </section>
 

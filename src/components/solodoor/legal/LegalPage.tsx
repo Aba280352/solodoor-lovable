@@ -5,7 +5,10 @@ import { Icon } from "../Icon";
 import { Container, Pill } from "../primitives";
 import { fetchInstallPrices } from "../shop/catalog";
 import { DEFAULT_INSTALL_PRICES, fillInstallPrices, type InstallPrices } from "../shop/install-pricing";
-import { CONTACT, LEGAL_DOCS, LEGAL_UPDATED, type LegalBlock, type LegalDoc } from "./legal-content";
+import { CONTACT, LEGAL_DOCS, type LegalBlock, type LegalDoc } from "./legal-content";
+import { business } from "../content/business";
+import { EF, editSection, useEditMark } from "../content/layout";
+import { legalKey, useLegalDoc } from "../content/legal";
 
 let installPricesRequest: Promise<InstallPrices> | null = null;
 
@@ -86,11 +89,13 @@ function Contents({ doc }: { doc: LegalDoc }) {
 }
 
 /** One legal page: heading, a table of contents beside the text, the sections, and the contact details. */
-export function LegalPage({ doc }: { doc: LegalDoc }) {
+export function LegalPage({ doc: original }: { doc: LegalDoc }) {
+  const doc = useLegalDoc(original);
+  const mark = useEditMark();
   const others = LEGAL_DOCS.filter((d) => d.path !== doc.path);
 
   return (
-    <>
+    <div {...editSection(legalKey(original))}>
       <section className="border-b border-border">
         <Container className="pt-6 pb-9 text-right lg:pt-8 lg:pb-12">
           <nav aria-label="פירורי לחם" className="flex flex-wrap items-center gap-2 fs-14 text-foreground lg:fs-15">
@@ -103,9 +108,9 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
             </span>
           </nav>
           <Pill className="mt-5 tracking-[0.16em]">מידע משפטי</Pill>
-          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62">{doc.title}</h1>
-          <p className="mt-4 max-w-[64ch] fs-18 leading-[1.7] text-foreground lg:fs-20">{doc.intro}</p>
-          <p className="mt-4 fs-15 text-foreground/70">עודכן לאחרונה: {LEGAL_UPDATED}</p>
+          <h1 className="mt-4 fs-36 leading-[1.08] font-bold tracking-[-0.02em] text-foreground lg:fs-62"><EF f="title">{doc.title}</EF></h1>
+          <p className="mt-4 max-w-[64ch] fs-18 leading-[1.7] text-foreground lg:fs-20"><EF f="intro">{doc.intro}</EF></p>
+          <p className="mt-4 fs-15 text-foreground/70">עודכן לאחרונה: <EF f="updated">{doc.updated}</EF></p>
         </Container>
       </section>
 
@@ -136,9 +141,9 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
                   <span className="text-foreground/50" dir="ltr">
                     {i + 1}.{" "}
                   </span>
-                  {section.title}
+                  <EF f={`sections.~${section.id}.title`}>{section.title}</EF>
                 </h2>
-                <div className="mt-4 flex flex-col gap-4">
+                <div {...mark(`sections.~${section.id}.body`, "field")} className="mt-4 flex flex-col gap-4">
                   {section.blocks.map((block, j) => (
                     <LegalBlockView key={j} block={block} />
                   ))}
@@ -154,18 +159,18 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
                 <dd>{CONTACT.address}</dd>
                 <dt className="font-semibold">טלפון</dt>
                 <dd dir="ltr" className="text-right">
-                  <a href={`tel:${CONTACT.phone.replace(/\D/g, "")}`} className="transition-colors duration-160 ease-standard hover:text-clay">
-                    {CONTACT.phone}
+                  <a href={`tel:${business.phone.replace(/\D/g, "")}`} className="transition-colors duration-160 ease-standard hover:text-clay">
+                    {business.phone}
                   </a>
                 </dd>
                 <dt className="font-semibold">דואר אלקטרוני</dt>
                 <dd dir="ltr" className="text-right">
-                  <a href={`mailto:${CONTACT.email}`} className="transition-colors duration-160 ease-standard hover:text-clay">
-                    {CONTACT.email}
+                  <a href={`mailto:${business.email}`} className="transition-colors duration-160 ease-standard hover:text-clay">
+                    {business.email}
                   </a>
                 </dd>
                 <dt className="font-semibold">שעות מענה</dt>
-                <dd>{CONTACT.hours}</dd>
+                <dd>{business.hours}</dd>
               </dl>
             </section>
 
@@ -183,6 +188,6 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
           </article>
         </Container>
       </section>
-    </>
+    </div>
   );
 }

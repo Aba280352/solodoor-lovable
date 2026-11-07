@@ -100,7 +100,21 @@ export const SECTION_LABELS: Record<string, string> = {
   "kitchen.catalog": "קטלוג",
   "kitchen.reviews": "ביקורות",
   "kitchen.beforeAfter": "לפני ואחרי",
+  "shop.header": "כותרת החנות",
+  "styles.header": "כותרת הדף",
+  "style.עצים.header": "כותרת הדף",
+  "style.מומלצים.header": "כותרת הדף",
+  "style.חלקים.header": "כותרת הדף",
+  "style.אבן-ובטון.header": "כותרת הדף",
+  "faq.page": "דף השאלות",
+  "articles.header": "כותרת המאמרים",
+  "legal.terms": "תקנון",
+  "legal.privacy": "מדיניות פרטיות",
+  "legal.accessibility": "הצהרת נגישות",
 };
+
+/** The marks of a part of a page the editor can select (on pages without the layout engine). */
+export const editSection = (id: string) => ({ "data-edit-section": id, "data-edit-label": SECTION_LABELS[id] ?? id });
 
 /**
  * One section of a page. Hidden per device by the layout and styled by its style override; in the visual editor
