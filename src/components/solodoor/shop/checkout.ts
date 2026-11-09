@@ -78,6 +78,12 @@ export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Pro
   const url = `${SHOP_URL}/cart/${[...quantities].map(([id, qty]) => `${id}:${qty}`).join(",")}`;
   const attributes = new URLSearchParams();
   if (termsVersion) attributes.set("attributes[אישור תקנון]", `אושר, נוסח ${termsVersion}`);
+  // Wallpaper by the metre reaches Shopify as whole metres plus items of ten centimetres (see `resolve`);
+  // the length to cut, in one piece, is kept on the order so nobody has to add them up.
+  const lengths = lines
+    .filter((line) => line.min !== undefined)
+    .map((line) => `${[line.title, line.note?.replace(/,?\s*למטר$/, "")].filter(Boolean).join(" ")}: ${Math.round(line.qty * 10) / 10} מטר`);
+  if (lengths.length) attributes.set("attributes[אורך לחיתוך]", lengths.join(" | "));
   // Installation is only possible inside the service areas; the city typed with it is kept on the order.
   const installs = lines.filter(isInstallLine);
   const installCity = installs.find((line) => line.city)?.city;

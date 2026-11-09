@@ -146,7 +146,7 @@ function desiredVariants(product: Product, apps: Application[], pas: ProductAppl
       out.push(one(`${handle}__${app.slug}`, money(unit), "משטח", value));
       // Only a door covering comes with the installer.
       if (app.slug === "door") out.push(one(`${handle}__${app.slug}__install`, money(unit), "משטח", `${value} · בהתקנה`));
-      if (app.sell_unit === "meter") out.push(one(`${handle}__${app.slug}__tenth`, money(unit / 10), "משטח", `${app.label} (10 ס"מ)`));
+      if (app.sell_unit === "meter") out.push(one(`${handle}__${app.slug}__tenth`, money(unit / 10), "משטח", `${app.label}, תוספת 10 ס"מ לאורך`));
     }
   } else if (product.product_type === "designed_door") {
     for (const v of variants.filter((v) => v.is_active).sort((a, b) => a.sort_order - b.sort_order)) {
