@@ -6,6 +6,7 @@
  * The SKU to variant list is `shopify-variants.json`, written by scripts/pull-shopify-variants.cjs.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { adClickId } from "@/lib/tracking";
 
 import { isInstallLine, type CartLine } from "./cart";
 
@@ -98,6 +99,9 @@ export async function checkoutUrl(lines: CartLine[], termsVersion?: string): Pro
     attributes.set("attributes[התקנה, דלתות עם צד אחד]", String(singles));
     attributes.set("attributes[התקנה, מחיר כולל]", `${installs.reduce((sum, line) => sum + line.price * line.qty, 0)} ש"ח`);
   }
+  // A visitor who came from a Google ad: the click id goes with the order so the purchase is credited to the ad.
+  const gclid = adClickId();
+  if (gclid) attributes.set("attributes[gclid]", gclid);
   const query = attributes.toString();
   return query ? `${url}?${query}` : url;
 }

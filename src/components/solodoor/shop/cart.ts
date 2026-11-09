@@ -4,6 +4,8 @@
  */
 import { useSyncExternalStore } from "react";
 
+import { trackAddToCart } from "@/lib/tracking";
+
 export interface CartLine {
   /** Same id = same line; adding it again raises the quantity. */
   id: string;
@@ -114,6 +116,7 @@ export const cart = {
     const placed = added.find((line) => line.install && line.city);
     if (placed) lines = lines.map((l) => (l.install ? { ...l, city: placed.city, cityOk: placed.cityOk } : l));
     set({ lines, open: options.open ?? state.open });
+    trackAddToCart(added.map((l) => ({ id: l.sku ?? l.id, title: l.title, price: l.price, qty: l.qty })));
   },
   setQty(id: string, qty: number) {
     // Metres come in tenths, so the sum is rounded: 2.3 + 1 stays 3.3.

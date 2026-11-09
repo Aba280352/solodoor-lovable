@@ -2,6 +2,8 @@
  * Sends a contact form to the server route /api/public/submit-lead (src/lib/leads.server.ts), which stores
  * it (table leads, shown at /admin/leads) and emails the business. Every form on the site goes through here.
  */
+import { trackFormSubmit } from "@/lib/tracking";
+
 export type LeadSource = "door_quote" | "quiz" | "article" | "footer";
 
 export interface LeadInput {
@@ -34,7 +36,10 @@ export async function submitLead(input: LeadInput): Promise<void> {
   } catch {
     throw new Error(LEAD_ERROR);
   }
-  if (result?.ok) return;
+  if (result?.ok) {
+    trackFormSubmit(input.source);
+    return;
+  }
   // A refusal carries a message meant for the visitor (bad phone, too many forms).
   throw new Error(result?.message || LEAD_ERROR);
 }
