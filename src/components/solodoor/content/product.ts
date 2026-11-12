@@ -37,7 +37,7 @@ export const PRODUCT_INSTALL: SectionDef = {
 export const PRODUCT_INSTALL_DEFAULTS = {
   heading: "התקנה",
   checkTitle: "אני רוצה התקנה מקצועית",
-  checkText: "מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. {double} לדלת סטנדרטית משני הצדדים, {single} לדלת מצד אחד. התקנה תוך עד {days} ימי עסקים.",
+  checkText: "מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. {double} לדלת סטנדרטית משני הצדדים, {single} לדלת מצד אחד. ההתקנה מתבצעת תוך {days} ימי עסקים.",
   splitTitle: "איך תרצו לחלק את ההתקנה?",
   splitText: "בחרו כמה דלתות יצופו משני הצדדים. יתר הצדדים יותקנו על דלתות נפרדות.",
   doubleLabel: "דלתות עם שני צדדים",
