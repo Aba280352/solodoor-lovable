@@ -6,6 +6,7 @@
  * a separate page in Google with its own title. These headings apply to the main view only.
  */
 import { STYLE_HUB, STYLE_PAGES } from "../shop/styles";
+import { PRODUCT_SECTIONS } from "./product";
 import type { FieldDef, SectionDef } from "./sections";
 
 const T = (name: string, label: string): FieldDef => ({ name, label, type: "text" });
@@ -71,4 +72,4 @@ export const ARTICLES_HEADER = header("articles.header", "כותרת המאמר�
 });
 
 /** In the admin's order. */
-export const ARCHIVE_SECTIONS: Part[] = [SHOP_HEADER, STYLES_HEADER, ...STYLE_HEADERS, FAQ_PAGE, ARTICLES_HEADER];
+export const ARCHIVE_SECTIONS: Part[] = [SHOP_HEADER, STYLES_HEADER, ...STYLE_HEADERS, FAQ_PAGE, ARTICLES_HEADER, ...PRODUCT_SECTIONS];

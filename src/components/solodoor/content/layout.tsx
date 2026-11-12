@@ -108,6 +108,7 @@ export const SECTION_LABELS: Record<string, string> = {
   "style.אבן-ובטון.header": "כותרת הדף",
   "faq.page": "דף השאלות",
   "articles.header": "כותרת המאמרים",
+  "product.install": "התקנה בדף מוצר",
   "legal.terms": "תקנון",
   "legal.privacy": "מדיניות פרטיות",
   "legal.accessibility": "הצהרת נגישות",

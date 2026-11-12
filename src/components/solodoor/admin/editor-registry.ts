@@ -5,6 +5,7 @@
 import { ARCHIVE_SECTIONS } from "../content/archives";
 import { DOORS_SECTIONS } from "../content/doors";
 import { LEGAL_SECTIONS } from "../content/legal";
+import { PRODUCT_PAGE } from "../content/product";
 import { STYLE_PAGES } from "../shop/styles";
 import { HOME_FAQ, HOME_FAQ_DEFAULTS, HOME_SECTIONS } from "../content/home";
 import { KITCHEN_SECTIONS } from "../content/kitchen";
@@ -43,6 +44,7 @@ export const EDITOR_PAGES: { path: string; label: string; order: string[]; layou
   ...STYLE_PAGES.map((p) => ({ path: `/טפט-לפי-סגנון/${p.slug}`, label: `טפט לפי סגנון: ${p.name}`, order: [`style.${p.slug}.header`] })),
   { path: "/שאלות-נפוצות", label: "שאלות נפוצות", order: ["faq.page"] },
   { path: "/מאמרים", label: "מאמרים", order: ["articles.header"] },
+  { path: PRODUCT_PAGE, label: "דף מוצר: התקנה", order: ["product.install"] },
   { path: "/terms", label: "תקנון", order: ["legal.terms"] },
   { path: "/privacy-policy", label: "מדיניות פרטיות", order: ["legal.privacy"] },
   { path: "/accessibility", label: "הצהרת נגישות", order: ["legal.accessibility"] },

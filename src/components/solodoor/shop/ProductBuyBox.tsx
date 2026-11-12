@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,9 @@ import { INSTALL_SKU, installPrices, splitSides } from "./install-pricing";
 import { InstallCityField } from "./InstallCityField";
 import { useLocalities } from "./localities";
 import { TermsDialog } from "../legal/TermsDialog";
+import { EF, editSection } from "../content/layout";
+import { PRODUCT_INSTALL, PRODUCT_INSTALL_DEFAULTS, fillInstallText } from "../content/product";
+import { useSection } from "../content/sections";
 import { QuantityCalculator } from "../QuantityCalculator";
 
 /** Metres are sold to the nearest ten centimetres. */
@@ -78,7 +81,7 @@ function Stepper({ value, min, max, step, precision, onChange, label }: { value:
 }
 
 /** A tick-box row with a price, used for the installation service and the DIY tools. */
-function CheckRow({ checked, onChange, title, text, price, image }: { checked: boolean; onChange: (v: boolean) => void; title: string; text?: string | null; price: string; image?: string | null }) {
+function CheckRow({ checked, onChange, title, text, price, image }: { checked: boolean; onChange: (v: boolean) => void; title: ReactNode; text?: ReactNode; price: string; image?: string | null }) {
   return (
     <label
       className={cn(
@@ -115,6 +118,7 @@ const sectionTitle = "fs-16 font-semibold text-foreground lg:fs-17";
 /** Price, options, add-ons and the three calls to action. */
 export function ProductBuyBox({ data, application, image, variant, onVariant }: ProductBuyBoxProps) {
   const { product, addons, rugSizes, variants } = data;
+  const t = useSection(PRODUCT_INSTALL, PRODUCT_INSTALL_DEFAULTS);
   const isWallpaper = product.product_type === "wallpaper";
   const isRug = product.product_type === "pvc_rug";
   const stock = isWallpaper ? (product.stock_status ?? "in_stock") : null;
@@ -163,6 +167,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
   const doublePrice = isDesigned ? prices.designedDouble : prices.double;
   const split = splitSides(qty, doubleChoice ?? Infinity);
   const installTotal = split.doubles * doublePrice + split.singles * prices.single;
+  const fill = (text: string) => fillInstallText(text, { double: formatPrice(doublePrice), single: formatPrice(prices.single), days: INSTALL_DAYS });
   // Strips on a door are put on by the installer, so nobody gluing it themselves would order them:
   // the choice appears only once professional installation is ticked.
   const allStrips = onDoor && isWallpaper ? addons.filter((a) => a.addon_type === "door_strips") : [];
@@ -392,40 +397,56 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
       )}
 
       {installAddon && (
-        <div className="flex flex-col gap-2.5">
-          <span className={sectionTitle}>התקנה</span>
+        <div className="flex flex-col gap-2.5" {...editSection("product.install")}>
+          <span className={sectionTitle}>
+            <EF f="heading">{t.heading}</EF>
+          </span>
           <CheckRow
             checked={installation}
             onChange={setInstallation}
-            title="אני רוצה התקנה מקצועית"
-            text={`מתקין של סולודור מגיע אליכם עם החומר, בלי דמי משלוח. ${formatPrice(doublePrice)} לדלת סטנדרטית משני הצדדים, ${formatPrice(prices.single)} לדלת מצד אחד. התקנה תוך עד ${INSTALL_DAYS} ימי עסקים.`}
+            title={<EF f="checkTitle">{t.checkTitle}</EF>}
+            text={<EF f="checkText" inline={false}>{fill(t.checkText)}</EF>}
             price={`+${formatPrice(installTotal)}`}
           />
           {/* With one or two sides there is nothing to split: one door, one side or both. */}
           {installation && qty >= 3 && (
             <div className="flex flex-col gap-4 rounded-md border border-border bg-muted p-4">
               <div className="flex flex-col gap-1">
-                <span className="fs-16 leading-[1.35] font-semibold text-foreground">איך תרצו לחלק את ההתקנה?</span>
-                <span className="fs-14 leading-[1.5] text-foreground">בחרו כמה דלתות יצופו משני הצדדים. יתר הצדדים יותקנו על דלתות נפרדות.</span>
+                <span className="fs-16 leading-[1.35] font-semibold text-foreground">
+                  <EF f="splitTitle">{t.splitTitle}</EF>
+                </span>
+                <span className="fs-14 leading-[1.5] text-foreground">
+                  <EF f="splitText">{t.splitText}</EF>
+                </span>
               </div>
               <div className="flex items-center justify-between gap-3">
                 <span className="flex min-w-0 flex-col">
-                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">דלתות עם שני צדדים</span>
-                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(doublePrice)} להתקנת דלת</span>
+                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">
+                    <EF f="doubleLabel">{t.doubleLabel}</EF>
+                  </span>
+                  <span className="fs-14 leading-[1.5] text-foreground">
+                    <EF f="doubleNote" inline={false}>{fill(t.doubleNote)}</EF>
+                  </span>
                 </span>
                 <Stepper value={split.doubles} min={0} max={split.most} step={1} onChange={setDoubleChoice} label="דלתות עם שני צדדים" />
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
                 <span className="flex min-w-0 flex-col">
-                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">דלתות עם צד אחד</span>
-                  <span className="fs-14 leading-[1.5] text-foreground">{formatPrice(prices.single)} להתקנת דלת</span>
+                  <span className="fs-16 leading-[1.35] font-semibold text-foreground">
+                    <EF f="singleLabel">{t.singleLabel}</EF>
+                  </span>
+                  <span className="fs-14 leading-[1.5] text-foreground">
+                    <EF f="singleNote" inline={false}>{fill(t.singleNote)}</EF>
+                  </span>
                 </span>
                 <span dir="ltr" className="w-34 flex-none text-center fs-18 font-semibold text-foreground" aria-live="polite">
                   {split.singles}
                 </span>
               </div>
               <div className="flex items-baseline justify-between gap-3 border-t border-border pt-4">
-                <span className="fs-16 font-semibold text-foreground">סה"כ התקנה</span>
+                <span className="fs-16 font-semibold text-foreground">
+                  <EF f="totalLabel">{t.totalLabel}</EF>
+                </span>
                 <span className="fs-22 leading-none font-bold text-foreground" aria-live="polite">
                   {formatPrice(installTotal)}
                 </span>
@@ -434,7 +455,7 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
           )}
           <TermsDialog section="installation">
             <button type="button" className="cursor-pointer self-start border-b border-primary fs-14 leading-[1.5] font-medium text-foreground">
-              לתנאי ההתקנה המלאים בתקנון
+              <EF f="termsLink">{t.termsLink}</EF>
             </button>
           </TermsDialog>
           {installation && (
@@ -449,7 +470,9 @@ export function ProductBuyBox({ data, application, image, variant, onVariant }: 
             />
           )}
           {!installation && allStrips.length > 0 && (
-            <span className="fs-14 leading-[1.5] text-foreground">בהתקנה על ידי סולודור אפשר להוסיף לדלת עיצוב פסים.</span>
+            <span className="fs-14 leading-[1.5] text-foreground">
+              <EF f="stripsHint">{t.stripsHint}</EF>
+            </span>
           )}
         </div>
       )}
