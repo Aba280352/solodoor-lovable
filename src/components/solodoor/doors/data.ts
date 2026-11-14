@@ -5,9 +5,9 @@ import type { Product } from "../data";
 const img = (name: string) => `${import.meta.env.BASE_URL}images/${name}.webp`;
 
 export const doorsSeo = {
-  title: "ציפוי דלתות | סולודור",
+  title: "ציפוי דלתות פלדלת בהתקנה | חידוש דלת כניסה | סולודור",
   description:
-    "ציפוי דלתות בציפוי פולימרי עבה ועמיד, עם שכבת הגנה מפני שריטות ודהיית צבע. מעל 200 עיצובים ייחודיים, התקנה מדויקת ומקצועית בבית הלקוח, שירות מצפון ועד דרום.",
+    "ציפוי דלת פלדלת וחידוש דלת כניסה בציפוי פולימרי עבה ועמיד, עם הגנה מפני שריטות ודהיית צבע. מעל 200 עיצובים, כולל התקנה מקצועית בבית הלקוח, מצפון ועד דרום.",
 };
 
 /** The same entrance door in each coating. `swatch` is where the door surface sits in the photo. */
