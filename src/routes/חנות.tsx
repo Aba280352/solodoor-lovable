@@ -5,6 +5,7 @@ import { rootContent, withSeo } from "@/components/solodoor/content/site-content
 import { ShopArchive } from "@/components/solodoor/shop/ShopArchive";
 import { fetchShop } from "@/components/solodoor/shop/catalog";
 import { activeFilters, joinList, shopHeading, type ShopSearch } from "@/components/solodoor/shop/filters";
+import { categoryContent, landingSlug } from "@/components/solodoor/content/categories";
 
 const SITE = "https://solodoor.co.il";
 
@@ -37,15 +38,34 @@ export const Route = createFileRoute("/חנות")({
         ] as [string, string][]
       ).filter(([, v]) => v),
     ).toString();
+    // A category page (one category, no other filter) is a landing page of its own: keyword title and description
+    // from content/categories.ts (editable in the admin), and its questions as FAQ structured data.
+    const slug = landingSlug(filters);
+    const landing = slug ? categoryContent(slug, rootContent(matches)) : undefined;
+    const pageTitle = landing ? landing.metaTitle : `${title} | סולודור`;
+    const description = landing ? landing.metaDescription : intro;
+    const faq = landing ? landing.faq.filter((f) => f.question && f.answer) : [];
     const head = {
       meta: [
-        { title: `${title} | סולודור` },
-        { name: "description", content: intro },
-        { property: "og:title", content: `${title} | סולודור` },
-        { property: "og:description", content: intro },
+        { title: pageTitle },
+        { name: "description", content: description },
+        { property: "og:title", content: pageTitle },
+        { property: "og:description", content: description },
         { property: "og:type", content: "website" },
       ],
       links: [{ rel: "canonical", href: `${SITE}/חנות` + (params ? `?${decodeURIComponent(params)}` : "") }],
+      scripts: faq.length
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faq.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+              }),
+            },
+          ]
+        : [],
     };
     // The admin's SEO override is for the shop itself; filtered views keep their computed titles.
     return params ? head : withSeo(rootContent(matches), "/חנות", head);

@@ -13,7 +13,10 @@ import { type ShopData } from "./catalog";
 import { activeFilters, shopCards, shopHeading, type ShopSearch } from "./filters";
 import { SHOP_HEADER } from "../content/archives";
 import { EF, editSection } from "../content/layout";
-import { useSection } from "../content/sections";
+import { mergeSection, useSection } from "../content/sections";
+import { useContentValue } from "../content/site-content";
+import { categoryKey, categoryPage, categorySectionDef, landingSlug } from "../content/categories";
+import { CategoryGuide } from "./CategoryGuide";
 
 /** The shop archive: heading, the filters beside the grid (in a sheet on mobile), and the products. */
 export function ShopArchive({ data, search }: { data: ShopData; search: ShopSearch }) {
@@ -23,7 +26,12 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
   // The main view (no filters) shows the admin's heading; each filtered view keeps its own (a page of its own in Google).
   const isRoot = computed.title === SHOP_HEADER.defaults.title;
   const edited = useSection(SHOP_HEADER.def, SHOP_HEADER.defaults);
-  const { title, intro } = isRoot ? edited : computed;
+  // A category page (one category, no other filter) has its own heading and a guide under the products.
+  const slug = landingSlug(filters);
+  const landing = categoryPage(slug);
+  const landingRaw = useContentValue(categoryKey(slug ?? "none"));
+  const landingContent = landing ? mergeSection(categorySectionDef(landing.slug)!, landing.defaults, landingRaw) : undefined;
+  const { title, intro } = isRoot ? edited : landingContent ? { title: landingContent.title, intro: landingContent.intro } : computed;
   const f = (name: string, text: string) => (isRoot ? <EF f={name}>{text}</EF> : text);
   // The surface whose photo and price the cards show.
   const application = data.applications.find((a) => a.slug === filters.uses[0]);
@@ -124,6 +132,8 @@ export function ShopArchive({ data, search }: { data: ShopData; search: ShopSear
           </div>
         </Container>
       </section>
+
+      {landing && landingContent && <CategoryGuide slug={landing.slug} content={landingContent} ctaHref={landing.ctaHref} />}
     </>
   );
 }

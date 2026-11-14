@@ -17,6 +17,7 @@ import { DOORS_SECTIONS } from "../content/doors";
 import { KITCHEN_SECTIONS } from "../content/kitchen";
 import { REVIEWS_HEADINGS, REVIEWS_LIST, REVIEWS_LIST_DEFAULTS } from "../content/reviews";
 import { ARCHIVE_SECTIONS } from "../content/archives";
+import { CATEGORY_SECTIONS } from "../content/categories";
 import { LEGAL_SECTIONS } from "../content/legal";
 import { uploadCatalogImage } from "./db";
 
@@ -223,6 +224,7 @@ const TABS = [
   { key: "kitchen", label: "דף מטבחים" },
   { key: "reviews", label: "ביקורות" },
   { key: "archives", label: "חנות, סגנונות, שאלות ומאמרים" },
+  { key: "categories", label: "עמודי קטגוריה בחנות" },
   { key: "legal", label: "דפים משפטיים" },
   { key: "seo", label: "קידום בגוגל (SEO)" },
   { key: "settings", label: "מתג ראשי" },
@@ -260,6 +262,7 @@ export function SiteContentAdmin() {
         {tab === "doors" && <PageSections sections={DOORS_SECTIONS} />}
         {tab === "kitchen" && <PageSections sections={KITCHEN_SECTIONS} />}
         {tab === "archives" && <PageSections sections={ARCHIVE_SECTIONS} />}
+        {tab === "categories" && <PageSections sections={CATEGORY_SECTIONS} />}
         {tab === "legal" && <PageSections sections={LEGAL_SECTIONS} />}
         {tab === "reviews" && (
           <PageSections

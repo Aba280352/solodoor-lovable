@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
+import { CATEGORY_SLUGS, categoryHref } from "./categories";
 import { SITE, SITE_PAGES } from "./pages";
 import { fetchSiteContent, seoOverride } from "./site-content";
 
@@ -18,6 +19,8 @@ export async function buildSitemap(): Promise<string> {
     db.from("products").select("slug").limit(5000),
   ]);
   const urls: { url: string; lastmod?: string }[] = SITE_PAGES.filter((p) => !seoOverride(content, p.path).noindex).map((p) => ({ url: p.url }));
+  // The shop's category pages, each a landing page of its own (content/categories.ts).
+  for (const slug of CATEGORY_SLUGS) urls.push({ url: `${SITE}${categoryHref(slug)}` });
   for (const a of (articles.data ?? []) as { slug: string; updated_at: string | null }[]) {
     urls.push({ url: `${SITE}/${a.slug}`, lastmod: a.updated_at?.slice(0, 10) });
   }
