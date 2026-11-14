@@ -2,13 +2,13 @@
 //
 // The link's token is the only key: the table keeps its SHA-256, never the token itself. While the brief is a
 // draft every change is saved; once it is sent it is locked, and only the site owner can change it (in the
-// database, there is no write policy). Sending emails the owner through Resend when RESEND_API_KEY is set.
+// database, there is no write policy). Sending emails the business inbox (soloodoor@gmail.com, which Ido reads) through Resend when RESEND_API_KEY is set.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 import { ALL_QUESTIONS, cleanAnswers, isAnswered, otherKey, type BriefAnswers } from "@/components/solodoor/brief/questions";
 
 const BRIEF_ID = "solodoor";
-const NOTIFY_EMAIL = "barido101@gmail.com";
+const NOTIFY_EMAIL = "soloodoor@gmail.com";
 const FROM_EMAIL = "סולודור <onboarding@resend.dev>";
 const SITE = "https://solodoor.co.il";
 
