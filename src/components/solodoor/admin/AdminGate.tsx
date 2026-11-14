@@ -26,6 +26,7 @@ const NAV = [
   { to: "/admin/prices", label: "מחירים" },
   { to: "/admin/faq", label: "שאלות נפוצות" },
   { to: "/admin/content", label: "לשוניות" },
+  { to: "/admin/brief", label: "אפיון SEO" },
 ] as const;
 
 /** Lets the signed-in user replace their password (a new account starts with a temporary one). */
