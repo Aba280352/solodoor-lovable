@@ -38,6 +38,37 @@ const colorOf = (colors: string[] | null) =>
     .slice(0, 3)
     .join("/");
 
+// PVC rugs: the pattern, read from the rug's name (Google asks for colour, pattern and material in the description).
+const RUG_PATTERNS: [RegExp, string][] = [
+  [/פישבון/, "דוגמת פישבון"],
+  [/פרקט/, "מראה פרקט עץ"],
+  [/טרוורטין/, "מראה אבן טרוורטין"],
+  [/טרצו/, "מראה טרצו"],
+  [/שיש/, "מראה שיש"],
+  [/גיאומטרי/, "דוגמה גיאומטרית"],
+  [/דמקה/, "משבצות דמקה"],
+  [/פרסי/, "דוגמה פרסית"],
+  [/קלאסי/, "דוגמה קלאסית"],
+  [/עלים|טרופי/, "דוגמת עלים"],
+  [/דשא/, "מראה דשא"],
+  [/חמסה/, "הדפס חמסה"],
+  [/וולקאם/, "כיתוב Welcome"],
+  [/גולגולת/, "הדפס גולגולת"],
+  [/מבוך|סולמות|קלאס|גיבור|חיות|טנקים|קשת|עולם|אהבה/, "הדפס איורים צבעוני"],
+];
+const rugPattern = (title: string) => RUG_PATTERNS.find(([re]) => re.test(title))?.[1] ?? "הדפס דקורטיבי";
+const joinHe = (words: string[]) => (words.length > 1 ? `${words.slice(0, -1).join(", ")} ו${words[words.length - 1]}` : words[0] ?? "");
+function rugDescription(p: ProductRow): string {
+  const multi = (p.colors ?? []).includes("multi");
+  const colors = (p.colors ?? []).filter((c) => c !== "multi").map((c) => COLORS[c]).filter(Boolean);
+  const tone = colors.length ? ` בגוון ${joinHe(colors)}` : multi ? " בצבעים שונים" : "";
+  const where = /לכניסה/.test(p.title) ? "לכניסה לבית" : /למטבח/.test(p.title) ? "למטבח" : "למטבח, לכניסה ולכל חדר בבית";
+  return clean(
+    `${p.title}. שטיח מחומר PVC (ויניל)${tone}, ב${rugPattern(p.title)}. ` +
+      `שטיח דק ועמיד שאינו סופג נוזלים וקל לניקוי, מתאים ${where}, במגוון מידות.`,
+  );
+}
+
 interface ProductRow {
   handle: string;
   slug: string;
@@ -67,6 +98,7 @@ interface Item {
   type: string;
   material: string | null;
   color: string;
+  pattern?: string;
 }
 
 async function loadItems(): Promise<Item[]> {
@@ -127,11 +159,12 @@ async function loadItems(): Promise<Item[]> {
         ...common,
         id: p.handle,
         title: p.title,
-        description: clean(p.short_description),
+        description: rugDescription(p),
         link: `${SITE}/product/${p.slug}`,
         image: image(firstImage(p.handle)),
         price: p.base_price,
         type: "שטיח PVC",
+        pattern: rugPattern(p.title),
       });
     }
   }
@@ -165,6 +198,7 @@ export function buildFeed(): Promise<string> {
             tag("product_type", i.type) +
             tag("material", i.material) +
             tag("color", i.color) +
+            tag("pattern", i.pattern) +
             `    </item>\n`,
         )
         .join("") +
