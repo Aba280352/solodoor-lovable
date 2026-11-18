@@ -155,11 +155,11 @@ function ShareButtons({ url, title }: { url: string; title: string }) {
 }
 
 /** Four products of the shop category the article is about, with a link to the whole category. */
-function ArticleProducts({ surface }: { surface: string }) {
+function ArticleProducts({ surface, title }: { surface: string; title?: string }) {
   const { shop } = useShop();
   const [zoomed, setZoomed] = useState<Product | null>(null);
   const products = useMemo(() => (shop ? categoryCards(shop, surface, 4) : []), [shop, surface]);
-  const label = categoryLabel(surface) ?? "טפטים מהחנות";
+  const label = title ?? categoryLabel(surface) ?? "טפטים מהחנות";
   if (!products.length) return null;
   return (
     <aside aria-label={label} className="my-9 rounded-lg border border-border bg-card p-4 lg:p-6">
@@ -303,7 +303,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
             <div className="article-sections mt-7">
               {sections.map((section, i) => (
                 <div key={i}>
-                  {i === productsAt && <ArticleProducts surface={surface} />}
+                  {i === productsAt && <ArticleProducts surface={surface.key} title={surface.label} />}
                   {i === formAt && (
                     <div className="my-9">
                       <LeadCard article={article.title} />
@@ -312,7 +312,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
                   <div className="article-prose" dangerouslySetInnerHTML={{ __html: section }} />
                 </div>
               ))}
-              {productsAt < 0 && <ArticleProducts surface={surface} />}
+              {productsAt < 0 && <ArticleProducts surface={surface.key} title={surface.label} />}
             </div>
 
             {faq.length > 0 && <ArticleFaq items={faq} />}

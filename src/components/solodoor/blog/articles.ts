@@ -130,14 +130,21 @@ export function prepareContent(source: string): { html: string; toc: TocItem[]; 
 /** Splits the body before each h2, so blocks (products, the lead form) can sit between its sections. */
 export const splitSections = (html: string) => html.split(/(?=<h2[\s>])/).filter((s) => s.trim());
 
-/** The shop surface an article is about, read from its title and address; doors when nothing else matches. */
-export function articleSurface(article: Pick<Article, "title" | "slug">): string {
+/**
+ * The shop category an article's products come from, read from its title and address (first match wins, doors when
+ * nothing matches). Cabinets, furniture and bathroom units get the kitchen wallpapers (photographed on cabinet fronts)
+ * under their own label.
+ */
+export function articleSurface(article: Pick<Article, "title" | "slug">): { key: string; label?: string } {
   const text = `${article.title} ${decodeURIComponent(article.slug)}`.toLowerCase();
-  if (/שטיח|rug/.test(text)) return "pvc_rug";
-  if (/מקרר|makrer|mekarer|makarer|fridge/.test(text)) return "fridge";
-  if (/שיש|countertop|shayish/.test(text)) return "countertop";
-  if (/ארון חשמל|electric/.test(text)) return "electric-cabinet";
-  if (/מטבח|mitbach|mitbah|kitchen/.test(text)) return "kitchen";
-  if (/קיר|kir|wall|salon/.test(text)) return "wall";
-  return "door";
+  if (/שטיח|(^|[-\s])rugs?([-\s]|$)/.test(text)) return { key: "pvc_rug" };
+  if (/מקרר|makrer|mekarer|makarer|fridge/.test(text)) return { key: "fridge" };
+  if (/שיש|countertop|shayish/.test(text)) return { key: "countertop" };
+  if (/ארון חשמל|electric/.test(text)) return { key: "electric-cabinet" };
+  if (/דלתות מעוצבות|designed-door/.test(text)) return { key: "designed_door" };
+  if (/דלת|משקוף|door|delet|dlat|pladelet|mashkof/.test(text)) return { key: "door" };
+  if (/מטבח|mitbach|mitbah|kitchen/.test(text)) return { key: "kitchen" };
+  if (/רהיט|ארון|אמבטיה|רחצה|closet|furniture|rahit|aron|ambatia/.test(text)) return { key: "kitchen", label: "טפטים לארונות ורהיטים" };
+  if (/קיר|kirot|salon|wall/.test(text)) return { key: "wall" };
+  return { key: "door" };
 }
