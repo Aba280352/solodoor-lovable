@@ -155,10 +155,10 @@ function ShareButtons({ url, title }: { url: string; title: string }) {
 }
 
 /** Four products of the shop category the article is about, with a link to the whole category. */
-function ArticleProducts({ surface, title }: { surface: string; title?: string }) {
+function ArticleProducts({ surface, title, count = 4 }: { surface: string; title?: string; count?: number }) {
   const { shop } = useShop();
   const [zoomed, setZoomed] = useState<Product | null>(null);
-  const products = useMemo(() => (shop ? categoryCards(shop, surface, 4) : []), [shop, surface]);
+  const products = useMemo(() => (shop ? categoryCards(shop, surface, count) : []), [shop, surface, count]);
   const label = title ?? categoryLabel(surface) ?? "טפטים מהחנות";
   if (!products.length) return null;
   return (
@@ -224,6 +224,8 @@ export function BlogPost({ article, related }: BlogPostProps) {
   const sections = splitSections(html);
   const productsAt = sections.length > 2 ? Math.ceil(sections.length / 2) : -1;
   const formAt = sections.length > 3 ? sections.length - 1 : -1;
+  // Sales articles carry a hidden marker (data-products="8") and get two rows of eight products instead of four.
+  const productCount = article.content_html.includes('data-products="8"') ? 8 : 4;
   const minutes = readingMinutes(article.content_html);
   const url = articleUrl(article.slug);
   const updated = article.updated_at.slice(0, 10) !== article.published_at.slice(0, 10);
@@ -303,7 +305,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
             <div className="article-sections mt-7">
               {sections.map((section, i) => (
                 <div key={i}>
-                  {i === productsAt && <ArticleProducts surface={surface.key} title={surface.label} />}
+                  {i === productsAt && <ArticleProducts surface={surface.key} title={surface.label} count={productCount} />}
                   {i === formAt && (
                     <div className="my-9">
                       <LeadCard article={article.title} />
@@ -312,7 +314,7 @@ export function BlogPost({ article, related }: BlogPostProps) {
                   <div className="article-prose" dangerouslySetInnerHTML={{ __html: section }} />
                 </div>
               ))}
-              {productsAt < 0 && <ArticleProducts surface={surface.key} title={surface.label} />}
+              {productsAt < 0 && <ArticleProducts surface={surface.key} title={surface.label} count={productCount} />}
             </div>
 
             {faq.length > 0 && <ArticleFaq items={faq} />}
