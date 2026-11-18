@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,26 @@ import { Icon } from "../Icon";
 import { GOOGLE_MARK } from "../data";
 import { business, phoneHref } from "../content/business";
 import { Container, CoverImage, Pill } from "../primitives";
+import { ProductCard, ProductZoomDialog } from "../ProductCard";
+import type { Product } from "../data";
+import { categoryCards, categoryLabel } from "../shop/featured";
+import { useShop } from "../shop/useShop";
 import { ArticleCard } from "./ArticleCard";
-import { AUTHOR, articleImage, articleUrl, formatDate, prepareContent, readingMinutes, type Article, type ArticleSummary, type TocItem } from "./articles";
+import {
+  AUTHOR,
+  FAQ_ID,
+  articleImage,
+  articleSurface,
+  articleUrl,
+  formatDate,
+  prepareContent,
+  readingMinutes,
+  splitSections,
+  type Article,
+  type ArticleSummary,
+  type FaqItem,
+  type TocItem,
+} from "./articles";
 import { whatsappHref } from "../whatsapp";
 import { formValues, submitLead } from "../leads";
 
@@ -75,7 +93,7 @@ function LeadCard({ article }: { article: string }) {
     }
   };
   return (
-    <div className="rounded-lg bg-foreground px-5 py-6 text-right text-background lg:px-6 lg:py-7">
+    <div className="rounded-lg bg-secondary px-5 py-6 text-right text-secondary-foreground lg:px-6 lg:py-7">
       <span className="block fs-22 leading-[1.2] font-bold lg:fs-24">צריכים הצעת מחיר?</span>
       <span className="mt-2 block fs-16 leading-[1.6] font-light">השאירו שם וטלפון ונחזור אליכם עם ייעוץ חינם.</span>
       {sent ? (
@@ -136,10 +154,76 @@ function ShareButtons({ url, title }: { url: string; title: string }) {
   );
 }
 
+/** Four products of the shop category the article is about, with a link to the whole category. */
+function ArticleProducts({ surface }: { surface: string }) {
+  const { shop } = useShop();
+  const [zoomed, setZoomed] = useState<Product | null>(null);
+  const products = useMemo(() => (shop ? categoryCards(shop, surface, 4) : []), [shop, surface]);
+  const label = categoryLabel(surface) ?? "טפטים מהחנות";
+  if (!products.length) return null;
+  return (
+    <aside aria-label={label} className="my-9 rounded-lg border border-border bg-card p-4 lg:p-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <span className="fs-20 leading-[1.2] font-bold text-foreground lg:fs-24">{label}: עיצובים מהחנות</span>
+        <Link to="/חנות" search={{ cat: surface }} className="inline-flex items-center gap-2 fs-15 font-semibold text-foreground underline-offset-4 hover:underline">
+          <span>לכל העיצובים</span>
+          <Icon name="ArrowLeft" size={14} />
+        </Link>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {products.map((product) => (
+          <ProductCard key={product.name} product={product} onZoom={setZoomed} mediaClassName="h-36 lg:h-44" />
+        ))}
+      </div>
+      <ProductZoomDialog product={zoomed} label={label} onClose={() => setZoomed(null)} />
+    </aside>
+  );
+}
+
+/** The article's questions as an accordion; the same questions go to the page's FAQPage schema. */
+function ArticleFaq({ items }: { items: FaqItem[] }) {
+  const [open, setOpen] = useState(0);
+  return (
+    <section aria-labelledby={FAQ_ID} className="mt-10">
+      <h2 id={FAQ_ID} className="scroll-mt-24 fs-26 leading-[1.2] font-bold text-foreground lg:fs-30">
+        שאלות נפוצות
+      </h2>
+      <div className="mt-5 flex flex-col gap-3">
+        {items.map((item, i) => {
+          const isOpen = open === i;
+          return (
+            <div key={i} className="overflow-hidden rounded-lg border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground">
+              <h3>
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  onClick={() => setOpen(isOpen ? -1 : i)}
+                  className="flex w-full cursor-pointer items-center gap-4 px-5 py-4 text-right lg:px-6 lg:py-5"
+                >
+                  <span className="flex-auto fs-17 leading-[1.4] font-semibold text-foreground lg:fs-18">{item.q}</span>
+                  <span className="inline-flex size-8 flex-none items-center justify-center rounded-full border border-foreground text-foreground">
+                    <Icon name={isOpen ? "Minus" : "Plus"} size={14} />
+                  </span>
+                </button>
+              </h3>
+              <div hidden={!isOpen} className="article-prose px-5 pb-5 lg:px-6 lg:pb-6" dangerouslySetInnerHTML={{ __html: item.a }} />
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 /** A single article: hero, the article with its sidebar, then more articles. */
 export function BlogPost({ article, related }: BlogPostProps) {
   const image = articleImage(article.featured_image);
-  const { html, toc } = prepareContent(article.content_html);
+  const { html, toc, faq } = prepareContent(article.content_html);
+  const surface = articleSurface(article);
+  // Products sit in the middle of the article, the lead form before its last section (usually the summary).
+  const sections = splitSections(html);
+  const productsAt = sections.length > 2 ? Math.ceil(sections.length / 2) : -1;
+  const formAt = sections.length > 3 ? sections.length - 1 : -1;
   const minutes = readingMinutes(article.content_html);
   const url = articleUrl(article.slug);
   const updated = article.updated_at.slice(0, 10) !== article.published_at.slice(0, 10);
@@ -215,8 +299,23 @@ export function BlogPost({ article, related }: BlogPostProps) {
               </p>
             )}
 
-            {/* The article body, exactly as published on the old site. */}
-            <div className="article-prose mt-7" dangerouslySetInnerHTML={{ __html: html }} />
+            {/* The article body as written, with the category's products and the lead form between its sections. */}
+            <div className="article-sections mt-7">
+              {sections.map((section, i) => (
+                <div key={i}>
+                  {i === productsAt && <ArticleProducts surface={surface} />}
+                  {i === formAt && (
+                    <div className="my-9">
+                      <LeadCard article={article.title} />
+                    </div>
+                  )}
+                  <div className="article-prose" dangerouslySetInnerHTML={{ __html: section }} />
+                </div>
+              ))}
+              {productsAt < 0 && <ArticleProducts surface={surface} />}
+            </div>
+
+            {faq.length > 0 && <ArticleFaq items={faq} />}
 
             <div className="mt-10 flex items-start gap-4 rounded-lg border border-border bg-card p-5 lg:items-center lg:p-6">
               <span className="inline-flex size-14 flex-none items-center justify-center rounded-full bg-secondary text-secondary-foreground">
@@ -258,7 +357,10 @@ export function BlogPost({ article, related }: BlogPostProps) {
           </article>
 
           <aside className="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start">
-            <LeadCard article={article.title} />
+            {/* On phones the form already sits inside the article. */}
+            <div className={cn(formAt >= 0 && "hidden lg:block")}>
+              <LeadCard article={article.title} />
+            </div>
             <div className="rounded-lg border border-border bg-card px-5 py-5 text-right lg:px-6">
               <span className="block fs-18 font-bold text-foreground">מה אפשר לחדש?</span>
               <ul className="mt-3 flex flex-col">

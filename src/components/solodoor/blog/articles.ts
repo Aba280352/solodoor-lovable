@@ -79,8 +79,43 @@ const stripTags = (html: string) =>
 
 export const readingMinutes = (html: string) => Math.max(1, Math.round(stripTags(html).split(/\s+/).length / 200));
 
+export interface FaqItem {
+  q: string;
+  /** The answer as HTML (one or more paragraphs). */
+  a: string;
+}
+
+export const FAQ_ID = "faq";
+const FAQ_HEADING = /<h2[^>]*>\s*שאלות נפוצות\s*<\/h2>/;
+
+/**
+ * The article's FAQ: an h2 "שאלות נפוצות" followed by h3 questions, each with its answer paragraphs.
+ * It is taken out of the body (the page shows it as an accordion, with FAQPage schema); the section ends at the next h2.
+ */
+export function extractFaq(html: string): { html: string; faq: FaqItem[] } {
+  const start = html.search(FAQ_HEADING);
+  if (start < 0) return { html, faq: [] };
+  const afterHeading = html.slice(start).replace(FAQ_HEADING, "");
+  const next = afterHeading.search(/<h2[\s>]/);
+  const section = next < 0 ? afterHeading : afterHeading.slice(0, next);
+  const rest = next < 0 ? "" : afterHeading.slice(next);
+  const faq: FaqItem[] = [];
+  for (const part of section.split(/(?=<h3[\s>])/)) {
+    const m = part.match(/<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*)/);
+    if (!m) continue;
+    const q = stripTags(m[1]);
+    const a = m[2].trim();
+    if (q && stripTags(a)) faq.push({ q, a });
+  }
+  if (!faq.length) return { html, faq: [] };
+  return { html: html.slice(0, start) + rest, faq };
+}
+
+export const faqAnswerText = (a: string) => stripTags(a.replace(/<\/p>\s*<p[^>]*>/g, " ")).replace(/\s+/g, " ");
+
 /** Gives every h2/h3 an id for the table of contents, without touching anything else in the article. */
-export function prepareContent(html: string): { html: string; toc: TocItem[] } {
+export function prepareContent(source: string): { html: string; toc: TocItem[]; faq: FaqItem[] } {
+  const { html, faq } = extractFaq(source);
   const toc: TocItem[] = [];
   const prepared = html.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/g, (match, level, attrs, inner) => {
     if (/\sid=/.test(attrs)) return match;
@@ -88,5 +123,21 @@ export function prepareContent(html: string): { html: string; toc: TocItem[] } {
     toc.push({ id, level: Number(level) as 2 | 3, text: stripTags(inner) });
     return `<h${level}${attrs} id="${id}">${inner}</h${level}>`;
   });
-  return { html: prepared, toc };
+  if (faq.length) toc.push({ id: FAQ_ID, level: 2, text: "שאלות נפוצות" });
+  return { html: prepared, toc, faq };
+}
+
+/** Splits the body before each h2, so blocks (products, the lead form) can sit between its sections. */
+export const splitSections = (html: string) => html.split(/(?=<h2[\s>])/).filter((s) => s.trim());
+
+/** The shop surface an article is about, read from its title and address; doors when nothing else matches. */
+export function articleSurface(article: Pick<Article, "title" | "slug">): string {
+  const text = `${article.title} ${decodeURIComponent(article.slug)}`.toLowerCase();
+  if (/שטיח|rug/.test(text)) return "pvc_rug";
+  if (/מקרר|makrer|mekarer|makarer|fridge/.test(text)) return "fridge";
+  if (/שיש|countertop|shayish/.test(text)) return "countertop";
+  if (/ארון חשמל|electric/.test(text)) return "electric-cabinet";
+  if (/מטבח|mitbach|mitbah|kitchen/.test(text)) return "kitchen";
+  if (/קיר|kir|wall|salon/.test(text)) return "wall";
+  return "door";
 }

@@ -40,17 +40,21 @@ const BEST_SELLER_TABS: [string, string][] = [
   ["pvc_rug", "שטיחי PVC"],
 ];
 
+/** Cards for one shop category: a surface (wallpapers photographed on it) or a product type (designed doors, PVC rugs). */
+export function categoryCards(shop: ShopData, key: string, count = 4): Product[] {
+  const category = categoriesFor(shop.applications).find((c) => c.key === key);
+  if (!category) return [];
+  const application = shop.applications.find((a) => a.slug === key);
+  const items = category.kind === "type" ? shop.items.filter((i) => i.product_type === key && i.cover) : wallpapersFor(shop, key);
+  return items.slice(0, count).map((item) => productCard(shop, item, application));
+}
+
+/** The best-sellers label of a category, e.g. "טפט למטבח". */
+export const categoryLabel = (key: string) => BEST_SELLER_TABS.find(([k]) => k === key)?.[1];
+
 export function bestSellerTabs(shop: ShopData, perTab = 4): { tab: string; items: Product[] }[] {
-  const categories = categoriesFor(shop.applications);
   return BEST_SELLER_TABS.flatMap(([key, label]) => {
-    const category = categories.find((c) => c.key === key);
-    if (!category) return [];
-    const application = shop.applications.find((a) => a.slug === key);
-    const items =
-      category.kind === "type"
-        ? shop.items.filter((i) => i.product_type === key && i.cover)
-        : wallpapersFor(shop, key);
-    const picked = items.slice(0, perTab).map((item) => productCard(shop, item, application));
+    const picked = categoryCards(shop, key, perTab);
     return picked.length ? [{ tab: label, items: picked }] : [];
   });
 }

@@ -269,6 +269,9 @@
   font-weight: 700;
 }
 .article-prose h2:first-child, .article-prose h3:first-child { margin-top: 0; }
+/* The body is split into sections (products and the lead form sit between them): later sections keep the h2 gap, at the h2 font size. */
+.article-sections > div + div > .article-prose > h2:first-child { margin-top: calc(3.5rem * var(--a11y-text, 1)); }
+.article-sections aside + .article-prose > h2:first-child, .article-sections .my-9 + .article-prose > h2:first-child { margin-top: 0; }
 .article-prose a {
   color: var(--color-clay);
   text-decoration: underline;

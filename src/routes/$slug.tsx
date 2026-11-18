@@ -4,7 +4,7 @@ import { encodeTarget, oldSiteRedirect } from "@/components/solodoor/content/old
 
 import { PageShell } from "@/components/solodoor/PageShell";
 import { BlogPost } from "@/components/solodoor/blog/BlogPost";
-import { AUTHOR, SITE, articleImage, articleUrl, fetchArticle, fetchLatestArticles } from "@/components/solodoor/blog/articles";
+import { AUTHOR, SITE, articleImage, articleUrl, extractFaq, faqAnswerText, fetchArticle, fetchLatestArticles } from "@/components/solodoor/blog/articles";
 
 // Articles live at the site root, exactly like on the old site (solodoor.co.il/<slug>).
 // Fixed pages are matched first; an old-site address (/thanks, /feed...) moves to its new page; anything else is a 404.
@@ -26,6 +26,7 @@ export const Route = createFileRoute("/$slug")({
     const description = article.meta_description ?? article.excerpt ?? "";
     const url = articleUrl(article.slug);
     const image = article.featured_image ? `${SITE}${articleImage(article.featured_image)}` : undefined;
+    const { faq } = extractFaq(article.content_html);
     return {
       meta: [
         { title },
@@ -67,6 +68,19 @@ export const Route = createFileRoute("/$slug")({
                   { "@type": "ListItem", position: 3, name: article.title, item: url },
                 ],
               },
+              ...(faq.length
+                ? [
+                    {
+                      "@type": "FAQPage",
+                      "@id": `${url}#faq`,
+                      mainEntity: faq.map((item) => ({
+                        "@type": "Question",
+                        name: item.q,
+                        acceptedAnswer: { "@type": "Answer", text: faqAnswerText(item.a) },
+                      })),
+                    },
+                  ]
+                : []),
             ],
           }),
         },
