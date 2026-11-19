@@ -26,8 +26,8 @@ export function Stars({ className }: { className?: string }) {
   );
 }
 
-/** Collapsed height of a review's text in the carousel: six lines, so every card is exactly as tall as the next. */
-const CLAMP = "12rem";
+/** Collapsed height of a review's text in the carousel: exactly six lines (1.8 line height), so every card is exactly as tall as the next. */
+const CLAMP = "10.8em";
 
 export function ReviewCard({ review, className, collapsible = false }: { review: Review; className?: string; collapsible?: boolean }) {
   const f = (name: string) => `items.${review.i}.${name}`;
@@ -54,15 +54,15 @@ export function ReviewCard({ review, className, collapsible = false }: { review:
       className={cn("flex min-h-72.5 w-72 flex-none flex-col gap-4 rounded-[0.75rem] border border-border bg-card px-6 pt-7 pb-8 shadow-review lg:w-95 lg:px-7.5", className)}
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <span
             className="inline-flex size-12 flex-none items-center justify-center rounded-full fs-19 font-bold text-card"
             style={{ backgroundColor: review.color ?? REVIEW_COLORS[review.i % REVIEW_COLORS.length] }}
           >
             {review.name.charAt(0)}
           </span>
-          <span className="flex flex-col gap-0.5 text-right">
-            <span className="fs-16 font-semibold text-foreground"><EF f={f("name")}>{review.name}</EF></span>
+          <span className={cn("flex flex-col gap-0.5 text-right", collapsible && "min-w-0")}>
+            <span className={cn("fs-16 font-semibold text-foreground", collapsible && "truncate")} title={collapsible ? review.name : undefined}><EF f={f("name")}>{review.name}</EF></span>
             <span dir="ltr" className="text-right fs-15 text-foreground">
               <EF f={f("date")}>{review.date}</EF>
             </span>
@@ -75,7 +75,7 @@ export function ReviewCard({ review, className, collapsible = false }: { review:
         <div className="flex flex-col">
           <div
             ref={text}
-            className="relative overflow-hidden"
+            className="relative overflow-hidden fs-18 leading-[1.8]"
             style={{ height: open ? full : CLAMP, transition: "height 400ms cubic-bezier(0.2, 0.8, 0.2, 1)" }}
           >
             <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
