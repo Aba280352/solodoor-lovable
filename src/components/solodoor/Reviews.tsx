@@ -28,7 +28,7 @@ export function Stars({ className }: { className?: string }) {
 /** Collapsed height of a review's text in the carousel: exactly six lines (1.8 line height), so every card is exactly as tall as the next. */
 const CLAMP = "10.8em";
 
-export function ReviewCard({ review, className, collapsible = false }: { review: Review; className?: string; collapsible?: boolean }) {
+export function ReviewCard({ review, className, collapsible = false, flat = false }: { review: Review; className?: string; collapsible?: boolean; flat?: boolean }) {
   const f = (name: string) => `items.${review.i}.${name}`;
   const [open, setOpen] = useState(false);
   const [long, setLong] = useState(false);
@@ -50,7 +50,7 @@ export function ReviewCard({ review, className, collapsible = false }: { review:
   return (
     <div
       dir="rtl"
-      className={cn("flex min-h-72.5 w-72 flex-none flex-col gap-4 rounded-[0.75rem] border border-border bg-card px-6 pt-7 pb-8 shadow-review lg:w-95 lg:px-7.5", className)}
+      className={cn("flex min-h-72.5 w-72 flex-none flex-col gap-4 rounded-[0.75rem] border border-border bg-card px-6 pt-7 pb-8 lg:w-95 lg:px-7.5", !(collapsible || flat) && "shadow-review", className)}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">

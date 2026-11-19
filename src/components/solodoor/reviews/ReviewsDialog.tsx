@@ -48,7 +48,7 @@ export function ReviewsDialog({ className }: { className?: string }) {
         </div>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 py-5 lg:px-8 lg:py-6">
           {items.map((review, i) => (
-            <ReviewCard key={i} review={{ ...review, i }} className="min-h-0 w-full lg:w-full" />
+            <ReviewCard flat key={i} review={{ ...review, i }} className="min-h-0 w-full lg:w-full" />
           ))}
         </div>
       </DialogContent>
