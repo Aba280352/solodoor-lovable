@@ -30,8 +30,8 @@ export function ArticleCard({ article, priority = false }: { article: ArticleSum
         <time dateTime={article.published_at} className="fs-14 font-medium tracking-[0.04em] text-foreground/70">
           {formatDate(article.published_at)}
         </time>
-        <h3 className="fs-18 leading-[1.4] font-semibold text-foreground lg:fs-20">{article.title}</h3>
-        {article.excerpt && <p className="flex-auto fs-16 leading-[1.75] text-foreground">{article.excerpt}</p>}
+        <h3 className="line-clamp-2 min-h-[2.8em] fs-18 leading-[1.4] font-semibold text-foreground lg:fs-20">{article.title}</h3>
+        {article.excerpt && <p className="line-clamp-3 min-h-[5.25em] flex-auto fs-16 leading-[1.75] text-foreground">{article.excerpt}</p>}
         <span className="inline-flex items-center gap-2 fs-16 font-medium text-clay transition-[gap,color] duration-240 ease-standard group-hover:gap-3.5 group-hover:text-foreground">
           <span>קרא עוד</span>
           <Icon name="AngleLeft" size={13} />
