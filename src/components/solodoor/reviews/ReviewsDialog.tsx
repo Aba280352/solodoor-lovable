@@ -19,7 +19,7 @@ export function ReviewsDialog({ className }: { className?: string }) {
         <button
           type="button"
           className={cn(
-            "inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-full border-0 bg-secondary px-9 py-3.5 fs-16 font-bold text-secondary-foreground shadow-review transition-transform duration-240 ease-standard hover:scale-103 lg:fs-17",
+            "inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-[5px] border-0 bg-secondary px-9 py-3.5 fs-16 font-bold text-secondary-foreground shadow-review transition-transform duration-240 ease-standard hover:scale-103 lg:fs-17",
             className,
           )}
         >
