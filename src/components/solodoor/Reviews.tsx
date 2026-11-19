@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
-import { Icon } from "./Icon";
 import { Container, Pill } from "./primitives";
 import { GOOGLE_MARK, GOOGLE_WORDMARK } from "./data";
 import { business } from "./content/business";
 import { EF } from "./content/layout";
 import { REVIEWS_HEADINGS, REVIEWS_LIST, REVIEWS_LIST_DEFAULTS, REVIEW_COLORS, type ReviewsKey } from "./content/reviews";
 import { useSection } from "./content/sections";
+import { ReviewsDialog } from "./reviews/ReviewsDialog";
 
 /** A review and its place in the admin's list (the editor's mark). */
 type Review = { name: string; date: string; text: string; color?: string; i: number };
@@ -160,13 +159,7 @@ export function Reviews({ page = "home.reviews" }: { page?: ReviewsKey }) {
 
       <Container>
         <div className="mt-9 flex justify-center lg:mt-12">
-          <Link
-            to="/ביקורות"
-            className="inline-flex items-center gap-2 border-b border-primary pb-0.5 fs-17 font-medium text-foreground transition-[gap] duration-240 ease-standard hover:gap-3.5"
-          >
-            <span>לכל הביקורות</span>
-            <Icon name="AngleLeft" size={13} />
-          </Link>
+          <ReviewsDialog />
         </div>
       </Container>
     </section>

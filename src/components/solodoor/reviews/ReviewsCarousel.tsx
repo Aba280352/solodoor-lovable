@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
 import { Icon } from "../Icon";
 import { motionStopped } from "../accessibility/a11y";
 import { ReviewCard } from "../Reviews";
+import { ReviewsDialog } from "./ReviewsDialog";
 import { REVIEWS_LIST, REVIEWS_LIST_DEFAULTS } from "../content/reviews";
 import { useSection } from "../content/sections";
 
@@ -44,14 +44,8 @@ export function ReviewsCarousel({ className }: { className?: string }) {
           </div>
         ))}
       </div>
-      <div className="mt-2 flex justify-center">
-        <Link
-          to="/ביקורות"
-          className="inline-flex items-center gap-2 border-b border-primary pb-0.5 fs-15 font-medium text-foreground transition-[gap] duration-240 ease-standard hover:gap-3.5 lg:fs-16"
-        >
-          <span>לכל הביקורות</span>
-          <Icon name="AngleLeft" size={12} />
-        </Link>
+      <div className="mt-4 flex justify-center">
+        <ReviewsDialog />
       </div>
     </div>
   );
