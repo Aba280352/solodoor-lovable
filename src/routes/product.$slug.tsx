@@ -44,7 +44,44 @@ export const Route = createFileRoute("/product/$slug")({
         description,
         image,
         brand: { "@type": "Brand", name: "SOLODOOR" },
-        offers: { "@type": "Offer", url, priceCurrency: "ILS", price: Number(price), availability: "https://schema.org/InStock" },
+        sku: product.slug,
+        offers: {
+          "@type": "Offer",
+          url,
+          priceCurrency: "ILS",
+          price: Number(price),
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+          seller: { "@id": `${SITE}/#organization` },
+          // Home delivery 55 ILS anywhere in Israel, arriving within 7 business days.
+          shippingDetails: {
+            "@type": "OfferShippingDetails",
+            shippingRate: { "@type": "MonetaryAmount", value: 55, currency: "ILS" },
+            shippingDestination: { "@type": "DefinedRegion", addressCountry: "IL" },
+            deliveryTime: {
+              "@type": "ShippingDeliveryTime",
+              handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 2, unitCode: "DAY" },
+              transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 5, unitCode: "DAY" },
+            },
+          },
+          // Terms: wallpaper cut to size is made to order and cannot be returned; other items (rugs)
+          // can be cancelled within 14 days and returned by the customer.
+          hasMerchantReturnPolicy:
+            product.product_type === "pvc_rug"
+              ? {
+                  "@type": "MerchantReturnPolicy",
+                  applicableCountry: "IL",
+                  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  merchantReturnDays: 14,
+                  returnMethod: "https://schema.org/ReturnByMail",
+                  returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+                }
+              : {
+                  "@type": "MerchantReturnPolicy",
+                  applicableCountry: "IL",
+                  returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+                },
+        },
       },
       {
         "@context": "https://schema.org",

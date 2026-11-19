@@ -54,18 +54,34 @@ export const Route = createFileRoute("/חנות")({
         { property: "og:type", content: "website" },
       ],
       links: [{ rel: "canonical", href: `${SITE}/חנות` + (params ? `?${decodeURIComponent(params)}` : "") }],
-      scripts: faq.length
-        ? [
-            {
-              type: "application/ld+json",
-              children: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "FAQPage",
-                mainEntity: faq.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
-              }),
-            },
-          ]
-        : [],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "בית", item: `${SITE}/` },
+              { "@type": "ListItem", position: 2, name: "חנות", item: `${SITE}/חנות` },
+              ...(landing
+                ? [{ "@type": "ListItem", position: 3, name: title, item: `${SITE}/חנות?${decodeURIComponent(params)}` }]
+                : []),
+            ],
+          }),
+        },
+        ...(faq.length
+          ? [
+              {
+                type: "application/ld+json",
+                children: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: faq.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+                }),
+              },
+            ]
+          : []),
+      ],
     };
     // The admin's SEO override is for the shop itself; filtered views keep their computed titles.
     return params ? head : withSeo(rootContent(matches), "/חנות", head);

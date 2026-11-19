@@ -26,6 +26,34 @@ export const Route = createFileRoute("/ציפוי-דלתות")({
         { property: "og:type", content: "website" },
       ],
       links: [{ rel: "canonical", href: "https://solodoor.co.il/ציפוי-דלתות" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "בית", item: "https://solodoor.co.il/" },
+              { "@type": "ListItem", position: 2, name: "ציפוי דלתות", item: "https://solodoor.co.il/ציפוי-דלתות" },
+            ],
+          }),
+        },
+        {
+          type: "application/ld+json",
+          // Door cladding is the one service with installation: 250 ILS per side self order, up to 990 installed both sides.
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: "ציפוי דלתות",
+            serviceType: "ציפוי דלת פלדלת ודלתות פנים",
+            description: doorsSeo.description,
+            url: "https://solodoor.co.il/ציפוי-דלתות",
+            provider: { "@id": "https://solodoor.co.il/#organization" },
+            areaServed: { "@type": "Country", name: "ישראל" },
+            offers: { "@type": "AggregateOffer", priceCurrency: "ILS", lowPrice: 250, highPrice: 990, offerCount: 4 },
+          }),
+        },
+      ],
     }),
   component: DoorsPage,
 });
