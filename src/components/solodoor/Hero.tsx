@@ -63,7 +63,7 @@ export function Hero() {
         <div className="flex min-w-0 flex-col items-center justify-center px-5 pt-5 pb-6 text-center lg:px-22 lg:py-12">
           <Pill className="flex-none tracking-[0.16em] whitespace-nowrap"><EF f={`slides.~${current.tag}.tag`}>{shownLabel(current, "tag")}</EF></Pill>
 
-          <h1 className="sr-only">טפט וציפוי לדלתות, מטבחים ומשטחים, בלי לפרק כלום</h1>
+          <h1 className="sr-only">טפט לדלת וציפוי למטבח ולמשטחים, בלי לפרק כלום</h1>
           <p className="mt-3 max-w-[24ch] fs-30 leading-[1.12] font-bold tracking-[-0.02em] text-foreground lg:mt-6.5 lg:fs-54">
             <span className="block"><EF f={`slides.~${current.tag}.l1`}>{current.l1}</EF></span>
             <span className="block"><EF f={`slides.~${current.tag}.l2`}>{current.l2}</EF></span>
