@@ -187,7 +187,7 @@ export function ArticleEditor({ id }: { id: string }) {
     }
     const savedId = (data as { id: number }[])[0]?.id ?? draft.id;
     setDraft({ ...draft, ...row, id: savedId });
-    setStatus(row.is_published ? "נשמר ופורסם." : "נשמר כטיוטה.");
+    setStatus(row.is_published ? (new Date(row.published_at) > new Date() ? "נשמר ויעלה באתר במועד שנקבע." : "נשמר ופורסם.") : "נשמר כטיוטה.");
     if (!draft.id && savedId) navigate({ to: "/admin/$id", params: { id: String(savedId) }, replace: true });
   };
 
@@ -282,7 +282,7 @@ export function ArticleEditor({ id }: { id: string }) {
             </Field>
             <label className="flex cursor-pointer items-center gap-3">
               <input type="checkbox" checked={draft.is_published} onChange={(e) => set("is_published", e.target.checked)} className="size-4 accent-[var(--color-secondary)]" />
-              <span className="fs-15 font-semibold text-foreground">מפורסם באתר</span>
+              <span className="fs-15 font-semibold text-foreground">{draft.is_published && new Date(draft.published_at) > new Date() ? "מתוזמן, יעלה באתר בתאריך שנקבע" : "מפורסם באתר"}</span>
             </label>
             {draft.id && (
               <button type="button" onClick={remove} className="inline-flex cursor-pointer items-center gap-2 self-start fs-14 font-medium text-clay">

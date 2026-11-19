@@ -31,7 +31,7 @@ export function ArticleList() {
           <h1 className="fs-28 font-bold text-foreground">מאמרים</h1>
           {articles && (
             <p className="mt-1 fs-15 text-foreground/70">
-              {articles.length} מאמרים, {articles.filter((a) => a.is_published).length} מפורסמים
+              {articles.length} מאמרים, {articles.filter((a) => a.is_published && new Date(a.published_at) <= new Date()).length} חיים באתר, {articles.filter((a) => a.is_published && new Date(a.published_at) > new Date()).length} מתוזמנים
             </p>
           )}
         </div>
@@ -76,10 +76,10 @@ export function ArticleList() {
                 <span
                   className={
                     "flex-none rounded-full px-3 py-1 fs-13 font-semibold " +
-                    (article.is_published ? "bg-secondary text-secondary-foreground" : "bg-muted text-foreground")
+                    (article.is_published ? (new Date(article.published_at) > new Date() ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground") : "bg-muted text-foreground")
                   }
                 >
-                  {article.is_published ? "מפורסם" : "טיוטה"}
+                  {article.is_published ? (new Date(article.published_at) > new Date() ? "מתוזמן" : "מפורסם") : "טיוטה"}
                 </span>
                 <Link to="/$slug" params={{ slug: article.slug }} target="_blank" aria-label="צפייה באתר" className="hidden flex-none text-foreground hover:text-clay lg:inline-flex">
                   <Icon name="Expand" size={16} />
