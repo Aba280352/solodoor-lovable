@@ -38,22 +38,22 @@ async function rows<T>(query: PromiseLike<{ data: unknown; error: { message: str
   return (data ?? []) as T[];
 }
 
-// Published articles, kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
+// Published articles (a published_at in the future means "scheduled", not shown yet), kept 60s at the edge when a page is rendered on the server (see lib/edge-cache).
 export const fetchArticles = () =>
   edgeCached("articles", 60, () =>
-    rows<ArticleSummary>(supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false })),
+    rows<ArticleSummary>(supabase.from("articles").select(SUMMARY).eq("is_published", true).lte("published_at", new Date().toISOString()).order("published_at", { ascending: false })),
   );
 
 export const fetchLatestArticles = (count: number) =>
   edgeCached(`articles_latest_${count}`, 60, () =>
     rows<ArticleSummary>(
-      supabase.from("articles").select(SUMMARY).eq("is_published", true).order("published_at", { ascending: false }).limit(count),
+      supabase.from("articles").select(SUMMARY).eq("is_published", true).lte("published_at", new Date().toISOString()).order("published_at", { ascending: false }).limit(count),
     ),
   );
 
 export function fetchArticle(slug: string): Promise<Article | null> {
   return edgeCached(`article_${slug}`, 60, async () => {
-    const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).limit(1));
+    const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).lte("published_at", new Date().toISOString()).limit(1));
     return article ?? null;
   });
 }

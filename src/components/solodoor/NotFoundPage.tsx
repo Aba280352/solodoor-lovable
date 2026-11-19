@@ -31,7 +31,7 @@ export function NotFoundPage() {
           </span>
           <h1 className="mt-4 fs-34 leading-[1.1] font-bold tracking-[-0.02em] text-balance text-foreground lg:fs-58">הדף שחיפשתם לא נמצא</h1>
           <p className="mt-4 max-w-[52ch] fs-18 leading-[1.7] text-pretty text-foreground lg:mt-5 lg:fs-20">
-            ייתכן שהקישור ישן או שהדף עבר מקום. אבל טוב שהגעתם: מעל 200 עיצובים מחכים לכם בחנות, ואנחנו כאן לעזור לבחור.
+            ייתכן שהקישור ישן או שהדף עבר מקום. אבל טוב שהגעתם: מעל 150 עיצובים מחכים לכם בחנות, ואנחנו כאן לעזור לבחור.
           </p>
 
           <div className="mt-8 grid w-full grid-cols-1 gap-3 sm:w-auto sm:grid-cols-2 lg:mt-10">

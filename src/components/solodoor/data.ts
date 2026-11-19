@@ -8,7 +8,7 @@ export const LOGO_SRC = `${import.meta.env.BASE_URL}images/logo.svg`;
 
 export const promoItems: { icon: IconName; label: string }[] = [
   { icon: "Truck", label: "שירות מצפון ועד דרום" },
-  { icon: "Palette", label: "מעל 200 עיצובים ייחודיים" },
+  { icon: "Palette", label: "מעל 150 עיצובים ייחודיים" },
   { icon: "ChatDots", label: "ייעוץ חינם וללא התחייבות" },
   { icon: "Brush", label: "התקנה מקצועית ומדויקת" },
 ];
@@ -61,7 +61,7 @@ export const heroSlides = [
 
 export const heroTrust: { icon: IconName; label: string }[] = [
   { icon: "ChatDots", label: "ייעוץ חינם וללא התחייבות" },
-  { icon: "LayerGroup", label: "מעל 200 עיצובים לבחירה" },
+  { icon: "LayerGroup", label: "מעל 150 עיצובים לבחירה" },
   { icon: "MapPin", label: "התקנה מקצועית בפריסה רחבה" },
 ];
 

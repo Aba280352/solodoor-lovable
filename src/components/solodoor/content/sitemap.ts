@@ -15,7 +15,7 @@ export async function buildSitemap(): Promise<string> {
   const db = supabase as unknown as SupabaseClient;
   const [content, articles, products] = await Promise.all([
     fetchSiteContent(),
-    db.from("articles").select("slug, updated_at").eq("is_published", true).limit(5000),
+    db.from("articles").select("slug, updated_at").eq("is_published", true).lte("published_at", new Date().toISOString()).limit(5000),
     db.from("products").select("slug").limit(5000),
   ]);
   const urls: { url: string; lastmod?: string }[] = SITE_PAGES.filter((p) => !seoOverride(content, p.path).noindex).map((p) => ({ url: p.url }));
