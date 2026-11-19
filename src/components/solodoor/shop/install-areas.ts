@@ -21,7 +21,7 @@ export const INSTALL_AREAS: InstallArea[] = [
 
 export const INSTALL_DAYS = 14;
 
-export const INSTALL_CITY_BAD = "צוות סולודור לא מתקין באזור זה, אבל ניתן להזמין את הטפט ללא התקנה.";
+export const INSTALL_CITY_BAD = "נא לפנות בטלפון (0548999961) לגבי הגעה לאזור זה, עדיין אפשר להזמין את הטפט ללא התקנה.";
 export const INSTALL_CITY_EMPTY = "יש לבחור עיר או יישוב להתקנה מהרשימה, או להסיר את ההתקנה מההזמנה.";
 export const INSTALL_CITY_UNKNOWN = "לא מצאנו את היישוב. התחילו להקליד ובחרו אותו מהרשימה.";
 
