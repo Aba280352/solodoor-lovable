@@ -37,9 +37,9 @@ export function Categories() {
                     <CoverImage {...mark(`items.~${cat.name}.variant`)} src={cat.variant} sizes="(min-width: 1024px) 34vw, 50vw" loading="lazy" alt={shownLabel(cat, "name")} className="opacity-0 transition-opacity duration-700 ease-standard group-hover:opacity-100" />
                   </div>
                   <div className="flex items-center justify-between gap-1.5 bg-card px-2.5 py-3 text-foreground transition-colors duration-420 ease-standard group-hover:bg-secondary group-hover:text-secondary-foreground lg:gap-4 lg:px-5 lg:py-4.5">
-                    <span className="min-w-0 text-[clamp(0.6875rem,3.4vw,0.9375rem)] font-medium whitespace-nowrap lg:fs-18">
+                    <h3 className="min-w-0 text-[clamp(0.6875rem,3.4vw,0.9375rem)] font-medium whitespace-nowrap lg:fs-18">
                       <EF f={`items.~${cat.name}.name`}>{shownLabel(cat, "name")}</EF>
-                    </span>
+                    </h3>
                     <span className="inline-flex size-6 flex-none items-center justify-center rounded-full border border-primary text-primary transition-[background-color,color,transform,border-color] duration-420 ease-standard group-hover:-translate-x-1.5 group-hover:border-background group-hover:bg-background group-hover:text-secondary lg:size-8 lg:[&_svg]:size-[0.9375rem]!">
                       <Icon name="ArrowLeft" size={12} />
                     </span>

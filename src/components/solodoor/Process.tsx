@@ -159,7 +159,11 @@ export function Process() {
               <span className="mt-6.5 inline-flex size-9.5 items-center justify-center rounded-full bg-primary fs-16 font-bold tracking-[0.04em] text-primary-foreground">
                 {String((i % processSteps.length) + 1).padStart(2, "0")}
               </span>
-              <span className="mt-5.5 fs-20 font-medium text-foreground"><EF f={`steps.${i % processSteps.length}.name`}>{step.name}</EF></span>
+              {i < processSteps.length ? (
+                <h3 className="mt-5.5 fs-20 font-medium text-foreground"><EF f={`steps.${i}.name`}>{step.name}</EF></h3>
+              ) : (
+                <span className="mt-5.5 fs-20 font-medium text-foreground"><EF f={`steps.${i % processSteps.length}.name`}>{step.name}</EF></span>
+              )}
               <span className="mt-2.5 fs-16 leading-[1.6] text-foreground"><EF f={`steps.${i % processSteps.length}.desc`}>{step.desc}</EF></span>
             </div>
           ))}

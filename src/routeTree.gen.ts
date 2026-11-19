@@ -14,9 +14,11 @@ import { Route as SplatRouteImport } from './routes/$'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as Char1489Char1497Char1511Char1493Char1512Char1493Char1514RouteImport } from './routes/ביקורות'
 import { Route as Char1495Char1504Char1493Char1514RouteImport } from './routes/חנות'
 import { Route as Char1502Char1488Char1502Char1512Char1497Char1501RouteImport } from './routes/מאמרים'
 import { Route as Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514RouteImport } from './routes/ציפוי-דלתות'
@@ -25,17 +27,20 @@ import { Route as Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char14
 import { Route as Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501RouteImport } from './routes/שטיחי-pvc-מעוצבים'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminIdRouteImport } from './routes/admin.$id'
+import { Route as AdminBriefRouteImport } from './routes/admin.brief'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminEditorRouteImport } from './routes/admin.editor'
 import { Route as AdminFaqRouteImport } from './routes/admin.faq'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminPricesRouteImport } from './routes/admin.prices'
 import { Route as AdminSiteRouteImport } from './routes/admin.site'
+import { Route as BriefTokenRouteImport } from './routes/brief.$token'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRouteImport } from './routes/טפט-לפי-סגנון.index'
 import { Route as Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRouteImport } from './routes/טפט-לפי-סגנון.$style'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin.products.index'
 import { Route as AdminProductsHandleRouteImport } from './routes/admin.products.$handle'
+import { Route as ApiPublicSeoBriefRouteImport } from './routes/api/public/seo-brief'
 import { Route as ApiPublicSubmitLeadRouteImport } from './routes/api/public/submit-lead'
 
 const IndexRoute = IndexRouteImport.update({
@@ -63,6 +68,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
+  id: '/feed.xml',
+  path: '/feed.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
@@ -78,6 +88,12 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route =
+  Char1489Char1497Char1511Char1493Char1512Char1493Char1514RouteImport.update({
+    id: '/ביקורות',
+    path: '/ביקורות',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char1495Char1504Char1493Char1514Route =
   Char1495Char1504Char1493Char1514RouteImport.update({
     id: '/חנות',
@@ -132,6 +148,11 @@ const AdminIdRoute = AdminIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBriefRoute = AdminBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/content',
   path: '/content',
@@ -161,6 +182,11 @@ const AdminSiteRoute = AdminSiteRouteImport.update({
   id: '/site',
   path: '/site',
   getParentRoute: () => AdminRoute,
+} as any)
+const BriefTokenRoute = BriefTokenRouteImport.update({
+  id: '/brief/$token',
+  path: '/brief/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
@@ -193,6 +219,11 @@ const AdminProductsHandleRoute = AdminProductsHandleRouteImport.update({
   path: '/products/$handle',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSeoBriefRoute = ApiPublicSeoBriefRouteImport.update({
+  id: '/api/public/seo-brief',
+  path: '/api/public/seo-brief',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSubmitLeadRoute = ApiPublicSubmitLeadRouteImport.update({
   id: '/api/public/submit-lead',
   path: '/api/public/submit-lead',
@@ -205,9 +236,11 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/feed.xml': typeof FeedDotxmlRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/ביקורות': typeof Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -215,17 +248,20 @@ export interface FileRoutesByFullPath {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/brief': typeof AdminBriefRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/admin/site': typeof AdminSiteRoute
+  '/brief/$token': typeof BriefTokenRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
   '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/seo-brief': typeof ApiPublicSeoBriefRoute
   '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
@@ -234,9 +270,11 @@ export interface FileRoutesByTo {
   '/$': typeof SplatRoute
   '/$slug': typeof SlugRoute
   '/accessibility': typeof AccessibilityRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/ביקורות': typeof Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -244,17 +282,20 @@ export interface FileRoutesByTo {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/brief': typeof AdminBriefRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/admin/site': typeof AdminSiteRoute
+  '/brief/$token': typeof BriefTokenRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin': typeof AdminIndexRoute
   '/טפט-לפי-סגנון': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/seo-brief': typeof ApiPublicSeoBriefRoute
   '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products': typeof AdminProductsIndexRoute
 }
@@ -265,9 +306,11 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/feed.xml': typeof FeedDotxmlRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/ביקורות': typeof Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route
   '/חנות': typeof Char1495Char1504Char1493Char1514Route
   '/מאמרים': typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   '/ציפוי-דלתות': typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
@@ -275,17 +318,20 @@ export interface FileRoutesById {
   '/שאלות-נפוצות': typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   '/שטיחי-pvc-מעוצבים': typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
   '/admin/$id': typeof AdminIdRoute
+  '/admin/brief': typeof AdminBriefRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/editor': typeof AdminEditorRoute
   '/admin/faq': typeof AdminFaqRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/prices': typeof AdminPricesRoute
   '/admin/site': typeof AdminSiteRoute
+  '/brief/$token': typeof BriefTokenRoute
   '/product/$slug': typeof ProductSlugRoute
   '/טפט-לפי-סגנון/$style': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   '/admin/': typeof AdminIndexRoute
   '/טפט-לפי-סגנון/': typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
   '/admin/products/$handle': typeof AdminProductsHandleRoute
+  '/api/public/seo-brief': typeof ApiPublicSeoBriefRoute
   '/api/public/submit-lead': typeof ApiPublicSubmitLeadRoute
   '/admin/products/': typeof AdminProductsIndexRoute
 }
@@ -297,9 +343,11 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/accessibility'
     | '/admin'
+    | '/feed.xml'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/terms'
+    | '/ביקורות'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -307,17 +355,20 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
+    | '/admin/brief'
     | '/admin/content'
     | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
     | '/admin/site'
+    | '/brief/$token'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin/'
     | '/טפט-לפי-סגנון/'
     | '/admin/products/$handle'
+    | '/api/public/seo-brief'
     | '/api/public/submit-lead'
     | '/admin/products/'
   fileRoutesByTo: FileRoutesByTo
@@ -326,9 +377,11 @@ export interface FileRouteTypes {
     | '/$'
     | '/$slug'
     | '/accessibility'
+    | '/feed.xml'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/terms'
+    | '/ביקורות'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -336,17 +389,20 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
+    | '/admin/brief'
     | '/admin/content'
     | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
     | '/admin/site'
+    | '/brief/$token'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin'
     | '/טפט-לפי-סגנון'
     | '/admin/products/$handle'
+    | '/api/public/seo-brief'
     | '/api/public/submit-lead'
     | '/admin/products'
   id:
@@ -356,9 +412,11 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/accessibility'
     | '/admin'
+    | '/feed.xml'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/terms'
+    | '/ביקורות'
     | '/חנות'
     | '/מאמרים'
     | '/ציפוי-דלתות'
@@ -366,17 +424,20 @@ export interface FileRouteTypes {
     | '/שאלות-נפוצות'
     | '/שטיחי-pvc-מעוצבים'
     | '/admin/$id'
+    | '/admin/brief'
     | '/admin/content'
     | '/admin/editor'
     | '/admin/faq'
     | '/admin/leads'
     | '/admin/prices'
     | '/admin/site'
+    | '/brief/$token'
     | '/product/$slug'
     | '/טפט-לפי-סגנון/$style'
     | '/admin/'
     | '/טפט-לפי-סגנון/'
     | '/admin/products/$handle'
+    | '/api/public/seo-brief'
     | '/api/public/submit-lead'
     | '/admin/products/'
   fileRoutesById: FileRoutesById
@@ -387,18 +448,22 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   AccessibilityRoute: typeof AccessibilityRoute
   AdminRoute: typeof AdminRouteWithChildren
+  FeedDotxmlRoute: typeof FeedDotxmlRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route: typeof Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route
   Char1495Char1504Char1493Char1514Route: typeof Char1495Char1504Char1493Char1514Route
   Char1502Char1488Char1502Char1512Char1497Char1501Route: typeof Char1502Char1488Char1502Char1512Char1497Char1501Route
   Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route: typeof Char1510Char1497Char1508Char1493Char1497Char1491Char1500Char1514Char1493Char1514Route
   Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route: typeof Char1510Char1497Char1508Char1493Char1497Char1502Char1496Char1489Char1495Char1497Char1501Route
   Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route: typeof Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route
   Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route: typeof Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route
+  BriefTokenRoute: typeof BriefTokenRoute
   ProductSlugRoute: typeof ProductSlugRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute: typeof Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute
+  ApiPublicSeoBriefRoute: typeof ApiPublicSeoBriefRoute
   ApiPublicSubmitLeadRoute: typeof ApiPublicSubmitLeadRoute
 }
 
@@ -439,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feed.xml': {
+      id: '/feed.xml'
+      path: '/feed.xml'
+      fullPath: '/feed.xml'
+      preLoaderRoute: typeof FeedDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-policy': {
       id: '/privacy-policy'
       path: '/privacy-policy'
@@ -458,6 +530,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ביקורות': {
+      id: '/ביקורות'
+      path: '/ביקורות'
+      fullPath: '/ביקורות'
+      preLoaderRoute: typeof Char1489Char1497Char1511Char1493Char1512Char1493Char1514RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/חנות': {
@@ -516,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/brief': {
+      id: '/admin/brief'
+      path: '/brief'
+      fullPath: '/admin/brief'
+      preLoaderRoute: typeof AdminBriefRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/content': {
       id: '/admin/content'
       path: '/content'
@@ -558,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSiteRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/brief/$token': {
+      id: '/brief/$token'
+      path: '/brief/$token'
+      fullPath: '/brief/$token'
+      preLoaderRoute: typeof BriefTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -593,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsHandleRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/seo-brief': {
+      id: '/api/public/seo-brief'
+      path: '/api/public/seo-brief'
+      fullPath: '/api/public/seo-brief'
+      preLoaderRoute: typeof ApiPublicSeoBriefRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/submit-lead': {
       id: '/api/public/submit-lead'
       path: '/api/public/submit-lead'
@@ -605,6 +705,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminIdRoute: typeof AdminIdRoute
+  AdminBriefRoute: typeof AdminBriefRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminEditorRoute: typeof AdminEditorRoute
   AdminFaqRoute: typeof AdminFaqRoute
@@ -618,6 +719,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIdRoute: AdminIdRoute,
+  AdminBriefRoute: AdminBriefRoute,
   AdminContentRoute: AdminContentRoute,
   AdminEditorRoute: AdminEditorRoute,
   AdminFaqRoute: AdminFaqRoute,
@@ -637,9 +739,12 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   AccessibilityRoute: AccessibilityRoute,
   AdminRoute: AdminRouteWithChildren,
+  FeedDotxmlRoute: FeedDotxmlRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route:
+    Char1489Char1497Char1511Char1493Char1512Char1493Char1514Route,
   Char1495Char1504Char1493Char1514Route: Char1495Char1504Char1493Char1514Route,
   Char1502Char1488Char1502Char1512Char1497Char1501Route:
     Char1502Char1488Char1502Char1512Char1497Char1501Route,
@@ -651,11 +756,13 @@ const rootRouteChildren: RootRouteChildren = {
     Char1513Char1488Char1500Char1493Char1514Char1504Char1508Char1493Char1510Char1493Char1514Route,
   Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route:
     Char1513Char1496Char1497Char1495Char1497PvcChar1502Char1506Char1493Char1510Char1489Char1497Char1501Route,
+  BriefTokenRoute: BriefTokenRoute,
   ProductSlugRoute: ProductSlugRoute,
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute:
     Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503StyleRoute,
   Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute:
     Char1496Char1508Char1496Char1500Char1508Char1497Char1505Char1490Char1504Char1493Char1503IndexRoute,
+  ApiPublicSeoBriefRoute: ApiPublicSeoBriefRoute,
   ApiPublicSubmitLeadRoute: ApiPublicSubmitLeadRoute,
 }
 export const routeTree = rootRouteImport

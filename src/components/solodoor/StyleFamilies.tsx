@@ -26,7 +26,7 @@ function StyleCard({ family, cta }: { family: Family; cta: string }) {
     <div className="flex flex-col-reverse overflow-hidden rounded-lg border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground lg:grid lg:grid-cols-[minmax(0,1fr)_16.25rem]">
       <div className="flex flex-col items-start justify-center gap-4.5 px-5 py-6 lg:px-8 lg:py-7">
         <div className="flex flex-col gap-2">
-          <span className="fs-24 leading-[1.2] font-medium text-foreground lg:fs-28"><EF f={f("name")}>{shownLabel(family, "name")}</EF></span>
+          <h3 className="fs-24 leading-[1.2] font-medium text-foreground lg:fs-28"><EF f={f("name")}>{shownLabel(family, "name")}</EF></h3>
           <span className="fs-16 leading-[1.55] text-foreground"><EF f={f("desc")}>{family.desc}</EF></span>
         </div>
         <div className="flex items-center gap-2.5">

@@ -41,10 +41,13 @@ interface ProductCardProps {
   onZoom?: (product: Product) => void;
   /** Height of the photo area; defaults to the best-sellers size. */
   mediaClassName?: string;
+  /** Renders the name as a heading (h3) when the card sits under an h2 section. */
+  headingName?: boolean;
 }
 
 /** Shop product card: photo, wishlist and enlarge buttons, name, price, details CTA. */
-export function ProductCard({ product, onZoom, mediaClassName }: ProductCardProps) {
+export function ProductCard({ product, onZoom, mediaClassName, headingName }: ProductCardProps) {
+  const NameTag = headingName ? "h3" : "span";
   return (
     <div className="overflow-hidden rounded-[0.5rem] border border-border bg-card transition-colors duration-240 ease-standard hover:border-foreground">
       <div className={cn("relative h-44 overflow-hidden bg-muted lg:h-75", mediaClassName)}>
@@ -61,7 +64,7 @@ export function ProductCard({ product, onZoom, mediaClassName }: ProductCardProp
         )}
       </div>
       <div className="flex flex-col items-center gap-2.5 px-3 pt-5 pb-6 text-center lg:px-5.5">
-        <span className="fs-16 font-semibold text-foreground lg:fs-18">{product.name}</span>
+        <NameTag className="fs-16 font-semibold text-foreground lg:fs-18">{product.name}</NameTag>
         <span className="fs-22 font-bold text-foreground">{product.price}</span>
         <div className="mt-1.5 w-full">
           <Button asChild size="card" className="w-full border border-primary leading-[normal]">

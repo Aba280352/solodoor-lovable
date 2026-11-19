@@ -1,5 +1,8 @@
+import { Link } from "@tanstack/react-router";
+
 import { cn } from "@/lib/utils";
 
+import { Icon } from "./Icon";
 import { Container, Pill } from "./primitives";
 import { GOOGLE_MARK, GOOGLE_WORDMARK } from "./data";
 import { business } from "./content/business";
@@ -10,7 +13,7 @@ import { useSection } from "./content/sections";
 /** A review and its place in the admin's list (the editor's mark). */
 type Review = { name: string; date: string; text: string; color?: string; i: number };
 
-function Stars({ className }: { className?: string }) {
+export function Stars({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center leading-none text-star", className)} aria-label="5 מתוך 5 כוכבים">
       {"★★★★★".split("").map((star, i) => (
@@ -22,12 +25,12 @@ function Stars({ className }: { className?: string }) {
   );
 }
 
-function ReviewCard({ review }: { review: Review }) {
+export function ReviewCard({ review, className }: { review: Review; className?: string }) {
   const f = (name: string) => `items.${review.i}.${name}`;
   return (
     <div
       dir="rtl"
-      className="flex min-h-72.5 w-72 flex-none flex-col gap-4 rounded-[0.75rem] border border-border bg-card px-6 pt-7 pb-8 shadow-review lg:w-95 lg:px-7.5"
+      className={cn("flex min-h-72.5 w-72 flex-none flex-col gap-4 rounded-[0.75rem] border border-border bg-card px-6 pt-7 pb-8 shadow-review lg:w-95 lg:px-7.5", className)}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -97,6 +100,18 @@ export function Reviews({ page = "home.reviews" }: { page?: ReviewsKey }) {
         <ReviewRow items={rowA} className="animate-reviews-left" />
         <ReviewRow items={rowB} className="animate-reviews-right" />
       </div>
+
+      <Container>
+        <div className="mt-9 flex justify-center lg:mt-12">
+          <Link
+            to="/ביקורות"
+            className="inline-flex items-center gap-2 border-b border-primary pb-0.5 fs-17 font-medium text-foreground transition-[gap] duration-240 ease-standard hover:gap-3.5"
+          >
+            <span>לכל הביקורות</span>
+            <Icon name="AngleLeft" size={13} />
+          </Link>
+        </div>
+      </Container>
     </section>
   );
 }

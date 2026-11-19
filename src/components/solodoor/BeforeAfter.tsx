@@ -122,7 +122,7 @@ function CompareCard({ pair, field }: { pair: BeforeAfterPair; field?: string })
         </span>
       </div>
       <div className="px-6 pt-5.5 pb-6.5 text-center">
-        <span className="block fs-20 font-medium text-foreground lg:fs-22">{field ? <EF f={f("name")}>{pair.name}</EF> : pair.name}</span>
+        <h3 className="block fs-20 font-medium text-foreground lg:fs-22">{field ? <EF f={f("name")}>{pair.name}</EF> : pair.name}</h3>
         <span className="mt-2 block fs-16 leading-[1.6] text-foreground">{field ? <EF f={f("desc")}>{pair.desc}</EF> : pair.desc}</span>
       </div>
     </div>

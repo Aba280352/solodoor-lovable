@@ -53,7 +53,7 @@ export function BestSellers() {
 
         <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-6">
           {active.items.map((product) => (
-            <ProductCard key={product.name} product={product} onZoom={setZoomed} />
+            <ProductCard key={product.name} product={product} onZoom={setZoomed} headingName />
           ))}
         </div>
 

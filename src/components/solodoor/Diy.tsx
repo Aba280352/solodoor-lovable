@@ -96,7 +96,7 @@ export function Diy() {
                 <span className="mt-1 inline-flex text-background">
                   <Icon name={step.icon} size={38} />
                 </span>
-                <span className="text-center fs-15 font-medium text-background lg:fs-20"><EF f={`steps.${i}.label`}>{step.label}</EF></span>
+                <h3 className="text-center fs-15 font-medium text-background lg:fs-20"><EF f={`steps.${i}.label`}>{step.label}</EF></h3>
               </div>
             ))}
           </div>
