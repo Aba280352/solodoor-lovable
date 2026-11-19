@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
@@ -25,8 +26,28 @@ export function Stars({ className }: { className?: string }) {
   );
 }
 
-export function ReviewCard({ review, className }: { review: Review; className?: string }) {
+/** Collapsed height of a review's text in the carousel: six lines, so every card is exactly as tall as the next. */
+const CLAMP = "12rem";
+
+export function ReviewCard({ review, className, collapsible = false }: { review: Review; className?: string; collapsible?: boolean }) {
   const f = (name: string) => `items.${review.i}.${name}`;
+  const [open, setOpen] = useState(false);
+  const [long, setLong] = useState(false);
+  const [full, setFull] = useState(0);
+  const text = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!collapsible) return;
+    const measure = () => {
+      const el = text.current;
+      if (!el) return;
+      setFull(el.scrollHeight);
+      setLong(el.scrollHeight > el.clientHeight + 2 || open);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    void document.fonts?.ready.then(measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [collapsible, review.text, open]);
   return (
     <div
       dir="rtl"
@@ -50,7 +71,41 @@ export function ReviewCard({ review, className }: { review: Review; className?: 
         <img src={GOOGLE_MARK} alt="Google" loading="lazy" className="block size-5.5" />
       </div>
       <Stars className="gap-0.5 fs-20" />
-      <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
+      {collapsible ? (
+        <div className="flex flex-col">
+          <div
+            ref={text}
+            className="relative overflow-hidden"
+            style={{ height: open ? full : CLAMP, transition: "height 400ms cubic-bezier(0.2, 0.8, 0.2, 1)" }}
+          >
+            <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
+            {long && !open ? (
+              <div className="absolute inset-x-0 bottom-0 flex h-20 items-end justify-center bg-gradient-to-t from-card via-card/90 to-transparent">
+                <button
+                  type="button"
+                  aria-expanded={false}
+                  onClick={() => setOpen(true)}
+                  className="cursor-pointer border-0 bg-transparent p-0 fs-15 font-semibold text-foreground underline underline-offset-4"
+                >
+                  קרא עוד
+                </button>
+              </div>
+            ) : null}
+          </div>
+          {long && open ? (
+            <button
+              type="button"
+              aria-expanded
+              onClick={() => setOpen(false)}
+              className="mt-3 cursor-pointer self-center border-0 bg-transparent p-0 fs-15 font-semibold text-foreground underline underline-offset-4"
+            >
+              הצג פחות
+            </button>
+          ) : null}
+        </div>
+      ) : (
+        <p className="text-right fs-18 leading-[1.8] text-foreground"><EF f={f("text")}>{review.text}</EF></p>
+      )}
     </div>
   );
 }

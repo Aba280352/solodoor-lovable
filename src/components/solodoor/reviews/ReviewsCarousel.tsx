@@ -37,10 +37,10 @@ export function ReviewsCarousel({ className }: { className?: string }) {
           </button>
         </div>
       </div>
-      <div ref={track} className="scrollbar-none -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2" tabIndex={0} aria-label="ביקורות מגוגל">
+      <div ref={track} className="scrollbar-none -mx-1 flex snap-x items-start snap-mandatory gap-4 overflow-x-auto px-1 pb-2" tabIndex={0} aria-label="ביקורות מגוגל">
         {items.map((review, i) => (
           <div key={i} className="snap-start">
-            <ReviewCard review={{ ...review, i }} className="min-h-0 w-[17.5rem] lg:w-[19rem]" />
+            <ReviewCard collapsible review={{ ...review, i }} className="min-h-0 w-[17.5rem] lg:w-[19rem]" />
           </div>
         ))}
       </div>
