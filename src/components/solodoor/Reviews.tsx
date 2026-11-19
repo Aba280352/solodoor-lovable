@@ -75,8 +75,10 @@ export function Reviews({ page = "home.reviews" }: { page?: ReviewsKey }) {
   const heading = REVIEWS_HEADINGS[page];
   const h = useSection(heading.def, heading.defaults);
   const list = useSection(REVIEWS_LIST, REVIEWS_LIST_DEFAULTS).items.map((r, i) => ({ ...(r as Omit<Review, "i">), i }));
-  const rowA = [...list, ...list];
-  const rowB = [...list].reverse().concat([...list].reverse());
+  // The moving rows show the newest dozen; every review is on the reviews page and in the carousel.
+  const shown = list.slice(0, 12);
+  const rowA = [...shown, ...shown];
+  const rowB = [...shown].reverse().concat([...shown].reverse());
   return (
     <section data-reveal className="pt-14 pb-16 lg:pt-24 lg:pb-26">
       <Container>

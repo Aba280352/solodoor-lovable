@@ -14,7 +14,7 @@ export const REVIEWS_LIST: SectionDef = {
       name: "items",
       label: "ביקורות",
       type: "list",
-      max: 30,
+      max: 60,
       itemLabel: "ביקורת",
       hint: "מעתיקים מגוגל: שם, תאריך וטקסט. האות בעיגול והצבע נקבעים לבד.",
       fields: [

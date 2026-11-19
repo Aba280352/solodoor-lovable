@@ -14,6 +14,7 @@ import type { Product } from "../data";
 import { categoryCards, categoryLabel } from "../shop/featured";
 import { useShop } from "../shop/useShop";
 import { ArticleCard } from "./ArticleCard";
+import { ReviewsCarousel } from "../reviews/ReviewsCarousel";
 import {
   AUTHOR,
   FAQ_ID,
@@ -284,6 +285,8 @@ export function BlogPost({ article, related }: BlogPostProps) {
               </span>
               <span className="fs-15 font-medium text-foreground lg:fs-16">עסק מדורג 5 כוכבים בגוגל, על סמך {business.reviewCount} ביקורות</span>
             </div>
+
+            <ReviewsCarousel className="mt-5" />
 
             {image && (
               <figure className="relative mt-7 aspect-[16/9] overflow-hidden rounded-lg bg-muted">
