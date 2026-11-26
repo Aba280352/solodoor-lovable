@@ -43,6 +43,10 @@ export function oldSiteRedirect(pathname: string): string | null {
   // address with a trailing slash also moves in one step).
   if (/^\/שטיחי-pvc-מעוצבים$/i.test(path)) return "/חנות?cat=pvc_rug";
 
+  // Old English landing pages that Google still crawls (reported as 404 in Search Console, Nov 2026).
+  if (/^\/carpets$/i.test(path)) return "/חנות?cat=pvc_rug";
+  if (/^\/kitchenswrap$/i.test(path)) return "/ציפוי-מטבחים";
+
   // Old one-off pages.
   if (/^\/(thanks|thank-you|תודה|contact|צור-קשר)$/i.test(path)) return "/";
 
