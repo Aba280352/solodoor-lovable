@@ -323,8 +323,8 @@ export function BlogPost({ article, related }: BlogPostProps) {
             {faq.length > 0 && <ArticleFaq items={faq} />}
 
             <div className="mt-10 flex items-start gap-4 rounded-lg border border-border bg-card p-5 lg:items-center lg:p-6">
-              <span className="inline-flex size-14 flex-none items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                <Icon name="DoorClosed" size={24} />
+              <span className="inline-flex size-14 flex-none items-center justify-center rounded-full bg-secondary">
+                <img src="/images/logo-mark-white.svg" alt="" aria-hidden="true" width={30} height={22} className="h-auto w-[30px]" />
               </span>
               <span className="flex flex-col gap-1">
                 <span className="fs-18 font-bold text-foreground">{AUTHOR}</span>
