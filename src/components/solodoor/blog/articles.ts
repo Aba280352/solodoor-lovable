@@ -53,8 +53,35 @@ export const fetchLatestArticles = (count: number) =>
 
 export function fetchArticle(slug: string): Promise<Article | null> {
   return edgeCached(`article_${slug}`, 60, async () => {
-    const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).lte("published_at", new Date().toISOString()).limit(1));
-    return article ?? null;
+    const now = new Date().toISOString();
+    const [article] = await rows<Article>(supabase.from("articles").select("*").eq("slug", slug).eq("is_published", true).lte("published_at", now).limit(1));
+    if (!article) return null;
+    const scheduled = await rows<{ slug: string }>(supabase.from("articles").select("slug").eq("is_published", true).gt("published_at", now));
+    return { ...article, content_html: unlinkScheduled(article.content_html, new Set(scheduled.map((a) => a.slug))) };
+  });
+}
+
+/** The article slug a link points to on this site ("/slug", "https://solodoor.co.il/slug/", "%D7..."), or null. */
+function linkedSlug(href: string): string | null {
+  const path = href.replace(/^https?:\/\/(www\.)?solodoor\.co\.il/i, "");
+  if (!path.startsWith("/") || path.startsWith("//")) return null;
+  const clean = path.split(/[?#]/)[0].replace(/^\/+|\/+$/g, "");
+  try {
+    return decodeURIComponent(clean);
+  } catch {
+    return clean;
+  }
+}
+
+/**
+ * A link to an article that is scheduled but not live yet would be a 404 for readers and Google: until that article
+ * goes live, the link is shown as its plain text. The article cache is 60s, so the link comes back within a minute.
+ */
+function unlinkScheduled(html: string, scheduled: Set<string>): string {
+  if (!scheduled.size) return html;
+  return html.replace(/<a\b[^>]*\bhref="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, (match, href: string, inner: string) => {
+    const target = linkedSlug(href);
+    return target && scheduled.has(target) ? inner : match;
   });
 }
 
